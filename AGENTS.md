@@ -58,6 +58,36 @@ GitHub: https://github.com/sriyaa-p/heritage-vanguards
 
 ---
 
+## Project Setup — What Has Been Configured
+
+This section documents the tools and integrations set up for this project
+so any AI tool or new contributor understands the full picture.
+
+### AI Tools in Use
+- **Claude Code** — primary tool for file editing, git operations, and code review
+- **Hermes** — AI agent for autonomous tasks, scheduling, and messaging
+- **Discord** — team communication; Hermes bot connected for project notifications
+
+### GitHub
+- GitHub token configured for authenticated API access
+- PR workflow: branch → PR → sriyaa-p reviews → merge
+- Automated weekly check on this file to suggest updates when project evolves
+
+### How Work Gets Done
+- Code changes are made via Claude Code or Hermes terminal — both operate
+  on the same files, so changes are always in sync via the filesystem
+- Git history is the source of truth — every meaningful change is committed
+  with a descriptive message so any tool or teammate can pick up context
+- AI tools read this file (`AGENTS.md`) automatically — no manual briefing needed
+
+### For Teammates Using AI Tools
+You do not need to replicate this setup. Your AI tool just needs this repo
+open and it will follow the rules in this file. The integrations above are
+on Aishwarya's side and benefit the team through consistent git history
+and automated PR/update suggestions.
+
+---
+
 ## Keeping This File Updated
 If project conventions change, update this file in the same PR so all
 teammates' AI tools stay in sync. An automated check runs weekly to
