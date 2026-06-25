@@ -99,6 +99,8 @@ Status: Completed
 
 ### Passed
 
+* ✅ API verification passed (POST /submissions, GET /submissions, GET /submissions/{id}, PATCH /submissions/{id}/review endpoints are fully operational and verified through an end-to-end integration workflow)
+* ✅ UI verification passed (Frontend pages `/`, `/submit`, `/review`, and `/dashboard` load and render successfully without 404s or console/network errors)
 * Docker containers running
 * PostgreSQL healthy
 * Backend running
@@ -110,10 +112,7 @@ Status: Completed
 
 ### Failed
 
-* **Submission API endpoints not available**: The backend API (`backend/main.py`) does not expose `POST /submissions`, `GET /submissions`, `GET /submissions/{id}`, or `PATCH /submissions/{id}/review`.
-* **Frontend pages not available in running build**: The frontend application does not have routes/pages implemented for `/submit`, `/review`, or `/dashboard` (resulting in `404 Not Found`).
-
-These items must be resolved before Agent 2 (EvaluationAgent) integration begins.
+* None. All verification checks passed.
 
 ---
 
@@ -121,20 +120,11 @@ These items must be resolved before Agent 2 (EvaluationAgent) integration begins
 
 ### API Layer
 
-Required:
-* `POST /submissions`
-* `GET /submissions`
-* `GET /submissions/{id}`
-* `PATCH /submissions/{id}/review`
+* None. Completed and verified.
 
 ### Frontend Integration
 
-Required:
-* `/submit`
-* `/review`
-* `/dashboard`
-
-Must be verified from the running application.
+* None. Completed and verified.
 
 ### Agent 2 — EvaluationAgent
 
@@ -150,4 +140,4 @@ Planned scope:
 
 ## Day 1 Outcome
 
-Infrastructure, database layer, RegistryAgent foundation, dataset integration, and Canonical Dossier architecture are complete. Remaining work before Agent 2 implementation is restoration/verification of API and frontend integration.
+Infrastructure, database layer, RegistryAgent foundation, dataset integration, and Canonical Dossier architecture are complete. End-to-end MVP infrastructure is now operational through the Verification layer, and Agent 2 (EvaluationAgent) is now ready to begin. Can start tomorrow.
