@@ -531,3 +531,5 @@ The MVP is successful if it demonstrates:
 * Reviewer-ready Confidence Cards
 
 The system is a decision-support tool for heritage experts and does not autonomously designate heritage status.
+
+Contributors: Sriya, Aishwarya, Ujjwal, Rujul, Sanjana
