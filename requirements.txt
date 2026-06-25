@@ -8,7 +8,7 @@ uvicorn[standard]
 python-multipart
 
 # Database
-sqlalchemy[asyncio]
+sqlalchemy==2.0.36
 alembic
 asyncpg
 psycopg2-binary
