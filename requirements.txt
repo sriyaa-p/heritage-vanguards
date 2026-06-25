@@ -1,0 +1,8 @@
+google-adk
+google-generativeai
+fastapi
+uvicorn
+sentence-transformers
+faiss-cpu
+lingua-py
+python-dotenv
