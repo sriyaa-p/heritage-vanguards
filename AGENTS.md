@@ -2,7 +2,7 @@
 
 ## What is this file?
 This file (`AGENTS.md`) is automatically read by AI coding tools such as
-Claude Code, OpenAI Codex, Cursor, Hermes, and Gemini CLI whenever they
+Claude Code, OpenAI Codex, Cursor, Hermes, Antigravity and Gemini CLI whenever they
 open this project folder. It gives every AI assistant the same understanding
 of how this project works — so all contributors get consistent behaviour
 from their AI tools without any manual setup.
@@ -21,6 +21,9 @@ GitHub: https://github.com/sriyaa-p/heritage-vanguards
 ## Collaborators
 - **sriyaa-p** — repo owner, reviews and merges all PRs
 - **Aishwarya Bhangarshettra** (GitHub: Aishwarya29121994) — contributor
+- **rujul** (GitHub: rujpuj) — contributor
+- **Ujjwal** (GitHub: Ujjwal01080) - contributor
+- **Sanjana** (GitHub: sanjanap19) - contributor
 
 > New contributor? Add your name and GitHub handle to this list in your first PR.
 
@@ -74,7 +77,7 @@ so any AI tool or new contributor understands the full picture.
 - Automated weekly check on this file to suggest updates when project evolves
 
 ### How Work Gets Done
-- Code changes are made via Claude Code or Hermes terminal — both operate
+- Code changes are made via Claude Code or Hermes or Antigravity or Gemini CLI terminal — all operate
   on the same files, so changes are always in sync via the filesystem
 - Git history is the source of truth — every meaningful change is committed
   with a descriptive message so any tool or teammate can pick up context
