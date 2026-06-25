@@ -5,6 +5,7 @@ google-generativeai
 # Web framework
 fastapi
 uvicorn[standard]
+python-multipart
 
 # Database
 sqlalchemy[asyncio]
@@ -15,26 +16,24 @@ psycopg2-binary
 # Search & embeddings
 sentence-transformers
 faiss-cpu
+rank-bm25
 
 # Language detection
 lingua-language-detector
 
-# Utilities
-python-dotenv
-pydantic-settings
-httpx
-python-multipart
-sqlalchemy
-psycopg2-binary
-asyncpg
-alembic
-pydantic
-httpx
-pillow
-rank-bm25
+# Data processing
 numpy
 pandas
+pillow
+tqdm
+
+# Utilities
+python-dotenv
+pydantic
+pydantic-settings
+httpx
+typing-extensions
+
+# Testing
 pytest
 pytest-asyncio
-typing-extensions
-tqdm
