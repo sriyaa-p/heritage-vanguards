@@ -13,8 +13,72 @@ AI tool of choice and it will follow the rules below automatically.
 ---
 
 ## Project Overview
-A collaborative Git workflow exercise repo.
+**Heritage Sentinel AI** — a multi-agent AI system that helps archaeologists
+and heritage experts review potential UNESCO World Heritage Site submissions faster.
+
+Community members submit photos and descriptions of candidate sites. Three AI
+agents process each submission and present a structured Confidence Card to a
+human expert who makes the final decision. The system never autonomously
+designates heritage status — all final decisions remain with human reviewers.
+
+**Hackathon MVP deadline: July 2026**
 GitHub: https://github.com/sriyaa-p/heritage-vanguards
+
+---
+
+## Technology Stack
+| Layer | Technology |
+|---|---|
+| Backend | Python 3.11, FastAPI, Uvicorn |
+| AI | Gemini 2.5 Flash (google-generativeai, google-adk) |
+| Database | PostgreSQL, SQLAlchemy, Alembic |
+| Search | BM25 / FAISS (sentence-transformers, faiss-cpu) |
+| Frontend | Next.js, Tailwind CSS |
+| Infrastructure | Docker Compose |
+| Dataset | UNESCO World Heritage Sites |
+
+---
+
+## Architecture — Three Agent Workflow
+```
+Community Submission
+        │
+        ▼
+  Intake Processor → Canonical Dossier
+        │
+        ▼
+  RegistryAgent         # Checks UNESCO dataset for duplicates
+        │
+   Duplicate? ──Yes──▶ Existing Record (workflow ends)
+        │ No
+        ▼
+  EvaluationAgent       # Extracts evidence, generates Heritage Score (0-100)
+        │
+        ▼
+  VerificationAgent     # Creates Confidence Card, waits for human review
+        │
+   ┌────┴────┐
+   ▼         ▼
+Approve   Reject
+```
+
+---
+
+## Repository Structure
+```
+heritage-vanguards/
+├── backend/            # FastAPI app, agents, models, API routes
+├── frontend/           # Next.js + Tailwind CSS
+├── data/
+│   ├── raw/            # Original UNESCO dataset
+│   └── processed/      # Cleaned dataset (unesco_sites_clean.json)
+├── scripts/            # seed_database.py and utility scripts
+├── tests/              # All test files
+├── docs/               # Documentation
+├── docker-compose.yml  # Runs the full stack
+├── .env.example        # Template for environment variables
+└── requirements.txt    # Python dependencies
+```
 
 ---
 
@@ -30,7 +94,7 @@ GitHub: https://github.com/sriyaa-p/heritage-vanguards
 - Never commit directly to main
 - Always create a branch for your changes
 - Branch naming: `<your-name>-<short-description>`
-  - Example: `aishwarya-update-readme` or `sriyaa-fix-typo`
+  - Example: `aishwarya-project-skeleton` or `sriyaa-database-schema`
 
 ---
 
@@ -42,53 +106,38 @@ GitHub: https://github.com/sriyaa-p/heritage-vanguards
 
 ---
 
-## Key Files
-- `PROJECT.md` — contributor names and project details go here
-- `README.md` — project overview
-- `AGENTS.md` — this file; shared rules for all AI tools on the team
+## Environment Setup
+Copy `.env.example` to `.env` and fill in your values before running.
+Never commit `.env` — it is in `.gitignore`.
+
+To run the full stack locally:
+```bash
+cp .env.example .env
+docker compose up
+```
 
 ---
 
 ## For New Contributors — Quick Start
 1. Clone the repo
-2. Create a branch: `git checkout -b yourname-what-you-are-doing`
-3. Make your changes
-4. Push and open a PR — title it `What you did - Your Name`
-5. Assign sriyaa-p as reviewer and wait for approval before merging
+2. Copy `.env.example` to `.env` and fill in values
+3. Run `docker compose up` — PostgreSQL, FastAPI, and frontend all start
+4. Create a branch: `git checkout -b yourname-what-you-are-doing`
+5. Make your changes
+6. Push and open a PR — title it `What you did - Your Name`
+7. Assign sriyaa-p as reviewer and wait for approval before merging
 
 ---
 
 ## Project Setup — What Has Been Configured
-
-This section documents the tools and integrations set up for this project
-so any AI tool or new contributor understands the full picture.
-
-### AI Tools in Use
-- **Claude Code** — primary tool for file editing, git operations, and code review
-- **Hermes** — AI agent for autonomous tasks, scheduling, and messaging
-- **Discord** — team communication; Hermes bot connected for project notifications
-
-### GitHub
-- GitHub token configured for authenticated API access
-- PR workflow: branch → PR → sriyaa-p reviews → merge
+- `AGENTS.md` — this file; shared rules for all AI tools on the team
+- Docker Compose — full stack runs with `docker compose up`
+- GitHub token configured for authenticated API access (Aishwarya's side)
 - Automated weekly check on this file to suggest updates when project evolves
-
-### How Work Gets Done
-- Code changes are made via Claude Code or Hermes terminal — both operate
-  on the same files, so changes are always in sync via the filesystem
-- Git history is the source of truth — every meaningful change is committed
-  with a descriptive message so any tool or teammate can pick up context
-- AI tools read this file (`AGENTS.md`) automatically — no manual briefing needed
-
-### For Teammates Using AI Tools
-You do not need to replicate this setup. Your AI tool just needs this repo
-open and it will follow the rules in this file. The integrations above are
-on Aishwarya's side and benefit the team through consistent git history
-and automated PR/update suggestions.
 
 ---
 
 ## Keeping This File Updated
-If project conventions change, update this file in the same PR so all
-teammates' AI tools stay in sync. An automated check runs weekly to
-suggest updates when the project evolves.
+If project conventions or the tech stack changes, update this file in the
+same PR. An automated check runs every Monday at 9am to suggest updates
+when the project evolves.

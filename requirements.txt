@@ -1,8 +1,25 @@
+# AI / Gemini
 google-adk
 google-generativeai
+
+# Web framework
 fastapi
-uvicorn
+uvicorn[standard]
+
+# Database
+sqlalchemy[asyncio]
+alembic
+asyncpg
+psycopg2-binary
+
+# Search & embeddings
 sentence-transformers
 faiss-cpu
+
+# Language detection
 lingua-py
+
+# Utilities
 python-dotenv
+pydantic-settings
+httpx
