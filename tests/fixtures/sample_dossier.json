@@ -1,0 +1,65 @@
+{
+  "metadata": {
+    "submission_id": "SUB-2026-00142",
+    "submitted_by": "community_user_91",
+    "submitted_at": "2026-06-01T09:15:00Z",
+    "location_name": "Ellora Cave Temples",
+    "country": "India",
+    "coordinates": [20.0258, 75.1780],
+    "status": "verification"
+  },
+  "raw_evidence": {
+    "description": "A series of 34 rock-cut cave temples and monasteries dating from the 6th to 11th century CE, representing Buddhist, Hindu and Jain religious traditions carved directly into the Charanandri Hills. The caves contain intricate sculptures, reliefs and frescoes depicting deities, celestial beings and scenes from religious texts.",
+    "photo_urls": [
+      "https://storage.heritage-sentinel.dev/uploads/SUB-2026-00142/photo_01.jpg",
+      "https://storage.heritage-sentinel.dev/uploads/SUB-2026-00142/photo_02.jpg",
+      "https://storage.heritage-sentinel.dev/uploads/SUB-2026-00142/photo_03.jpg"
+    ],
+    "language_detected": "en"
+  },
+  "registry_check": {
+    "is_duplicate": false,
+    "matched_site": null,
+    "similarity_score": 0.31,
+    "top_candidates": [
+      {
+        "site_name": "Ajanta Caves",
+        "country": "India",
+        "similarity_score": 0.31
+      },
+      {
+        "site_name": "Elephanta Caves",
+        "country": "India",
+        "similarity_score": 0.24
+      },
+      {
+        "site_name": "Rock Shelters of Bhimbetka",
+        "country": "India",
+        "similarity_score": 0.18
+      }
+    ],
+    "checked_at": "2026-06-01T09:16:12Z"
+  },
+  "extracted_evidence": {
+    "historic_features": "34 rock-cut cave temples spanning Buddhist, Hindu and Jain traditions, constructed between 6th–11th century CE. Kailasa Temple (Cave 16) is the largest monolithic rock excavation in the world, carved from a single basalt cliff.",
+    "cultural_significance": "Unique example of religious tolerance — three distinct faiths represented in adjacent caves over five centuries. The site demonstrates the coexistence of Buddhist Mahayana and Vajrayana traditions with Brahmanical Hinduism and Digambara Jainism.",
+    "geographic_context": "Located in the Deccan Plateau, Maharashtra, India. Caves are carved into the volcanic basalt escarpment of the Charanandri Hills, 29 km from Aurangabad. The natural cliff face provided ideal conditions for large-scale rock excavation.",
+    "documentation_quality": "Extensive scholarly documentation since colonial surveys (1819). ASI (Archaeological Survey of India) maintains detailed records. Multiple academic publications available. High photographic coverage across all 34 caves.",
+    "supporting_evidence": "Three on-site photographs provided showing cave exteriors, interior sculpture and Kailasa Temple facade. Photo quality sufficient for preliminary assessment."
+  },
+  "scoring": {
+    "historic_features": 28,
+    "cultural_significance": 23,
+    "geographic_context": 12,
+    "documentation": 14,
+    "supporting_evidence": 10,
+    "total": 87,
+    "rationale": "Exceptional historic significance — largest monolithic excavation in the world with 1,500 years of continuous religious use. High cultural significance for multi-faith representation. Geographic context is well-established. Documentation is comprehensive. Photo evidence is adequate but could include interior detail shots for higher score."
+  },
+  "review": {
+    "decision": "pending",
+    "reviewer_id": null,
+    "reviewer_notes": null,
+    "decided_at": null
+  }
+}

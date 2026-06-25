@@ -1,22 +1,39 @@
+# AI / Gemini
 google-adk
 google-generativeai
+
+# Web framework
 fastapi
-uvicorn
-sentence-transformers
-lingua-py
-python-dotenv
+uvicorn[standard]
 python-multipart
-sqlalchemy
-psycopg2-binary
-asyncpg
+
+# Database
+sqlalchemy[asyncio]
 alembic
-pydantic
-httpx
-pillow
+asyncpg
+psycopg2-binary
+
+# Search & embeddings
+sentence-transformers
+faiss-cpu
 rank-bm25
+
+# Language detection
+lingua-language-detector
+
+# Data processing
 numpy
 pandas
+pillow
+tqdm
+
+# Utilities
+python-dotenv
+pydantic
+pydantic-settings
+httpx
+typing-extensions
+
+# Testing
 pytest
 pytest-asyncio
-typing-extensions
-tqdm
