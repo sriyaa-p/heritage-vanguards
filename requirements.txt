@@ -17,7 +17,7 @@ sentence-transformers
 faiss-cpu
 
 # Language detection
-lingua-py
+lingua-language-detector
 
 # Utilities
 python-dotenv
