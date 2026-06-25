@@ -1,62 +1,330 @@
 [
-  {"id": 1, "site_name": "Taj Mahal", "country": "India", "category": "Cultural", "year_inscribed": 1983, "lat": 27.1751, "lon": 78.0421, "description": "Ivory-white marble mausoleum built by Mughal emperor Shah Jahan in memory of his wife Mumtaz Mahal. Considered the finest example of Mughal architecture, combining Persian, Islamic and Indian styles."},
-  {"id": 2, "site_name": "Ellora Caves", "country": "India", "category": "Cultural", "year_inscribed": 1983, "lat": 20.0258, "lon": 75.1780, "description": "34 monasteries and temples hewn out of the rock face of the Charanandri Hills, representing Buddhist, Hindu and Jain rock-cut architecture from the 6th to 11th century CE."},
-  {"id": 3, "site_name": "Ajanta Caves", "country": "India", "category": "Cultural", "year_inscribed": 1983, "lat": 20.5519, "lon": 75.7033, "description": "Rock-cut Buddhist cave monuments with paintings and sculptures from 2nd century BCE to 480 CE, considered masterpieces of Buddhist religious art."},
-  {"id": 4, "site_name": "Konark Sun Temple", "country": "India", "category": "Cultural", "year_inscribed": 1984, "lat": 19.8876, "lon": 86.0945, "description": "13th-century CE Sun Temple at Konark, dedicated to the sun god Surya, conceived as a gigantic chariot with elaborately carved stone wheels, pillars and walls."},
-  {"id": 5, "site_name": "Khajuraho Group of Monuments", "country": "India", "category": "Cultural", "year_inscribed": 1986, "lat": 24.8518, "lon": 79.9218, "description": "Group of Hindu and Jain temples built by the Chandela dynasty between 950 and 1050 CE, famous for their Nagara-style architectural symbolism and erotic sculptures."},
-  {"id": 6, "site_name": "Elephanta Caves", "country": "India", "category": "Cultural", "year_inscribed": 1987, "lat": 18.9633, "lon": 72.9315, "description": "Collection of rock-art cave temples dedicated mainly to the Hindu god Shiva, located on Elephanta Island in Mumbai Harbour, dating from the 5th to 8th centuries CE."},
-  {"id": 7, "site_name": "Hampi", "country": "India", "category": "Cultural", "year_inscribed": 1986, "lat": 15.3350, "lon": 76.4600, "description": "Ruins of the 14th century Vijayanagara Empire capital spread across 4000 hectares, featuring temples, palaces, elephant stables, market streets and a sacred centre."},
-  {"id": 8, "site_name": "Mahabalipuram", "country": "India", "category": "Cultural", "year_inscribed": 1984, "lat": 12.6269, "lon": 80.1927, "description": "Group of sanctuaries and monuments built during the Pallava dynasty from the 7th and 8th centuries on the Coromandel Coast, featuring rathas, mandapas and the Shore Temple."},
-  {"id": 9, "site_name": "Fatehpur Sikri", "country": "India", "category": "Cultural", "year_inscribed": 1986, "lat": 27.0945, "lon": 77.6600, "description": "Abandoned Mughal imperial capital built by Emperor Akbar in the late 16th century, featuring mosques, palaces and public buildings in a blend of Persian and Indian architectural styles."},
-  {"id": 10, "site_name": "Agra Fort", "country": "India", "category": "Cultural", "year_inscribed": 1983, "lat": 27.1795, "lon": 78.0211, "description": "Walled Mughal imperial city and seat of government of the Mughal Empire under successive emperors from Akbar to Aurangzeb, containing palaces, audience halls, mosques, and gardens."},
-  {"id": 11, "site_name": "Rani ki Vav", "country": "India", "category": "Cultural", "year_inscribed": 2014, "lat": 23.8587, "lon": 72.1015, "description": "Intricately constructed stepwell on the banks of the Saraswati River, built as a memorial to a king in the 11th century, featuring seven levels of stairs with sculpted panels."},
-  {"id": 12, "site_name": "Great Wall of China", "country": "China", "category": "Cultural", "year_inscribed": 1987, "lat": 40.4319, "lon": 116.5704, "description": "Series of fortifications built across northern China spanning thousands of kilometres, constructed over centuries by multiple Chinese states and empires for protection against nomadic invasions."},
-  {"id": 13, "site_name": "Forbidden City", "country": "China", "category": "Cultural", "year_inscribed": 1987, "lat": 39.9163, "lon": 116.3972, "description": "Imperial palace complex in central Beijing that served as the home of emperors and their households for almost 500 years, housing 980 surviving buildings with 8728 rooms."},
-  {"id": 14, "site_name": "Angkor Wat", "country": "Cambodia", "category": "Cultural", "year_inscribed": 1992, "lat": 13.4125, "lon": 103.8670, "description": "Temple complex near Siem Reap, the largest religious monument in the world at 162.6 hectares, originally constructed as a Hindu temple for the Khmer Empire, gradually transforming to Buddhism."},
-  {"id": 15, "site_name": "Borobudur Temple Compounds", "country": "Indonesia", "category": "Cultural", "year_inscribed": 1991, "lat": -7.6079, "lon": 110.2038, "description": "9th century Mahayana Buddhist temple and the world's largest Buddhist temple, comprising 9 stacked platforms (6 square and 3 circular) topped by a central dome and decorated with 2672 relief panels."},
-  {"id": 16, "site_name": "Bagan", "country": "Myanmar", "category": "Cultural", "year_inscribed": 2019, "lat": 21.1717, "lon": 94.8585, "description": "Archaeological zone on the plains of central Myanmar containing the remains of thousands of Buddhist temples, pagodas, monasteries and other religious structures built during the Pagan Kingdom."},
-  {"id": 17, "site_name": "Acropolis of Athens", "country": "Greece", "category": "Cultural", "year_inscribed": 1987, "lat": 37.9715, "lon": 23.7269, "description": "Ancient citadel above Athens containing the remains of several architecturally significant buildings of classical antiquity, most notably the Parthenon, Erechtheion, and the Temple of Athena Nike."},
-  {"id": 18, "site_name": "Colosseum", "country": "Italy", "category": "Cultural", "year_inscribed": 1980, "lat": 41.8902, "lon": 12.4922, "description": "Elliptical amphitheatre in the centre of Rome, the largest ancient amphitheatre ever built, capable of holding between 50,000 and 80,000 spectators, used for gladiatorial contests and public spectacles."},
-  {"id": 19, "site_name": "Pompeii", "country": "Italy", "category": "Cultural", "year_inscribed": 1997, "lat": 40.7497, "lon": 14.4989, "description": "Ancient Roman city near modern Naples, destroyed and buried under 4–6 metres of volcanic ash following the eruption of Mount Vesuvius in 79 CE, providing an exceptional snapshot of Roman life."},
-  {"id": 20, "site_name": "Stonehenge", "country": "United Kingdom", "category": "Cultural", "year_inscribed": 1986, "lat": 51.1789, "lon": -1.8262, "description": "Prehistoric monument on Salisbury Plain consisting of a ring of standing stones, each around 4 metres high, 2 metres wide and weighing around 25 tonnes, aligned with the sunrise on the summer solstice."},
-  {"id": 21, "site_name": "Petra", "country": "Jordan", "category": "Cultural", "year_inscribed": 1985, "lat": 30.3285, "lon": 35.4444, "description": "Archaeological city famous for its rock-cut architecture and water conduit system, established possibly as early as the 4th century BCE as the capital of the Nabataean Kingdom."},
-  {"id": 22, "site_name": "Pyramids of Giza and Memphis", "country": "Egypt", "category": "Cultural", "year_inscribed": 1979, "lat": 29.9792, "lon": 31.1342, "description": "Ancient necropolis containing the Great Pyramid (Khufu), Pyramid of Khafre, Pyramid of Menkaure and the Great Sphinx, built during the Old Kingdom period around 2560–2504 BCE."},
-  {"id": 23, "site_name": "Abu Simbel", "country": "Egypt", "category": "Cultural", "year_inscribed": 1979, "lat": 22.3372, "lon": 31.6258, "description": "Two massive rock-cut temples originally carved out of the mountainside during the reign of Pharaoh Ramesses II in the 13th century BCE, relocated in 1968 due to the flooding of Lake Nasser."},
-  {"id": 24, "site_name": "Luxor and Thebes", "country": "Egypt", "category": "Cultural", "year_inscribed": 1979, "lat": 25.6872, "lon": 32.6396, "description": "Ancient Thebes with its Necropolis, including the temples of Karnak and Luxor and the necropoleis of the Valley of the Kings and Valley of the Queens."},
-  {"id": 25, "site_name": "Machu Picchu", "country": "Peru", "category": "Mixed", "year_inscribed": 1983, "lat": -13.1631, "lon": -72.5450, "description": "15th-century Inca citadel situated on a mountain ridge 2,430 metres above sea level, featuring dry-stone walls and elaborate astronomical alignments, abandoned a century after its construction."},
-  {"id": 26, "site_name": "Chichen Itza", "country": "Mexico", "category": "Cultural", "year_inscribed": 1988, "lat": 20.6843, "lon": -88.5678, "description": "Pre-Columbian city built by the Maya civilization in the Terminal Classic period, featuring the step-pyramid El Castillo, dedicated to the feathered serpent deity Kukulcan."},
-  {"id": 27, "site_name": "Teotihuacan", "country": "Mexico", "category": "Cultural", "year_inscribed": 1987, "lat": 19.6925, "lon": -98.8438, "description": "Ancient Mesoamerican city northeast of Mexico City, featuring the Pyramid of the Sun and Pyramid of the Moon, representing one of the largest cities in the pre-Columbian Americas."},
-  {"id": 28, "site_name": "Easter Island", "country": "Chile", "category": "Cultural", "year_inscribed": 1995, "lat": -27.1127, "lon": -109.3497, "description": "Isolated volcanic island with 900 monumental stone statues (moai) created by the Rapa Nui people between the 13th and 16th centuries, representing the most outstanding example of a human society that flourished in total isolation."},
-  {"id": 29, "site_name": "Chaco Culture", "country": "United States", "category": "Cultural", "year_inscribed": 1987, "lat": 36.0608, "lon": -107.9620, "description": "Hub of ancestral Puebloan culture between 850 and 1150 CE featuring the most impressive pre-Columbian remains north of Mexico, with massive multi-storied stone buildings and roads linking outlier communities."},
-  {"id": 30, "site_name": "Versailles Palace and Park", "country": "France", "category": "Cultural", "year_inscribed": 1979, "lat": 48.8049, "lon": 2.1204, "description": "Former royal residence and gardens located southwest of Paris, originally a hunting lodge for Louis XIII, transformed by Louis XIV into one of the largest palaces in the world with 2,300 rooms."},
-  {"id": 31, "site_name": "Mont-Saint-Michel", "country": "France", "category": "Cultural", "year_inscribed": 1979, "lat": 48.6361, "lon": -1.5115, "description": "Island commune in Normandy featuring a tidal island and the surrounding bay, with a medieval Benedictine abbey that became one of Europe's major pilgrimage destinations."},
-  {"id": 32, "site_name": "Alhambra, Generalife and Albayzin", "country": "Spain", "category": "Cultural", "year_inscribed": 1984, "lat": 37.1767, "lon": -3.5886, "description": "Palatine city built by the Nasrid dynasty Muslim rulers of the Emirate of Granada in medieval Andalusia, featuring palaces, courts, towers, gardens and fountains in intricate Islamic architecture."},
-  {"id": 33, "site_name": "Sagrada Familia", "country": "Spain", "category": "Cultural", "year_inscribed": 2005, "lat": 41.4036, "lon": 2.1744, "description": "Works of Antoni Gaudí in and around Barcelona, including the still-unfinished Sagrada Família basilica, Casa Batlló, Casa Milà, Park Güell, and Casa Vicens, representing an outstanding creative contribution."},
-  {"id": 34, "site_name": "Auschwitz Birkenau", "country": "Poland", "category": "Cultural", "year_inscribed": 1979, "lat": 50.0344, "lon": 19.2037, "description": "Nazi German concentration and extermination camp complex during World War II, site of the largest mass murder in a single location in human history, inscribed as a symbol of the Holocaust."},
-  {"id": 35, "site_name": "Kremlin and Red Square", "country": "Russia", "category": "Cultural", "year_inscribed": 1990, "lat": 55.7520, "lon": 37.6175, "description": "Historic fortified complex in the heart of Moscow containing the official residence of the President of Russia, several cathedrals, the State Armory and the Grand Kremlin Palace."},
-  {"id": 36, "site_name": "St Petersburg Historic Centre", "country": "Russia", "category": "Cultural", "year_inscribed": 1990, "lat": 59.9388, "lon": 30.3162, "description": "Outstanding examples of Baroque and neoclassical architecture in St Petersburg and surrounding areas, including the Hermitage Museum, Peter and Paul Fortress, and Catherine Palace."},
-  {"id": 37, "site_name": "Great Zimbabwe National Monument", "country": "Zimbabwe", "category": "Cultural", "year_inscribed": 1986, "lat": -20.2675, "lon": 30.9333, "description": "Ruins of the capital of the Kingdom of Zimbabwe, built between the 11th and 15th centuries CE from granite blocks without mortar, representing the largest pre-colonial structure in sub-Saharan Africa."},
-  {"id": 38, "site_name": "Timbuktu", "country": "Mali", "category": "Cultural", "year_inscribed": 1988, "lat": 16.7666, "lon": -3.0026, "description": "City on the edge of the Sahara Desert that was an intellectual and spiritual capital of Islam in the 15th and 16th centuries, containing three great mosques and 16 cemeteries and mausoleums."},
-  {"id": 39, "site_name": "Robben Island", "country": "South Africa", "category": "Cultural", "year_inscribed": 1999, "lat": -33.8050, "lon": 18.3669, "description": "Island in Table Bay where political prisoners including Nelson Mandela were held during the apartheid era, now a symbol of the triumph of the human spirit over adversity."},
-  {"id": 40, "site_name": "Lalibela Rock Churches", "country": "Ethiopia", "category": "Cultural", "year_inscribed": 1978, "lat": 12.0317, "lon": 39.0472, "description": "Eleven medieval monolithic cave churches carved from solid red volcanic rock in the 12th and 13th centuries by King Lalibela, forming a Jerusalem in Africa for Ethiopian Christians."},
-  {"id": 41, "site_name": "Serengeti National Park", "country": "Tanzania", "category": "Natural", "year_inscribed": 1981, "lat": -2.3333, "lon": 34.8333, "description": "Outstanding natural park featuring the annual migration of 1.5 million wildebeest and 250,000 zebra, with rich predator populations including lion, leopard, cheetah and wild dog."},
-  {"id": 42, "site_name": "Ngorongoro Conservation Area", "country": "Tanzania", "category": "Mixed", "year_inscribed": 1979, "lat": -3.2537, "lon": 35.5895, "description": "Vast crater formed from a collapsed volcanic caldera containing one of Africa's most dense concentrations of wildlife, and the Laetoli hominid footprints dated to 3.6 million years ago."},
-  {"id": 43, "site_name": "Galápagos Islands", "country": "Ecuador", "category": "Natural", "year_inscribed": 1978, "lat": -0.9538, "lon": -90.9656, "description": "Volcanic archipelago in the Pacific Ocean that inspired Charles Darwin's theory of evolution by natural selection, with unique flora and fauna including giant tortoises, marine iguanas and blue-footed boobies."},
-  {"id": 44, "site_name": "Amazon Rainforest - Central Amazon Conservation Complex", "country": "Brazil", "category": "Natural", "year_inscribed": 2000, "lat": -2.4300, "lon": -60.6500, "description": "Largest protected area in the Amazon basin, encompassing one of the world's highest concentrations of biodiversity with exceptional aquatic habitats including rivers, lakes, flooded forests and islands."},
-  {"id": 45, "site_name": "Yellowstone National Park", "country": "United States", "category": "Natural", "year_inscribed": 1978, "lat": 44.4280, "lon": -110.5885, "description": "First national park in the world, featuring half of the world's geysers, abundant wildlife including bison herds, grizzly bears and wolves, and a complete display of the geothermal processes."},
-  {"id": 46, "site_name": "Great Barrier Reef", "country": "Australia", "category": "Natural", "year_inscribed": 1981, "lat": -18.2861, "lon": 147.7000, "description": "World's largest coral reef system composed of over 2,900 individual reefs and 900 islands stretching for over 2,300 kilometres, visible from space and home to extraordinary diversity of marine life."},
-  {"id": 47, "site_name": "Uluru-Kata Tjuta National Park", "country": "Australia", "category": "Mixed", "year_inscribed": 1987, "lat": -25.3444, "lon": 131.0369, "description": "Two sacred sites of extraordinary geological and ethnological interest: the monolith Uluru (Ayers Rock) and domed rock formations of Kata Tjuta (the Olgas), of profound spiritual significance to the Anangu people."},
-  {"id": 48, "site_name": "Hiroshima Peace Memorial", "country": "Japan", "category": "Cultural", "year_inscribed": 1996, "lat": 34.3955, "lon": 132.4536, "description": "Bombed Industrial Promotion Hall, the only structure to remain standing in the area where the first atomic bomb was dropped on 6 August 1945, preserved as a memorial to victims and a symbol of peace."},
-  {"id": 49, "site_name": "Himeji Castle", "country": "Japan", "category": "Cultural", "year_inscribed": 1993, "lat": 34.8394, "lon": 134.6939, "description": "Series of 83 wooden buildings with sophisticated defensive systems from the 14th to 17th centuries, the finest surviving example of early 17th-century Japanese castle architecture."},
-  {"id": 50, "site_name": "Kyoto Historic Monuments", "country": "Japan", "category": "Cultural", "year_inscribed": 1994, "lat": 35.0116, "lon": 135.7681, "description": "Seventeen sites within Kyoto, Uji and Otsu cities encompassing Buddhist temples, Shinto shrines, a castle and a garden, representing outstanding examples of Japanese architectural and garden design over eleven centuries."},
-  {"id": 51, "site_name": "Nara Historic Monuments", "country": "Japan", "category": "Cultural", "year_inscribed": 1998, "lat": 34.6851, "lon": 135.8048, "description": "Eight places of historic significance representing the ancient capital of Japan from 710–784 CE, including the great wooden structure of Todaiji housing a 15-metre bronze Buddha statue."},
-  {"id": 52, "site_name": "Jeju Volcanic Island and Lava Tubes", "country": "Republic of Korea", "category": "Natural", "year_inscribed": 2007, "lat": 33.3617, "lon": 126.5292, "description": "Three sites of outstanding volcanic features: Geomunoreum lava tube system, the largest and most impressive lava tube caves in the world, Seongsan Ilchulbong tuff cone and Hallasan shield volcano."},
-  {"id": 53, "site_name": "Haeinsa Temple", "country": "Republic of Korea", "category": "Cultural", "year_inscribed": 1995, "lat": 35.7998, "lon": 128.1057, "description": "Buddhist temple complex in South Gyeongsang Province housing the Tripitaka Koreana, 80,000 wood printing blocks of the complete canon of Buddhist teachings, stored since 1398 in extraordinary conditions."},
-  {"id": 54, "site_name": "Persepolis", "country": "Iran", "category": "Cultural", "year_inscribed": 1979, "lat": 29.9353, "lon": 52.8914, "description": "Ceremonial capital of the Achaemenid Empire, constructed from 518 BCE, with monumental staircases, throne halls and reception rooms, a treasury and living quarters, destroyed by Alexander the Great in 330 BCE."},
-  {"id": 55, "site_name": "Pasargadae", "country": "Iran", "category": "Cultural", "year_inscribed": 2004, "lat": 30.1944, "lon": 53.1681, "description": "Capital of the Achaemenid Empire under Cyrus the Great in the 6th century BCE, containing the royal ensemble of Pasargadae, the tomb of Cyrus, and the earliest example of Persian garden design."},
-  {"id": 56, "site_name": "Istanbul Historic Areas", "country": "Turkey", "category": "Cultural", "year_inscribed": 1985, "lat": 41.0082, "lon": 28.9784, "description": "Four zones of Istanbul containing the world-famous Archaeological Park with Topkapi Palace, the Hagia Sophia and Sultanahmet Mosque, together representing the successive capitals of the Byzantine and Ottoman Empires."},
-  {"id": 57, "site_name": "Göbekli Tepe", "country": "Turkey", "category": "Cultural", "year_inscribed": 2018, "lat": 37.2232, "lon": 38.9222, "description": "Archaeological site in south-eastern Turkey dating to 10th-8th millennium BCE, the oldest known megalithic structure, consisting of at least 20 round structures with carved T-shaped limestone pillars."},
-  {"id": 58, "site_name": "Palmyra", "country": "Syrian Arab Republic", "category": "Cultural", "year_inscribed": 1980, "lat": 34.5503, "lon": 38.2683, "description": "Ruins of a caravan city in central Syria connecting the Roman Empire with the East, featuring a 2nd-century colonnade, temples of Bel and Baalshamin, theatre, agora, and funerary towers."},
-  {"id": 59, "site_name": "Old City of Jerusalem", "country": "Jerusalem", "category": "Cultural", "year_inscribed": 1981, "lat": 31.7767, "lon": 35.2345, "description": "Sacred to three monotheistic religions — Judaism, Christianity and Islam — the Old City contains the Temple Mount with Al-Aqsa Mosque and Dome of the Rock, the Church of the Holy Sepulchre, and the Western Wall."},
-  {"id": 60, "site_name": "Samarkand Crossroads of Cultures", "country": "Uzbekistan", "category": "Cultural", "year_inscribed": 2001, "lat": 39.6547, "lon": 66.9758, "description": "One of the oldest cities in Central Asia founded in the 7th century BCE, a crossroads and melting pot of the world's cultures featuring the Registan, Bibi-Khanym Mosque, Shah-i-Zinda necropolis and Gur-e-Amir mausoleum."}
+  {
+    "name": "Taj Mahal",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1983,
+    "criteria": "i",
+    "description": "Immense mausoleum of white marble built in Agra 1631-1648 by Mughal emperor Shah Jahan in memory of his favourite wife."
+  },
+  {
+    "name": "Ellora Caves",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1983,
+    "criteria": "i,iii,vi",
+    "description": "34 monasteries and temples dug into a basalt cliff between the 6th and 11th century AD. Represents Buddhist, Hindu and Jain religious art."
+  },
+  {
+    "name": "Ajanta Caves",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1983,
+    "criteria": "i,ii,iii,vi",
+    "description": "Masterpieces of Buddhist religious art whose paintings and sculptures influenced Indian art that followed."
+  },
+  {
+    "name": "Elephanta Caves",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "i,iii",
+    "description": "Collection of rock art linked to the cult of Shiva on an island near Mumbai. Main cave has five chambers with colossal statues."
+  },
+  {
+    "name": "Rock Shelters of Bhimbetka",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2003,
+    "criteria": "iii,v",
+    "description": "Natural rock shelters displaying paintings from the Mesolithic period through to the historical period in the Vindhyan Mountains."
+  },
+  {
+    "name": "Hampi",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1986,
+    "criteria": "i,iii,iv",
+    "description": "Ruins of Vijayanagara, former capital of one of the greatest Hindu kingdoms. Outstanding example of Dravidian architecture including Vittala Temple."
+  },
+  {
+    "name": "Qutb Minar and its Monuments",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1993,
+    "criteria": "iv",
+    "description": "The Qutb Minar, at 72.5 m, is the tallest brick minaret in the world. The surrounding funerary buildings are among the finest examples of early Indo-Islamic architecture."
+  },
+  {
+    "name": "Great Wall of China",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Greatest military edifice in history. Built over many centuries from the 7th century BC to protect China from invaders."
+  },
+  {
+    "name": "Forbidden City",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv",
+    "description": "Imperial Palace of the Ming and Qing Dynasties, the largest and best-preserved imperial palace complex in the world, built 1406-1420."
+  },
+  {
+    "name": "Angkor",
+    "country": "Cambodia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1992,
+    "criteria": "i,ii,iii,iv",
+    "description": "Most important archaeological site in South-East Asia containing remains of the Khmer Empire capitals stretching over 400 km2."
+  },
+  {
+    "name": "Borobudur Temple Compounds",
+    "country": "Indonesia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1991,
+    "criteria": "i,ii,vi",
+    "description": "9th-century Mahayana Buddhist temple in Central Java decorated with 2,672 relief panels and 504 Buddha statues."
+  },
+  {
+    "name": "Historic City of Ayutthaya",
+    "country": "Thailand",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1991,
+    "criteria": "iii",
+    "description": "Founded in 1350 as capital of the Siamese Kingdom, Ayutthaya rose to be one of the world largest and most cosmopolitan cities."
+  },
+  {
+    "name": "Historic Centre of Rome",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1980,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Centre of the Roman Republic, then the Roman Empire, then capital of the Christian world. Contains the Colosseum and Roman Forum."
+  },
+  {
+    "name": "Venice and its Lagoon",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,v,vi",
+    "description": "Built on 118 small islands separated by canals, Venice is an astonishing architectural masterpiece featuring works by Titian, Tintoretto, and Veronese."
+  },
+  {
+    "name": "Acropolis Athens",
+    "country": "Greece",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Universal symbols of classical civilisation forming the greatest architectural and artistic complex bequeathed by Greek Antiquity to the world."
+  },
+  {
+    "name": "Stonehenge Avebury and Associated Sites",
+    "country": "United Kingdom",
+    "region": "Europe and North America",
+    "inscription_year": 1986,
+    "criteria": "i,ii,iii",
+    "description": "Among the most famous groups of megaliths in the world. Circles of menhirs whose astronomical significance is still being explored."
+  },
+  {
+    "name": "Palace of Versailles",
+    "country": "France",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "i,ii,vi",
+    "description": "Principal residence of the French kings from Louis XIV to Louis XVI. Transformed from a hunting lodge into a monumental palace for the whole court."
+  },
+  {
+    "name": "Chartres Cathedral",
+    "country": "France",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "i,ii,iv",
+    "description": "Built in the 12th and 13th centuries, marks the high point of French Gothic art and strongly influenced subsequent Gothic architecture in Europe."
+  },
+  {
+    "name": "Prehistoric Sites and Decorated Caves of the Vezere Valley",
+    "country": "France",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "i,iii",
+    "description": "147 sites containing the most remarkable group of prehistoric paintings, engravings and sculptures including the famous Lascaux cave."
+  },
+  {
+    "name": "Alhambra Generalife and Albayzin Granada",
+    "country": "Spain",
+    "region": "Europe and North America",
+    "inscription_year": 1984,
+    "criteria": "i,iii,iv",
+    "description": "Royal city of the Nasrid emirs ruling the last Moorish kingdom in Iberia. Architecture and gardens reflect exceptional Hispano-Islamic culture."
+  },
+  {
+    "name": "Works of Antoni Gaudi",
+    "country": "Spain",
+    "region": "Europe and North America",
+    "inscription_year": 1984,
+    "criteria": "i,ii,iv",
+    "description": "Extraordinary contribution to late 19th and early 20th century architecture. The Sagrada Familia is an expressionist synthesis of Gothic and Art Nouveau."
+  },
+  {
+    "name": "Cologne Cathedral",
+    "country": "Germany",
+    "region": "Europe and North America",
+    "inscription_year": 1996,
+    "criteria": "i,ii,iv",
+    "description": "Gothic masterpiece begun in 1248 and completed in 1880, dedicated to St Peter and the Virgin Mary, one of the finest examples of Gothic architecture."
+  },
+  {
+    "name": "Kremlin and Red Square Moscow",
+    "country": "Russian Federation",
+    "region": "Europe and North America",
+    "inscription_year": 1990,
+    "criteria": "i,ii,iv,vi",
+    "description": "Built in the 15th century on a hill above the Moscow River, serving as the symbolic heart of Russia for centuries."
+  },
+  {
+    "name": "Historic Centre of Prague",
+    "country": "Czech Republic",
+    "region": "Europe and North America",
+    "inscription_year": 1992,
+    "criteria": "ii,iv,vi",
+    "description": "Comprising the Old Town, Mala Strana and New Town built between the 11th and 18th centuries, an outstanding example of interplaying architectural styles."
+  },
+  {
+    "name": "Yellowstone National Park",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1978,
+    "criteria": "vii,viii,ix,x",
+    "description": "The world first national park, containing half of all the world geysers. Created by the largest supervolcanic system in North America."
+  },
+  {
+    "name": "Grand Canyon National Park",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "vii,viii,ix,x",
+    "description": "Natural landscape of exceptional beauty in the Colorado River valley, Arizona. Over 1.6 km deep, revealing 2 billion years of geological history."
+  },
+  {
+    "name": "Historic Sanctuary of Machu Picchu",
+    "country": "Peru",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1983,
+    "criteria": "i,iii,vii,ix",
+    "description": "Standing 2,430 m above sea-level in a tropical mountain forest, probably the most amazing urban creation of the Inca Empire."
+  },
+  {
+    "name": "Chichen-Itza",
+    "country": "Mexico",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1988,
+    "criteria": "i,ii,iii",
+    "description": "Most important city of the Maya civilization on the Yucatan Peninsula, the political and economic centre flourishing between the 9th and 12th centuries."
+  },
+  {
+    "name": "Pre-Hispanic City of Teotihuacan",
+    "country": "Mexico",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Holy city built between the 1st and 7th centuries AD, characterized by the Temple of the Sun and Moon. One of the largest cities in the ancient world."
+  },
+  {
+    "name": "Rapa Nui National Park",
+    "country": "Chile",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1995,
+    "criteria": "i,iii,v",
+    "description": "Easter Island is an extraordinary testimony to a unique cultural tradition, containing the famous moai monolithic human figures erected by the Rapa Nui people."
+  },
+  {
+    "name": "Old Havana and its Fortification System",
+    "country": "Cuba",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1982,
+    "criteria": "iv,v",
+    "description": "Founded in the 16th century, Havana was one of the most important bastions in the Spanish colonial empire. Its fortifications are the most complete military architecture in the Americas."
+  },
+  {
+    "name": "Galapagos Islands",
+    "country": "Ecuador",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1978,
+    "criteria": "vii,viii,ix,x",
+    "description": "Situated in the Pacific Ocean, the Galapagos Islands inspired Darwin theory of evolution and continue to be a living laboratory of evolution."
+  },
+  {
+    "name": "Memphis and its Necropolis",
+    "country": "Egypt",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "i,iii,vi",
+    "description": "Capital of ancient Egypt at the height of its power, including the pyramid fields from Giza to Dahshur, outstanding proof of ancient Egyptian civilization."
+  },
+  {
+    "name": "Nubian Monuments from Abu Simbel to Philae",
+    "country": "Egypt",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "i,iii,vi",
+    "description": "Contains the Temples of Ramses II at Abu Simbel and the Sanctuary of Isis at Philae. Unique artistic achievements saved from flooding by UNESCO."
+  },
+  {
+    "name": "Petra",
+    "country": "Jordan",
+    "region": "Arab States",
+    "inscription_year": 1985,
+    "criteria": "i,iii,iv",
+    "description": "Capital of the Nabataean Empire between the 4th century BC and the 2nd century AD. Half-built, half-carved in the rock, surrounded by mountains."
+  },
+  {
+    "name": "Persepolis",
+    "country": "Iran",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "i,iii,vi",
+    "description": "Founded by Darius I in 518 BC, Persepolis was the capital of the Achaemenid Empire and a unique testimony to Achaemenid civilization."
+  },
+  {
+    "name": "Old City of Jerusalem and its Walls",
+    "country": "Jordan",
+    "region": "Arab States",
+    "inscription_year": 1981,
+    "criteria": "ii,iii,vi",
+    "description": "Jerusalem holds a unique position in the history of Judaism, Christianity and Islam, containing some of the most sacred sites of these three religions."
+  },
+  {
+    "name": "Great Barrier Reef",
+    "country": "Australia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1981,
+    "criteria": "vii,viii,ix,x",
+    "description": "The world most extensive stretch of coral reef on the north-east coast of Australia, home to 1,500 species of fish and 4,000 types of mollusc."
+  },
+  {
+    "name": "Serengeti National Park",
+    "country": "United Republic of Tanzania",
+    "region": "Africa",
+    "inscription_year": 1981,
+    "criteria": "vii,x",
+    "description": "The vast plains of the Serengeti comprise 1.5 million ha of savannah. The annual migration of wildebeest is one of the most spectacular events in nature."
+  },
+  {
+    "name": "Kilimanjaro National Park",
+    "country": "United Republic of Tanzania",
+    "region": "Africa",
+    "inscription_year": 1987,
+    "criteria": "vii",
+    "description": "Mount Kilimanjaro is the highest peak in Africa at 5,895 m, encompassing vegetation from forest to alpine desert and hosting rare endemic species."
+  },
+  {
+    "name": "Timbuktu",
+    "country": "Mali",
+    "region": "Africa",
+    "inscription_year": 1988,
+    "criteria": "ii,iv,v",
+    "description": "A major intellectual and spiritual capital and centre for Islam throughout Africa in the 15th and 16th centuries, containing three great mosques."
+  }
 ]
