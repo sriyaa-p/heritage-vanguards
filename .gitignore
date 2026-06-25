@@ -46,6 +46,10 @@ frontend/tsconfig.json
 *.swo
 CLAUDE.md
 .mcp.json
+.env
+__pycache__/
+*.pyc
+*.pyo
 
 # ── OS artifacts ───────────────────────────────────────────────────────────
 .DS_Store

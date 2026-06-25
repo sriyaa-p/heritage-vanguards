@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.routes.submissions import router as submissions_router
+
 app = FastAPI(
     title="Heritage Sentinel AI",
     description="Multi-agent system for UNESCO heritage site submission review",
@@ -14,6 +16,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(submissions_router)
 
 
 @app.get("/health")
