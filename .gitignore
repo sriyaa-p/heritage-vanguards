@@ -1,3 +1,16 @@
 .venv/
 CLAUDE.md
 .mcp.json
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Next.js
+frontend/.next/
+frontend/node_modules/
+frontend/next-env.d.ts
+frontend/tsconfig.json
+frontend/yarn.lock
