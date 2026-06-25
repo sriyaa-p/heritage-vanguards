@@ -29,6 +29,7 @@ services:
       - ./backend:/app
       - ./data:/data
       - ./scripts:/scripts
+      - ./tests:/tests
     depends_on:
       postgres:
         condition: service_healthy

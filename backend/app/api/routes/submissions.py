@@ -1,10 +1,11 @@
 import uuid
 from datetime import datetime, timezone
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from pydantic import BaseModel
 
+from app.agents.pipeline import run_pipeline
 from app.db.session import get_db
 from app.models.submission import Submission
 from app.models.dossier import (
@@ -28,7 +29,9 @@ class SubmitRequest(BaseModel):
 
 @router.post("", status_code=201)
 async def create_submission(
-    body: SubmitRequest, db: AsyncSession = Depends(get_db)
+    body: SubmitRequest,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db),
 ):
     submission_id = f"SUB-{datetime.now(timezone.utc).strftime('%Y-%m')}-{uuid.uuid4().hex[:8].upper()}"
 
@@ -56,6 +59,9 @@ async def create_submission(
     db.add(submission)
     await db.commit()
     await db.refresh(submission)
+
+    # Kick off the three-agent pipeline asynchronously
+    background_tasks.add_task(run_pipeline, submission_id)
 
     return {
         "submission_id": submission_id,
