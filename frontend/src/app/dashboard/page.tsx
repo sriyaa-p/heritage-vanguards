@@ -19,21 +19,21 @@ const MOCK_RECENT = [
 
 function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div className="bg-white rounded-xl shadow p-5">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className={`text-3xl font-bold mt-1 ${color}`}>{value}</p>
+    <div className="bg-white rounded-xl shadow p-4 sm:p-5">
+      <p className="text-xs sm:text-sm text-gray-500">{label}</p>
+      <p className={`text-2xl sm:text-3xl font-bold mt-1 ${color}`}>{value}</p>
     </div>
   );
 }
 
 export default function DashboardPage() {
   return (
-    <main className="min-h-screen bg-gray-50 p-8">
+    <main className="min-h-screen bg-gray-50 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Admin Dashboard</h1>
         <p className="text-gray-500 text-sm mb-6">Queue overview and processing metrics — using mock data.</p>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
           <StatCard label="Total Submissions" value={MOCK_METRICS.total} color="text-gray-900" />
           <StatCard label="Pending Review" value={MOCK_METRICS.inReview} color="text-blue-600" />
           <StatCard label="Awaiting Intake" value={MOCK_METRICS.pending} color="text-yellow-600" />
@@ -43,38 +43,40 @@ export default function DashboardPage() {
         </div>
 
         <div className="bg-white rounded-xl shadow overflow-hidden">
-          <div className="px-5 py-4 border-b">
+          <div className="px-4 sm:px-5 py-4 border-b">
             <h2 className="font-semibold text-gray-900">Recent Submissions</h2>
           </div>
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b">
-              <tr>
-                <th className="text-left px-5 py-3 text-gray-600 font-medium">Site</th>
-                <th className="text-left px-5 py-3 text-gray-600 font-medium">Score</th>
-                <th className="text-left px-5 py-3 text-gray-600 font-medium">Stage</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y">
-              {MOCK_RECENT.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="px-5 py-3">
-                    <p className="font-medium text-gray-900">{item.location}</p>
-                    <p className="text-xs text-gray-400 font-mono">{item.id}</p>
-                  </td>
-                  <td className="px-5 py-3">
-                    <span className={`font-bold ${item.score >= 80 ? "text-green-600" : item.score >= 60 ? "text-yellow-600" : "text-red-500"}`}>
-                      {item.score}/100
-                    </span>
-                  </td>
-                  <td className="px-5 py-3">
-                    <span className="bg-blue-100 text-blue-700 rounded-full px-2 py-0.5 text-xs">
-                      {item.status.replace("_", " ")}
-                    </span>
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[480px]">
+              <thead className="bg-gray-50 border-b">
+                <tr>
+                  <th className="text-left px-4 sm:px-5 py-3 text-gray-600 font-medium">Site</th>
+                  <th className="text-left px-4 sm:px-5 py-3 text-gray-600 font-medium">Score</th>
+                  <th className="text-left px-4 sm:px-5 py-3 text-gray-600 font-medium">Stage</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y">
+                {MOCK_RECENT.map((item) => (
+                  <tr key={item.id} className="hover:bg-gray-50">
+                    <td className="px-4 sm:px-5 py-3">
+                      <p className="font-medium text-gray-900">{item.location}</p>
+                      <p className="text-xs text-gray-400 font-mono">{item.id}</p>
+                    </td>
+                    <td className="px-4 sm:px-5 py-3">
+                      <span className={`font-bold ${item.score >= 80 ? "text-green-600" : item.score >= 60 ? "text-yellow-600" : "text-red-500"}`}>
+                        {item.score}/100
+                      </span>
+                    </td>
+                    <td className="px-4 sm:px-5 py-3">
+                      <span className="bg-blue-100 text-blue-700 rounded-full px-2 py-0.5 text-xs">
+                        {item.status.replace("_", " ")}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </main>
