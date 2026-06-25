@@ -27,14 +27,27 @@ export default function SubmitPage() {
       submitted_by: "community_user",
     };
 
+    const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/submissions`, {
+      const res = await fetch(`${API}/submissions`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       const result = await res.json();
-      setSubmissionId(result.submission_id);
+      const sid = result.submission_id;
+
+      // Upload photos if any were selected
+      if (photos.length > 0) {
+        const formData = new FormData();
+        photos.forEach((file) => formData.append("files", file));
+        await fetch(`${API}/submissions/${sid}/photos`, {
+          method: "POST",
+          body: formData,
+        });
+      }
+
+      setSubmissionId(sid);
       setSubmitted(true);
     } catch {
       setSubmissionId("SUB-DEMO-00000000");

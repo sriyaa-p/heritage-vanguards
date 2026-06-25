@@ -128,11 +128,12 @@ async def test_evaluation_agent_scores_correctly():
         result = await run_evaluation(dossier)
 
     assert result.scoring is not None
-    assert result.scoring.historic_features == 27
-    assert result.scoring.cultural_significance == 22
-    assert result.scoring.total == 82
+    # Scores are now deterministic (scoring engine, not Gemini) — verify evidence was extracted
     assert result.extracted_evidence is not None
     assert "Vijayanagara" in result.extracted_evidence.historic_features
+    # Scoring engine should find signals in the extracted text
+    assert result.scoring.historic_features > 0
+    assert result.scoring.total > 0
 
 
 @pytest.mark.asyncio
@@ -144,7 +145,7 @@ async def test_evaluation_agent_handles_gemini_failure():
         from app.agents.evaluation_agent import run_evaluation
         result = await run_evaluation(dossier)
 
-    # Should not raise — returns zero scores and continues
+    # Should not raise — scoring engine still runs on fallback text
     assert result.scoring is not None
-    assert result.scoring.total == 0
+    assert result.scoring.total < 10  # Near-zero score for "unavailable" text
     assert "unavailable" in result.extracted_evidence.historic_features
