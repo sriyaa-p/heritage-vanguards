@@ -1,10 +1,67 @@
+# ── Python ─────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+*.pdb
+
+# Virtual environments
 .venv/
+venv/
+env/
+ENV/
+
+# pytest / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# ── Environment & secrets ───────────────────────────────────────────────────
+.env
+*.env.local
+
+# ── Next.js / Node ─────────────────────────────────────────────────────────
+frontend/.next/
+frontend/out/
+node_modules/
+frontend/next-env.d.ts
+frontend/tsconfig.json
+
+# ── Docker ─────────────────────────────────────────────────────────────────
+# (docker-compose.override.yml is intentionally NOT ignored — commit it if present)
+
+# ── IDEs & editors ─────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
 CLAUDE.md
 .mcp.json
 .env
 __pycache__/
 *.pyc
 *.pyo
+
+# ── OS artifacts ───────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Next.js
 frontend/.next/
 frontend/node_modules/
 frontend/next-env.d.ts
