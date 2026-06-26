@@ -39,9 +39,11 @@ def _make_dossier(location="Hampi Ruins", country="India", description="Ancient 
 def test_verification_routes_high_score_to_review():
     dossier = _make_dossier()
     dossier.scoring = ScoringResult(
-        historic_features=28, cultural_significance=22,
-        geographic_context=12, documentation=13,
-        supporting_evidence=10, total=85, rationale="Strong site."
+        historic_features=22, cultural_significance=18,
+        integrity=12, authenticity=12,
+        geographic_context=8, documentation=8,
+        management_protection=3,
+        supporting_evidence=10, total=93, rationale="Strong site."
     )
     updated, status = run_verification(dossier)
     assert status == SubmissionStatus.verification
@@ -51,14 +53,16 @@ def test_verification_routes_high_score_to_review():
 def test_verification_auto_rejects_low_score():
     dossier = _make_dossier()
     dossier.scoring = ScoringResult(
-        historic_features=5, cultural_significance=5,
-        geographic_context=3, documentation=3,
-        supporting_evidence=2, total=18, rationale="Insufficient evidence."
+        historic_features=5, cultural_significance=4,
+        integrity=2, authenticity=2,
+        geographic_context=2, documentation=2,
+        management_protection=0,
+        supporting_evidence=2, total=19, rationale="Insufficient evidence."
     )
     updated, status = run_verification(dossier)
     assert status == SubmissionStatus.rejected
     assert updated.review.decision == ReviewDecisionType.rejected
-    assert "18/100" in updated.review.reviewer_notes
+    assert "19/100" in updated.review.reviewer_notes
 
 
 def test_verification_rejects_duplicate():
@@ -76,9 +80,11 @@ def test_verification_rejects_duplicate():
 def test_verification_routes_boundary_score_60():
     dossier = _make_dossier()
     dossier.scoring = ScoringResult(
-        historic_features=20, cultural_significance=15,
-        geographic_context=10, documentation=10,
-        supporting_evidence=5, total=60, rationale="Borderline."
+        historic_features=18, cultural_significance=14,
+        integrity=8, authenticity=8,
+        geographic_context=5, documentation=5,
+        management_protection=2,
+        supporting_evidence=0, total=60, rationale="Borderline."
     )
     _, status = run_verification(dossier)
     assert status == SubmissionStatus.verification
@@ -87,9 +93,11 @@ def test_verification_routes_boundary_score_60():
 def test_verification_auto_rejects_score_59():
     dossier = _make_dossier()
     dossier.scoring = ScoringResult(
-        historic_features=20, cultural_significance=15,
-        geographic_context=9, documentation=10,
-        supporting_evidence=5, total=59, rationale="Just below threshold."
+        historic_features=18, cultural_significance=14,
+        integrity=8, authenticity=7,
+        geographic_context=5, documentation=5,
+        management_protection=2,
+        supporting_evidence=0, total=59, rationale="Just below threshold."
     )
     _, status = run_verification(dossier)
     assert status == SubmissionStatus.rejected
@@ -98,17 +106,14 @@ def test_verification_auto_rejects_score_59():
 # ── EvaluationAgent tests (Gemini mocked) ────────────────────────────────────
 
 MOCK_GEMINI_RESPONSE = """{
-  "historic_features": "Ancient ruins dating to the 14th century Vijayanagara Empire.",
-  "cultural_significance": "Capital of one of the greatest Hindu empires in South India.",
-  "geographic_context": "Located in the Tungabhadra basin, Karnataka, India.",
-  "documentation_quality": "Extensively documented by ASI and UNESCO.",
-  "supporting_evidence": "One photo provided showing temple complex.",
-  "score_historic_features": 27,
-  "score_cultural_significance": 22,
-  "score_geographic_context": 12,
-  "score_documentation": 13,
-  "score_supporting_evidence": 8,
-  "rationale": "Hampi is a site of outstanding universal value with strong historic and cultural credentials. Photo evidence is limited."
+  "historic_features": "Ancient ruins dating to the 14th century Vijayanagara Empire, a major dynasty of South India.",
+  "cultural_significance": "Capital of one of the greatest Hindu empires in South India, a living sacred pilgrimage site.",
+  "integrity": "The site is largely intact and protected within a government-designated archaeological zone with buffer areas.",
+  "authenticity": "Original stone structures remain in authentic condition using traditional Dravidian construction techniques and indigenous materials.",
+  "geographic_context": "Located in the Tungabhadra basin, Karnataka, India. The landscape and surrounding terrain are ecologically significant.",
+  "documentation_quality": "Extensively documented by ASI and UNESCO. Subject of multiple peer-reviewed academic studies and archaeological surveys.",
+  "management_protection": "Protected by national legislation under the Archaeological Survey of India. A conservation management plan is in place.",
+  "supporting_evidence": "One photo provided showing temple complex."
 }"""
 
 

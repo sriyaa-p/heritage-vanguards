@@ -5,11 +5,14 @@ import { useParams, useRouter } from "next/navigation";
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const SCORE_CATEGORIES = [
-  { key: "historic_features",    label: "Historic Features",    max: 30 },
-  { key: "cultural_significance", label: "Cultural Significance", max: 25 },
-  { key: "geographic_context",   label: "Geographic Context",   max: 15 },
-  { key: "documentation",        label: "Documentation",        max: 15 },
-  { key: "supporting_evidence",  label: "Supporting Evidence",  max: 15 },
+  { key: "historic_features",     label: "Historic Features",     max: 25 },
+  { key: "cultural_significance",  label: "Cultural Significance",  max: 20 },
+  { key: "integrity",             label: "Integrity",             max: 15 },
+  { key: "authenticity",          label: "Authenticity",          max: 15 },
+  { key: "geographic_context",    label: "Geographic Context",    max: 10 },
+  { key: "documentation",         label: "Documentation Quality", max: 10 },
+  { key: "management_protection", label: "Management & Protection", max: 5 },
+  { key: "supporting_evidence",   label: "Supporting Evidence",   max: 15 },
 ];
 
 const STATUS_LABEL: Record<string, string> = {
@@ -207,8 +210,11 @@ export default function ConfidenceCardPage() {
             <div className="space-y-3 text-sm text-gray-700">
               <p><span className="font-medium">Historic Features:</span> {evidence.historic_features}</p>
               <p><span className="font-medium">Cultural Significance:</span> {evidence.cultural_significance}</p>
+              <p><span className="font-medium">Integrity:</span> {evidence.integrity}</p>
+              <p><span className="font-medium">Authenticity:</span> {evidence.authenticity}</p>
               <p><span className="font-medium">Geographic Context:</span> {evidence.geographic_context}</p>
-              <p><span className="font-medium">Documentation:</span> {evidence.documentation_quality}</p>
+              <p><span className="font-medium">Documentation Quality:</span> {evidence.documentation_quality}</p>
+              <p><span className="font-medium">Management & Protection:</span> {evidence.management_protection}</p>
               <p><span className="font-medium">Supporting Evidence:</span> {evidence.supporting_evidence}</p>
             </div>
           </div>

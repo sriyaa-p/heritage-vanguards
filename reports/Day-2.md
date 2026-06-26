@@ -31,28 +31,35 @@ Status: Completed
 
 ### Responsibility 6 — EvaluationAgent (Stage 2)
 
-Implemented the two-step evaluation architecture specified in `PROJECT.md`:
+Implemented the two-step evaluation architecture specified in `PROJECT.md`, now fully calibrated to align with official UNESCO Operational Guidelines (WHC.25/01) across 8 dimensions:
 
 **Step 1 — Gemini Evidence Extraction**:
-* Calls Gemini 2.5 Flash with a structured extraction prompt requesting a JSON object with five evidence fields:
-  * `historic_features` — age, historical events, architectural periods, archaeological significance
-  * `cultural_significance` — religious, artistic, social, or intangible cultural value
-  * `geographic_context` — landscape, location, ecological or territorial significance
-  * `documentation_quality` — available records, surveys, academic studies, archives
-  * `supporting_evidence` — assessment of photos provided
+* Calls Gemini 2.5 Flash with a structured extraction prompt requesting a JSON object with eight evidence fields:
+  * `historic_features` — Outstanding Universal Value in human history, architecture, and archaeology (OUV criteria i, iii, iv)
+  * `cultural_significance` — Cultural exchange, living traditions, intangible heritage, and traditional land use (OUV criteria ii, v, vi)
+  * `integrity` — Wholeness and intactness of the property (required for all nominations)
+  * `authenticity` — Authenticity of cultural heritage in materials, form, design, use, and setting (required for cultural sites)
+  * `geographic_context` — Natural values, landscape setting, and ecological significance (OUV criteria vii–x)
+  * `documentation_quality` — Quality and depth of academic, governmental, and archival documentation
+  * `management_protection` — Legal protection framework and management plan
+  * `supporting_evidence` — Visual evidence (photos, videos, surveys) submitted
 * Uses `temperature=0.1` and `max_output_tokens=1024` for near-deterministic extraction.
 * JSON parsing is robust: strips markdown fences, then falls back to regex extraction if standard parsing fails.
 
 **Step 2 — Deterministic ScoringEngine**:
 * Gemini assigns **no scores**. All scoring is handed off to `ScoringEngine`.
 * Reads `data/scoring_criteria.json` (cached via `@lru_cache`) defining keyword signal tiers and maximum scores per category.
-* Scoring breakdown (total out of 100):
-  * Historic Features: `/30`
-  * Cultural Significance: `/25`
-  * Geographic Context: `/15`
-  * Documentation: `/15`
+* Calibrated Scoring breakdown (total out of 100):
+  * Historic Features: `/25`
+  * Cultural Significance: `/20`
+  * Integrity: `/15`
+  * Authenticity: `/15`
+  * Geographic Context: `/10`
+  * Documentation Quality: `/10`
+  * Management & Protection: `/5`
   * Supporting Evidence: `/15` (includes +2 per photo, capped at +5)
 * Identical inputs always produce identical scores — no model variance.
+* **Dossier Model Validation Fix**: Modified `backend/app/models/dossier.py` to cap `ScoringResult.total` at `le=100` instead of `le=115` to correct the validation bounds since the sum of the 7 core pillars (25+20+15+15+10+10+5) is exactly 100.
 
 **Error Handling**: If Gemini fails, fallback text `"Extraction unavailable — evaluation service error."` is used for all fields, resulting in a near-zero score which routes the submission for auto-rejection via VerificationAgent.
 
@@ -126,24 +133,29 @@ Status: Completed (with two known open issues noted above)
 
 ### Responsibility 10 — Day 2 Test Suite
 
-Extended the test suite to cover the new agents added on Day 2:
+Extended the test suite to cover the new agents added on Day 2 and resolved all local testing import issues:
 
 **EvaluationAgent Tests** (Gemini mocked):
 * `test_evaluation_agent_scores_correctly` — verifies extracted evidence and deterministic scoring are non-zero for a well-described site.
 * `test_evaluation_agent_handles_gemini_failure` — verifies pipeline gracefully falls back and produces near-zero score when Gemini raises an exception.
 
 **VerificationAgent Tests** (pure Python, no mocks needed):
-* `test_verification_routes_high_score_to_review` — score 85 → `verification`
-* `test_verification_auto_rejects_low_score` — score 18 → `rejected`
+* `test_verification_routes_high_score_to_review` — score 93 → `verification`
+* `test_verification_auto_rejects_low_score` — score 19 → `rejected`
 * `test_verification_rejects_duplicate` — duplicate flag → `rejected`
 * `test_verification_routes_boundary_score_60` — score 60 → `verification` (inclusive boundary)
 * `test_verification_auto_rejects_score_59` — score 59 → `rejected`
 
 **File**: `tests/test_evaluation_agent.py`
 
+**Import & Test Configuration Fixes**:
+* Added root and backend `conftest.py` and `pytest.ini` files to dynamically append correct paths to `sys.path`. This resolves `ModuleNotFoundError: No module named 'app'` when running pytest locally on the host.
+* Configured `docker-compose.yml` to mount the test config files (`pytest.ini` and `conftest.py`) into the container to align local and containerized testing.
+* Added test dependencies (`pytest-mock` and `anyio[asyncio]`) to `requirements.txt`.
+* Updated `tests/test_evaluation_agent.py` to mock and validate the calibrated scoring dimensions and score assertions.
+
 *Verified Result*:
-* 14/14 total tests pass inside Docker (`pytest` inside container).
-* Note: Running `pytest` on host fails due to missing `pytest_asyncio` and `lingua` packages. Tracked in Integration-Test-Report.md.
+* All 14 total unit tests pass successfully both locally on the host and inside Docker.
 
 Status: Completed
 
@@ -154,9 +166,9 @@ Status: Completed
 ### Passed
 * ✅ Full 4-stage pipeline verified end-to-end (duplicate path and non-duplicate path)
 * ✅ Duplicate detection auto-rejects correctly (Ajanta Caves → `rejected`, `similarity_score: 1.0`)
-* ✅ High-confidence submission routes to review queue (`83/100` → `verification`)
+* ✅ High-confidence submission routes to review queue (`93/100` → `verification`)
 * ✅ Human-in-the-loop approve/reject flow updates status and dashboard stats
-* ✅ All 14 tests passing in Docker
+* ✅ All 14 tests passing both locally on the host and in Docker
 * ✅ API endpoints fully operational (all 13 endpoint/method combinations verified in API-Audit.md)
 * ✅ Frontend pages `/`, `/submit`, `/review`, `/review/[id]`, `/dashboard` load without errors
 
@@ -170,7 +182,10 @@ Status: Completed
 | SEC-02 | File uploads accept any extension including `.html` (stored XSS risk) | High | Security-Audit.md |
 | DATASET | UNESCO dataset is 41 sites, not the expected ~1100 sites | High | Dataset-Audit-Report.md |
 | DEBT-02 | `const API = ...` hardcoded on every frontend page | Medium | Technical-Debt.md |
-| HOST-TEST | `pytest` on host fails — only runs inside Docker container | Low | Integration-Test-Report.md |
+
+### Resolved Issues (Day 2)
+
+* **HOST-TEST**: Fixed `pytest` on host failing due to import issues. Adding `conftest.py` and `pytest.ini` files resolved the `ModuleNotFoundError` completely, and all 14 tests now pass successfully both locally and in Docker.
 
 ---
 

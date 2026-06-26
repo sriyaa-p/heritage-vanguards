@@ -30,23 +30,30 @@ _client = genai.Client(api_key=settings.GEMINI_API_KEY)
 _MODEL = "gemini-2.5-flash"
 
 _EXTRACTION_PROMPT = """
-You are a UNESCO heritage site evidence analyst. Extract structured evidence
-from the community submission below. Return ONLY a JSON object — no markdown,
-no explanation, no extra text.
+You are a UNESCO World Heritage Site nomination analyst applying the Operational Guidelines (WHC.25/01).
+Extract structured evidence from the community submission below across all three UNESCO nomination pillars:
+  1. Outstanding Universal Value (OUV criteria i–x)
+  2. Integrity (wholeness and intactness of the property)
+  3. Authenticity (original materials, form, design, and use)
+
+Return ONLY a JSON object — no markdown, no explanation, no extra text.
 
 Required JSON keys:
 {
-  "historic_features": "<evidence of age, historical events, architectural periods, archaeological significance>",
-  "cultural_significance": "<religious, artistic, social, intangible cultural value, living traditions>",
-  "geographic_context": "<landscape, location, ecological or territorial significance, coordinates if mentioned>",
-  "documentation_quality": "<available records, academic studies, government surveys, inscriptions, archives>",
-  "supporting_evidence": "<assessment of photos and materials provided — quality, count, what they show>"
+  "historic_features": "<Evidence of OUV criteria i, iii, iv: human creative genius, unique cultural testimony, outstanding architectural/historical examples. Include dates, dynasty names, archaeological findings, construction periods.>",
+  "cultural_significance": "<Evidence of OUV criteria ii, v, vi: cultural exchange, living traditions, intangible heritage, traditional land use, direct association with events/beliefs/artistic works.>",
+  "integrity": "<UNESCO Integrity: Is the property whole and intact? Evidence of conservation status, protected boundaries, buffer zones, absence of adverse development, legal protection, or threats such as encroachment or neglect.>",
+  "authenticity": "<UNESCO Authenticity (cultural properties): Evidence that cultural values are truthfully expressed through original materials, form, design, traditional use, setting, or craftsmanship. Note any reconstruction or alteration.>",
+  "geographic_context": "<Evidence of OUV criteria vii–x: superlative natural phenomena, geological significance, ecological processes, biodiversity, threatened or endemic species, landscape setting and coordinates.>",
+  "documentation_quality": "<Available academic studies, archaeological surveys, government records, ICOMOS/IUCN evaluations, peer-reviewed publications, archives, inscriptions, or other formal documentation.>",
+  "management_protection": "<Evidence of a management plan, legal protection framework, conservation authority, national legislation protecting the site, government oversight, or heritage designation.>",
+  "supporting_evidence": "<Assessment of photos and visual materials provided — count, quality, what they show (interior, exterior, aerial, inscriptions, etc.)>."
 }
 
 Rules:
 - Extract only what is stated in the submission. Do not invent evidence.
 - If a category has no evidence, write: "No evidence provided."
-- Be specific — include dates, names, measurements when mentioned.
+- Be specific — include dates, names, measurements, criteria references when mentioned.
 - Keep each field under 150 words.
 """.strip()
 
@@ -101,16 +108,22 @@ Number of photos submitted: {len(raw.photo_urls)}
         data = {
             "historic_features": "Extraction unavailable — evaluation service error.",
             "cultural_significance": "Extraction unavailable — evaluation service error.",
+            "integrity": "Extraction unavailable — evaluation service error.",
+            "authenticity": "Extraction unavailable — evaluation service error.",
             "geographic_context": "Extraction unavailable — evaluation service error.",
             "documentation_quality": "Extraction unavailable — evaluation service error.",
+            "management_protection": "Extraction unavailable — evaluation service error.",
             "supporting_evidence": "Extraction unavailable — evaluation service error.",
         }
 
     extracted = ExtractedEvidence(
         historic_features=data.get("historic_features", "No evidence provided."),
         cultural_significance=data.get("cultural_significance", "No evidence provided."),
+        integrity=data.get("integrity", "No evidence provided."),
+        authenticity=data.get("authenticity", "No evidence provided."),
         geographic_context=data.get("geographic_context", "No evidence provided."),
         documentation_quality=data.get("documentation_quality", "No evidence provided."),
+        management_protection=data.get("management_protection", "No evidence provided."),
         supporting_evidence=data.get("supporting_evidence", "No evidence provided."),
     )
 

@@ -37,3 +37,5 @@ typing-extensions
 # Testing
 pytest
 pytest-asyncio
+pytest-mock
+anyio[asyncio]

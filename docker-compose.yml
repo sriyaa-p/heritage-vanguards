@@ -30,6 +30,8 @@ services:
       - ./data:/data
       - ./scripts:/scripts
       - ./tests:/tests
+      - ./pytest.ini:/app/pytest.ini:ro
+      - ./conftest.py:/app/conftest.py:ro
     depends_on:
       postgres:
         condition: service_healthy
