@@ -12,67 +12,98 @@ The `ScoringEngine` (`backend/app/agents/scoring_engine.py`) is entirely separat
 
 ---
 
-## 2. Scoring Breakdown (Max 100 Points)
+## 2. Scoring Breakdown (Max 100 Points for Core Pillars + 15 Supporting Evidence)
 
-| Category | Max Points | Evidence Field Scored |
-| :--- | :---: | :--- |
-| Historic Features | **30** | `historic_features` |
-| Cultural Significance | **25** | `cultural_significance` |
-| Geographic Context | **15** | `geographic_context` |
-| Documentation Quality | **15** | `documentation_quality` |
-| Supporting Evidence | **15** | `supporting_evidence` + photo count bonus |
-| **Total** | **100** | |
+The scoring engine evaluates submissions across **8 dimensions** covering the three pillars of UNESCO evaluation (Outstanding Universal Value, Integrity/Authenticity, and Management/Protection):
+
+| Category | Max Points | Evidence Field Scored | UNESCO Pillar / OUV Criteria |
+| :--- | :---: | :--- | :--- |
+| Historic Features | **25** | `historic_features` | OUV Criteria i, iii, iv |
+| Cultural Significance | **20** | `cultural_significance` | OUV Criteria ii, v, vi |
+| Integrity | **15** | `integrity` | Wholeness & intactness (All properties) |
+| Authenticity | **15** | `authenticity` | Truthfulness & credibility (Cultural properties) |
+| Geographic Context | **10** | `geographic_context` | OUV Criteria vii, viii, ix, x (Natural values) |
+| Documentation Quality | **10** | `documentation_quality` | Nomination quality & academic basis |
+| Management & Protection | **5** | `management_protection` | Legal protection & management plan |
+| Supporting Evidence | **15** | `supporting_evidence` + photo bonus | Visual documentation quality |
+| **Total Core Pillars** | **100** | *(Sum of first 7 categories)* | *(Capped at 100 max via Pydantic model validator)* |
 
 ### Photo Bonus (Supporting Evidence)
-A photo count bonus of `+2 per photo` is applied to the `supporting_evidence` score, capped at `+5` maximum. This ensures submissions with no photos are not penalised beyond their text evidence, while rewarding visual documentation.
+A photo count bonus of `+2 per photo` is applied to the `supporting_evidence` score, capped at `+5` maximum. The overall `supporting_evidence` score is capped at `15` maximum.
 
 ---
 
 ## 3. Signal Tiers per Category
 
-### Historic Features (Max: 30)
+### Historic Features (Max: 25)
 
 | Tier | Score Range | Example Signals |
 | :--- | :---: | :--- |
-| Outstanding | 25–30 | `century`, `AD`, `BC`, `BCE`, `dynasty`, `empire`, `excavation`, `archaeological`, `megalithic`, `prehistoric` |
-| Significant | 15–24 | `historical`, `ancient`, `medieval`, `colonial`, `ruins`, `temple`, `monastery`, `fortress`, `palace` |
-| Limited | 5–14 | `old`, `traditional`, `historic`, `past`, `former`, `original` |
-| Insufficient | 0–4 | *(no signals)* |
-
-### Cultural Significance (Max: 25)
-
-| Tier | Score Range | Example Signals |
-| :--- | :---: | :--- |
-| Outstanding | 20–25 | `UNESCO`, `world heritage`, `universal value`, `pilgrimage`, `sacred`, `intangible`, `living tradition`, `masterpiece`, `exceptional` |
-| Significant | 12–19 | `religious`, `spiritual`, `cultural`, `artistic`, `symbolic`, `festival`, `ceremony`, `community`, `indigenous`, `folk` |
-| Limited | 4–11 | `local`, `regional`, `significance`, `important`, `valued`, `meaningful` |
+| Outstanding | 20–25 | `century`, `AD`, `BC`, `BCE`, `CE`, `dynasty`, `empire`, `civilisation`, `civilization`, `excavation`, `archaeological`, `dated to`, `masterpiece`, `creative genius` |
+| Significant | 12–19 | `historical`, `ancient`, `medieval`, `colonial`, `ruins`, `remnants`, `heritage`, `era`, `period`, `age`, `fortress`, `palace`, `temple`, `monastery`, `citadel` |
+| Limited | 4–11 | `old`, `traditional`, `historic`, `past`, `former`, `original`, `built`, `constructed`, `structure`, `building` |
 | Insufficient | 0–3 | *(no signals)* |
 
-### Geographic Context (Max: 15)
+### Cultural Significance (Max: 20)
 
 | Tier | Score Range | Example Signals |
 | :--- | :---: | :--- |
-| Outstanding | 12–15 | `landscape`, `ecosystem`, `biodiversity`, `geological`, `basin`, `volcanic`, `tectonic`, `endemic`, `watershed` |
-| Notable | 7–11 | `located in`, `situated`, `region`, `province`, `coordinates`, `elevation`, `river`, `mountain`, `forest`, `island` |
-| Generic | 2–6 | `area`, `zone`, `place`, `site`, `location`, `nearby`, `surrounding` |
-| Insufficient | 0–1 | *(no signals)* |
+| Outstanding | 16–20 | `UNESCO`, `world heritage`, `universal value`, `pilgrimage`, `sacred`, `ritual`, `intangible`, `living tradition`, `cultural exchange`, `masterpiece`, `exceptional` |
+| Significant | 9–15 | `religious`, `spiritual`, `cultural`, `artistic`, `symbolic`, `festival`, `ceremony`, `community`, `identity`, `ethnic`, `indigenous`, `folk`, `craft`, `music` |
+| Limited | 3–8 | `local`, `regional`, `significance`, `important`, `valued`, `meaningful`, `celebrated`, `commemorated` |
+| Insufficient | 0–2 | *(no signals)* |
 
-### Documentation Quality (Max: 15)
+### Integrity (Max: 15)
 
 | Tier | Score Range | Example Signals |
 | :--- | :---: | :--- |
-| Extensive | 12–15 | `published`, `academic`, `research`, `survey`, `ASI`, `UNESCO`, `ICOMOS`, `archive`, `peer-reviewed`, `carbon dating`, `scientific` |
-| Partial | 7–11 | `documented`, `records`, `historical account`, `government`, `museum`, `inscription`, `manuscript`, `map` |
-| Anecdotal | 2–6 | `mentioned`, `known`, `reportedly`, `oral`, `tradition`, `legend`, `local knowledge` |
-| None | 0–1 | *(no signals)* |
+| High Integrity | 12–15 | `intact`, `well-preserved`, `conservation`, `protected area`, `buffer zone`, `undisturbed`, `original condition`, `no encroachment`, `boundary protection`, `integrity` |
+| Partial Integrity | 7–11 | `partially preserved`, `some damage`, `restored`, `restoration`, `maintained`, `maintenance`, `ongoing conservation`, `preservation`, `stabilised`, `repair` |
+| Threatened | 2–6 | `threatened`, `at risk`, `deteriorating`, `vulnerable`, `encroachment`, `urban pressure`, `tourism pressure`, `climate risk`, `neglected`, `degraded`, `partial loss` |
+| Unknown | 0–1 | *(no signals)* |
+
+### Authenticity (Max: 15)
+
+| Tier | Score Range | Example Signals |
+| :--- | :---: | :--- |
+| High Authenticity | 12–15 | `original materials`, `original form`, `original design`, `authentic`, `authenticity`, `traditional techniques`, `traditional craftsmanship`, `original fabric`, `unchanged` |
+| Moderate Authenticity | 7–11 | `partly original`, `traditional style`, `reconstructed using`, `faithful reconstruction`, `historically accurate`, `traditional methods`, `local materials` |
+| Low Authenticity | 2–6 | `reconstructed`, `rebuilt`, `replica`, `reproduction`, `modern reconstruction`, `partially reconstructed`, `restoration work`, `renovated`, `refurbished` |
+| Unknown | 0–1 | *(no signals)* |
+
+### Geographic Context (Max: 10)
+
+| Tier | Score Range | Example Signals |
+| :--- | :---: | :--- |
+| Outstanding | 8–10 | `landscape`, `ecosystem`, `biodiversity`, `geological`, `topography`, `basin`, `plateau`, `valley`, `coast`, `estuary`, `volcanic`, `tectonic`, `endemic`, `habitat` |
+| Notable | 5–7 | `located in`, `situated`, `region`, `province`, `district`, `coordinates`, `elevation`, `climate`, `terrain`, `geography`, `river`, `mountain`, `forest`, `desert` |
+| Generic | 1–4 | `area`, `zone`, `place`, `site`, `location`, `nearby`, `surrounding`, `countryside` |
+| Insufficient | 0 | *(no signals)* |
+
+### Documentation Quality (Max: 10)
+
+| Tier | Score Range | Example Signals |
+| :--- | :---: | :--- |
+| Extensive | 8–10 | `published`, `academic`, `research`, `study`, `survey`, `excavation report`, `archaeological survey`, `ASI`, `UNESCO`, `ICOMOS`, `IUCN`, `documented`, `archive` |
+| Partial | 5–7 | `documented`, `historical account`, `colonial record`, `government`, `museum`, `inscription`, `text`, `manuscript`, `map`, `photograph`, `official record` |
+| Anecdotal | 1–4 | `mentioned`, `known`, `reportedly`, `said to`, `believed`, `oral`, `tradition`, `legend`, `local knowledge`, `community account` |
+| None | 0 | *(no signals)* |
+
+### Management & Protection (Max: 5)
+
+| Tier | Score Range | Example Signals |
+| :--- | :---: | :--- |
+| Strong | 4–5 | `management plan`, `protected by law`, `national legislation`, `conservation authority`, `heritage authority`, `national park`, `protected zone`, `legal protection` |
+| Partial | 2–3 | `under government`, `government oversight`, `officially recognised`, `nationally recognised`, `state-owned`, `public ownership`, `heritage listing` |
+| Unclear | 0–1 | *(no signals)* |
 
 ### Supporting Evidence (Max: 15)
 
 | Tier | Score Range | Example Signals |
 | :--- | :---: | :--- |
-| Strong | 12–15 | `high-quality`, `detailed`, `multiple photos`, `aerial`, `drone`, `professional`, `high resolution`, `360` |
-| Adequate | 7–11 | `photos provided`, `photographs`, `images`, `photo`, `image`, `video` |
-| Minimal | 2–6 | `one photo`, `single image`, `limited`, `low quality`, `blurry`, `distant` |
+| Strong | 12–15 | `high-quality`, `detailed`, `multiple photos`, `interior`, `exterior`, `facade`, `sculpture`, `inscription visible`, `aerial`, `drone`, `professional` |
+| Adequate | 7–11 | `photos provided`, `photographs`, `images`, `pictures`, `photo`, `image`, `snapshot`, `video`, `documentation provided` |
+| Minimal | 2–6 | `one photo`, `single image`, `limited`, `low quality`, `blurry`, `distant`, `partial view` |
 | Absent | 0–1 | *(no signals)* |
 
 ---
@@ -94,45 +125,58 @@ Submissions scoring **< 60** are automatically rejected by `VerificationAgent` w
 
 ## 5. Calibration Test Cases
 
-The following representative test cases illustrate expected score ranges for various submission quality levels.
+The following representative test cases illustrate expected score ranges for various submission quality levels, fully aligned with the unit test cases in `tests/test_evaluation_agent.py`.
 
-### Case 1: Strong Heritage Candidate (Expected Score: 75–90)
-**Input signals present**: `14th century`, `dynasty`, `excavation`, `archaeological`, `pilgrimage`, `sacred`, `UNESCO`, `documented`, `ASI`, `river basin`, `multiple photos`
-- Historic Features: ~27/30 (Outstanding tier, high signal density)
-- Cultural Significance: ~22/25 (Outstanding tier, UNESCO/pilgrimage signals)
-- Geographic Context: ~10/15 (Notable tier, river basin)
-- Documentation: ~13/15 (Extensive tier, ASI/UNESCO/documented)
-- Supporting Evidence: ~11/15 (Adequate tier + photo bonus)
-- **Expected Total: ~83/100** — Routes to `verification` ✅
+### Case 1: Strong Heritage Candidate (Expected Score: 93/100)
+**Input signals present**: `14th century`, `dynasty`, `excavation`, `archaeological`, `pilgrimage`, `sacred`, `UNESCO`, `original materials`, `intact`, `conservation`, `management plan`, `high-quality`
+- Historic Features: ~22/25 (Outstanding tier, high signal density)
+- Cultural Significance: ~18/20 (Outstanding tier, sacred/UNESCO/pilgrimage signals)
+- Integrity: ~12/15 (High Integrity tier, intact/conservation signals)
+- Authenticity: ~12/15 (High Authenticity tier, original materials)
+- Geographic Context: ~8/10 (Outstanding tier, basin/landscape signals)
+- Documentation Quality: ~8/10 (Extensive tier, ASI/UNESCO/documented signals)
+- Management & Protection: ~3/5 (Partial tier)
+- Supporting Evidence: ~10/15 (Adequate tier + photo bonus)
+- **Expected Total: 93/100** — Routes to `verification` (High Confidence) ✅
+- *Verified by*: `test_verification_routes_high_score_to_review` in `tests/test_evaluation_agent.py`
 
-### Case 2: Moderate Candidate (Expected Score: 60–75)
-**Input signals present**: `ancient`, `temple`, `religious`, `cultural`, `regional significance`, `government records`, `located in`, `photos provided`
-- Historic Features: ~18/30 (Significant tier, moderate density)
-- Cultural Significance: ~15/25 (Significant tier)
-- Geographic Context: ~8/15 (Notable tier)
-- Documentation: ~9/15 (Partial tier)
-- Supporting Evidence: ~8/15 (Adequate tier + 1 photo)
-- **Expected Total: ~58–68/100** — Borderline; may route to `verification` or be rejected
+### Case 2: Borderline / Moderate Candidate (Expected Score: 60/100)
+**Input signals present**: `ancient`, `temple`, `religious`, `cultural`, `partially preserved`, `traditional style`, `located in`, `documented`
+- Historic Features: ~18/25 (Significant tier)
+- Cultural Significance: ~14/20 (Significant tier)
+- Integrity: ~8/15 (Partial Integrity tier)
+- Authenticity: ~8/15 (Moderate Authenticity tier)
+- Geographic Context: ~5/10 (Notable tier)
+- Documentation Quality: ~5/10 (Partial tier)
+- Management & Protection: ~2/5 (Partial tier)
+- Supporting Evidence: ~0/15 (Absent)
+- **Expected Total: 60/100** — Routes to `verification` (Medium Confidence) ✅
+- *Verified by*: `test_verification_routes_boundary_score_60` in `tests/test_evaluation_agent.py`
 
-### Case 3: Weak Submission (Expected Score: 10–35)
-**Input signals present**: `old building`, `local area`, `mentioned by elders`, `one photo`
-- Historic Features: ~7/30 (Limited tier)
-- Cultural Significance: ~6/25 (Limited tier)
-- Geographic Context: ~3/15 (Generic tier)
-- Documentation: ~3/15 (Anecdotal tier)
-- Supporting Evidence: ~4/15 (Minimal tier + 1 photo)
-- **Expected Total: ~23/100** — Auto-rejected ✅
+### Case 3: Just Below Boundary (Expected Score: 59/100)
+- Minor reduction in authenticity or integrity signals compared to Case 2 (e.g. Authenticity = 7/15 instead of 8/15).
+- **Expected Total: 59/100** — Auto-rejected ✅
+- *Verified by*: `test_verification_auto_rejects_score_59` in `tests/test_evaluation_agent.py`
 
-### Case 4: Boundary Score (Score = 60, Expected: Routes to Verification)
-- The `VerificationAgent` uses `< 60` for rejection, meaning a score of exactly **60** routes to `verification`.
-- Test `test_verification_routes_boundary_score_60` in `tests/test_evaluation_agent.py` confirms this boundary is inclusive. ✅
+### Case 4: Weak Submission (Expected Score: 19/100)
+**Input signals present**: `old building`, `local area`, `mentioned by elders`, `one photo`, `some damage`, `reconstructed`
+- Historic Features: ~5/25 (Limited tier)
+- Cultural Significance: ~4/20 (Limited tier)
+- Integrity: ~2/15 (Threatened tier)
+- Authenticity: ~2/15 (Low Authenticity tier)
+- Geographic Context: ~2/10 (Generic tier)
+- Documentation Quality: ~2/10 (Anecdotal tier)
+- Management & Protection: ~0/5 (Unclear tier)
+- Supporting Evidence: ~2/15 (Minimal tier)
+- **Expected Total: 19/100** — Auto-rejected ✅
+- *Verified by*: `test_verification_auto_rejects_low_score` in `tests/test_evaluation_agent.py`
 
-### Case 5: Gemini Extraction Failure (Expected Score: ~0–5)
+### Case 5: Gemini Extraction Failure (Expected Score: < 10)
 - When Gemini fails, all evidence fields are set to `"Extraction unavailable — evaluation service error."`
 - The word `"unavailable"` causes `_score_field` to return `0` for all categories (explicit early return).
 - Photo bonus may add up to +5.
 - **Expected Total: 0–5/100** — Auto-rejected ✅
-- Test `test_evaluation_agent_handles_gemini_failure` verifies `total < 10`. ✅
+- *Verified by*: `test_evaluation_agent_handles_gemini_failure` in `tests/test_evaluation_agent.py`
 
 ---
 

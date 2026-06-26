@@ -162,12 +162,15 @@ Gemini does not:
 * Approve sites
 * Determine heritage status
 
-Gemini extracts:
+Gemini extracts evidence for all 8 UNESCO evaluation dimensions:
 
 * Historic features
 * Cultural significance indicators
+* Integrity indicators
+* Authenticity indicators
 * Geographic context
 * Documentation evidence
+* Management & protection status
 * Supporting evidence
 
 ---
@@ -178,12 +181,15 @@ To prevent mismatches between evidence extraction and scoring, Gemini never send
 
 Instead, Gemini returns structured outputs that conform to a predefined schema.
 
-Evidence is extracted into the following categories:
+Evidence is extracted into the following 8 categories:
 
 * Historic Features
 * Cultural Significance
+* Integrity
+* Authenticity
 * Geographic Context
-* Documentation
+* Documentation Quality
+* Management & Protection
 * Supporting Evidence
 
 The output is validated using Pydantic before scoring begins.
@@ -223,14 +229,19 @@ The human reviewer makes the final decision.
 
 ### Evidence Categories
 
+The scoring system is fully calibrated to align with the official UNESCO Operational Guidelines (WHC.25/01) across 8 dimensions. The core pillars sum to 100 points maximum, with supporting evidence carrying up to 15 points.
+
 | Category              | Maximum Points |
 | --------------------- | -------------- |
-| Historic Features     | 30             |
-| Cultural Significance | 25             |
-| Geographic Context    | 15             |
-| Documentation         | 15             |
+| Historic Features     | 25             |
+| Cultural Significance | 20             |
+| Integrity             | 15             |
+| Authenticity          | 15             |
+| Geographic Context    | 10             |
+| Documentation Quality | 10             |
+| Management & Protection| 5              |
 | Supporting Evidence   | 15             |
-| Total                 | 100            |
+| **Total Core Pillars**| **100**        |
 
 ---
 
@@ -238,13 +249,13 @@ The human reviewer makes the final decision.
 
 #### Heritage Score
 
-0–100
+0–100 (Capped at 100 max via Pydantic validator on Core Pillars)
 
 #### Confidence Level
 
-* Low
-* Moderate
-* High
+* Low (< 60)
+* Moderate (60–79)
+* High (80–100)
 
 #### Evidence Summary
 
@@ -257,14 +268,17 @@ Plain-language explanation of:
 Example:
 
 ```text
-Historic Features: 25/30
-Cultural Significance: 20/25
-Geographic Context: 13/15
-Documentation: 5/15
-Supporting Evidence: 15/15
+Historic Features: 22/25
+Cultural Significance: 18/20
+Integrity: 12/15
+Authenticity: 12/15
+Geographic Context: 8/10
+Documentation Quality: 8/10
+Management & Protection: 3/5
+Supporting Evidence: 10/15
 
-Total Heritage Score: 78/100
-Confidence Level: Moderate
+Total Heritage Score: 93/100
+Confidence Level: High
 ```
 
 ---

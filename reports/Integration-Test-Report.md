@@ -53,7 +53,7 @@ This report documents the verification of the complete end-to-end multi-agent pi
 ### 4. High-Scoring Review Workflow (Evaluation & Verification Agent)
 * **Test Case**: Submitted a site not in the registry ("Ancient Temple of the Sun") with detailed historical and cultural keyword signals.
 * **Expected Result**: Duplicate check returns `is_duplicate=false`. EvaluationAgent extracts evidence and deterministically scores it >= 60. VerificationAgent sets status to `verification`. Review Queue shows the item.
-* **Actual Result**: **PASS** (Score: `83/100` - High Confidence. Status changed to `verification`).
+* **Actual Result**: **PASS** (Score: `93/100` - High Confidence. Status changed to `verification`).
 * **Command Output (Submission Detail)**:
 ```json
 {
@@ -62,15 +62,18 @@ This report documents the verification of the complete end-to-end multi-agent pi
   "dossier": {
     "review": {
       "decision": "pending",
-      "reviewer_notes": "High Confidence (83/100). Awaiting archaeologist review."
+      "reviewer_notes": "High Confidence (93/100). Awaiting archaeologist review."
     },
     "scoring": {
-      "total": 83,
-      "historic_features": 27,
-      "cultural_significance": 22,
-      "geographic_context": 13,
-      "documentation": 14,
-      "supporting_evidence": 7
+      "total": 93,
+      "historic_features": 22,
+      "cultural_significance": 18,
+      "integrity": 12,
+      "authenticity": 12,
+      "geographic_context": 8,
+      "documentation": 8,
+      "management_protection": 3,
+      "supporting_evidence": 10
     }
   }
 }
@@ -92,6 +95,13 @@ This report documents the verification of the complete end-to-end multi-agent pi
 
 ---
 
-## Errors and Incidents Detected
-* **Local Test Suite Failures on Host**: Running `pytest` locally on host fails due to missing packages (`pytest_asyncio` and `lingua`). However, running `pytest` inside the docker container works perfectly and all 14 tests pass.
-* **UX Incident**: If the pipeline is running in the background, opening the review detail page displays "Pipeline in progress" and doesn't poll or auto-refresh once the pipeline finishes. The user must manually reload the page.
+## Errors and Incidents Detected & Resolved
+
+* **Resolved — Local Test Suite Failures on Host**:
+  Previously, running `pytest` locally on host failed due to `ModuleNotFoundError: No module named 'app'`. This has been resolved by:
+  - Creating a root and backend `conftest.py` to dynamically append the `backend` path to `sys.path`.
+  - Adding a `pytest.ini` with `asyncio_mode = auto` configuration.
+  - Adding test dependencies (`pytest-mock`, `anyio[asyncio]`) to `requirements.txt`.
+  All 14 tests now pass successfully both locally on the host and inside Docker.
+
+* **UX Incident**: If the pipeline is running in the background, opening the review detail page displays "Pipeline in progress" and doesn't poll or auto-refresh once the pipeline finishes. The user must manually reload the page. (Pending resolution in UX-01).

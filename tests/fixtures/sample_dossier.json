@@ -43,18 +43,24 @@
   "extracted_evidence": {
     "historic_features": "34 rock-cut cave temples spanning Buddhist, Hindu and Jain traditions, constructed between 6th–11th century CE. Kailasa Temple (Cave 16) is the largest monolithic rock excavation in the world, carved from a single basalt cliff.",
     "cultural_significance": "Unique example of religious tolerance — three distinct faiths represented in adjacent caves over five centuries. The site demonstrates the coexistence of Buddhist Mahayana and Vajrayana traditions with Brahmanical Hinduism and Digambara Jainism.",
-    "geographic_context": "Located in the Deccan Plateau, Maharashtra, India. Caves are carved into the volcanic basalt escarpment of the Charanandri Hills, 29 km from Aurangabad. The natural cliff face provided ideal conditions for large-scale rock excavation.",
-    "documentation_quality": "Extensive scholarly documentation since colonial surveys (1819). ASI (Archaeological Survey of India) maintains detailed records. Multiple academic publications available. High photographic coverage across all 34 caves.",
-    "supporting_evidence": "Three on-site photographs provided showing cave exteriors, interior sculpture and Kailasa Temple facade. Photo quality sufficient for preliminary assessment."
+    "integrity": "The property is largely intact and well-preserved within a protected area buffer zone. All 34 caves are fully included in the boundary with no modern encroachment.",
+    "authenticity": "Form, materials, and design are authentic. The rock-cut structures are original fabric, and conservation work uses traditional techniques and indigenous materials.",
+    "geographic_context": "Located in the Deccan Plateau, Maharashtra, India. Caves are carved into the volcanic basalt escarpment of the Charanandri Hills. The natural setting is highly significant.",
+    "documentation_quality": "Extensive scholarly documentation since colonial surveys (1819). ASI maintains detailed records. Multiple academic publications available.",
+    "management_protection": "Protected by national legislation under the Archaeological Survey of India (ASI) and covered by a comprehensive site management plan.",
+    "supporting_evidence": "Three on-site photographs provided showing cave exteriors, interior sculpture and Kailasa Temple facade."
   },
   "scoring": {
-    "historic_features": 28,
-    "cultural_significance": 23,
-    "geographic_context": 12,
-    "documentation": 14,
+    "historic_features": 22,
+    "cultural_significance": 18,
+    "integrity": 12,
+    "authenticity": 12,
+    "geographic_context": 8,
+    "documentation": 8,
+    "management_protection": 3,
     "supporting_evidence": 10,
-    "total": 87,
-    "rationale": "Exceptional historic significance — largest monolithic excavation in the world with 1,500 years of continuous religious use. High cultural significance for multi-faith representation. Geographic context is well-established. Documentation is comprehensive. Photo evidence is adequate but could include interior detail shots for higher score."
+    "total": 93,
+    "rationale": "Heritage Score: 93/100 (High Confidence). Historic Features: 22/25 — Cultural Significance: 18/20 — Integrity: 12/15 — Authenticity: 12/15 — Geographic Context: 8/10 — Documentation: 8/10 — Management & Protection: 3/5 — Supporting Evidence: 10/15."
   },
   "review": {
     "decision": "pending",
