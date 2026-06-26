@@ -1,8 +1,11 @@
+import os
+import shutil
 import uuid
 from datetime import datetime, timezone
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+
+from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
+from sqlalchemy import select, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import func, select
 from pydantic import BaseModel
 
 from app.agents.pipeline import run_pipeline
@@ -18,6 +21,9 @@ from app.models.dossier import (
 
 router = APIRouter(prefix="/submissions", tags=["submissions"])
 
+_UPLOADS_DIR = "/data/uploads"
+os.makedirs(_UPLOADS_DIR, exist_ok=True)
+
 
 class SubmitRequest(BaseModel):
     location_name: str
@@ -27,13 +33,17 @@ class SubmitRequest(BaseModel):
     submitted_by: str = "anonymous"
 
 
+def _make_submission_id() -> str:
+    return f"SUB-{datetime.now(timezone.utc).strftime('%Y-%m')}-{uuid.uuid4().hex[:8].upper()}"
+
+
 @router.post("", status_code=201)
 async def create_submission(
     body: SubmitRequest,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
 ):
-    submission_id = f"SUB-{datetime.now(timezone.utc).strftime('%Y-%m')}-{uuid.uuid4().hex[:8].upper()}"
+    submission_id = _make_submission_id()
 
     dossier = CanonicalDossier(
         metadata=Metadata(
@@ -60,7 +70,6 @@ async def create_submission(
     await db.commit()
     await db.refresh(submission)
 
-    # Kick off the three-agent pipeline asynchronously
     background_tasks.add_task(run_pipeline, submission_id)
 
     return {
@@ -68,6 +77,50 @@ async def create_submission(
         "status": submission.status,
         "created_at": submission.created_at,
     }
+
+
+@router.post("/{submission_id}/photos", status_code=200)
+async def upload_photos(
+    submission_id: str,
+    files: list[UploadFile] = File(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Upload photos for an existing submission. Saves files to /data/uploads/{submission_id}/
+    and appends their URLs to the dossier's raw_evidence.photo_urls.
+    """
+    result = await db.execute(
+        select(Submission).where(Submission.submission_id == submission_id)
+    )
+    submission = result.scalar_one_or_none()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    upload_dir = os.path.join(_UPLOADS_DIR, submission_id)
+    os.makedirs(upload_dir, exist_ok=True)
+
+    saved_urls = []
+    for file in files:
+        ext = os.path.splitext(file.filename or "photo.jpg")[1] or ".jpg"
+        filename = f"{uuid.uuid4().hex}{ext}"
+        dest = os.path.join(upload_dir, filename)
+        with open(dest, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+        saved_urls.append(f"/uploads/{submission_id}/{filename}")
+
+    dossier = submission.dossier or {}
+    raw = dossier.setdefault("raw_evidence", {})
+    existing = raw.get("photo_urls", [])
+    raw["photo_urls"] = existing + saved_urls
+
+    await db.execute(
+        update(Submission)
+        .where(Submission.submission_id == submission_id)
+        .values(dossier=dossier, updated_at=datetime.now(timezone.utc))
+    )
+    await db.commit()
+
+    return {"submission_id": submission_id, "uploaded": saved_urls}
 
 
 @router.get("")
@@ -164,7 +217,6 @@ async def review_submission(
     dossier["review"]["reviewer_notes"] = notes
     dossier["review"]["decided_at"] = datetime.now(timezone.utc).isoformat()
 
-    from sqlalchemy import update
     await db.execute(
         update(Submission)
         .where(Submission.submission_id == submission_id)

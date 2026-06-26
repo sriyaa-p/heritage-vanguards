@@ -1,15 +1,15 @@
 """
 Heritage Sentinel AI — Agent Pipeline
 --------------------------------------
-Orchestrates the three-agent workflow for a single submission:
+Full sequential workflow for a single submission:
 
-  1. RegistryAgent  — BM25 duplicate detection against UNESCO registry
-  2. EvaluationAgent — Gemini 2.5 Flash evidence extraction + scoring
-  3. VerificationAgent — Confidence Card decision + HITL routing
+  0. IntakeProcessor  — language detection + translation
+  1. RegistryAgent    — BM25 + Gemini duplicate detection
+  2. EvaluationAgent  — Gemini extraction + deterministic scoring
+  3. VerificationAgent — Confidence Card routing + HITL gate
 
-Each stage updates the canonical dossier and persists it to the DB.
-The pipeline runs as a FastAPI BackgroundTask so POST /submissions
-returns immediately while processing happens asynchronously.
+Runs as a FastAPI BackgroundTask. Each stage persists the dossier to
+PostgreSQL so GET /submissions/{id} always reflects current progress.
 """
 
 from __future__ import annotations
@@ -21,6 +21,7 @@ from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agents.evaluation_agent import run_evaluation
+from app.agents.intake_processor import run_intake
 from app.agents.registry_agents import lookup_unesco_registry
 from app.agents.verification_agent import run_verification
 from app.db.session import AsyncSessionLocal
@@ -58,8 +59,8 @@ async def _persist(
 
 async def run_pipeline(submission_id: str) -> None:
     """
-    Full three-agent pipeline. Intended to run as a background task.
-    Opens its own DB session so it's independent of the request lifecycle.
+    Full four-stage pipeline. Runs as a background task.
+    Opens its own DB session independent of the request lifecycle.
     """
     log.info("Pipeline starting for %s", submission_id)
 
@@ -71,34 +72,43 @@ async def run_pipeline(submission_id: str) -> None:
 
         dossier = CanonicalDossier.model_validate(submission.dossier)
 
-        # ── Stage 1: RegistryAgent ────────────────────────────────────────────
-        log.info("Pipeline [1/3] RegistryAgent — %s", submission_id)
+        # ── Stage 0: Intake — language detection + translation ────────────────
+        log.info("Pipeline [0/3] IntakeProcessor — %s", submission_id)
+        try:
+            dossier = await run_intake(dossier)
+        except Exception as exc:
+            log.warning("Pipeline: IntakeProcessor failed for %s — %s", submission_id, exc)
+
         await _persist(db, submission_id, dossier, SubmissionStatus.registry_check)
 
+        # ── Stage 1: RegistryAgent — BM25 + Gemini duplicate check ───────────
+        log.info("Pipeline [1/3] RegistryAgent — %s", submission_id)
         try:
+            description = (
+                dossier.raw_evidence.translated_description
+                or dossier.raw_evidence.description
+            )
             registry_result = await lookup_unesco_registry(
                 site_name=dossier.metadata.location_name,
                 country=dossier.metadata.country,
+                description=description,
             )
             dossier.registry_check = RegistryCheck(**registry_result)
         except Exception as exc:
             log.error("Pipeline: RegistryAgent failed for %s — %s", submission_id, exc)
-            dossier.registry_check = RegistryCheck(
-                is_duplicate=False,
-                reviewer_notes=f"Registry check failed: {exc}",
-            )
+            dossier.registry_check = RegistryCheck(is_duplicate=False)
 
         await _persist(db, submission_id, dossier, SubmissionStatus.registry_check)
 
-        # If it's a confirmed duplicate skip evaluation and go straight to verification
+        # Confirmed duplicate → skip evaluation, go straight to verification
         if dossier.registry_check and dossier.registry_check.is_duplicate:
             log.info("Pipeline: %s is a duplicate — skipping evaluation", submission_id)
             dossier, final_status = run_verification(dossier)
             await _persist(db, submission_id, dossier, final_status)
-            log.info("Pipeline complete for %s — status: %s", submission_id, final_status)
+            log.info("Pipeline complete for %s — %s (duplicate)", submission_id, final_status)
             return
 
-        # ── Stage 2: EvaluationAgent ──────────────────────────────────────────
+        # ── Stage 2: EvaluationAgent — Gemini extraction + deterministic score
         log.info("Pipeline [2/3] EvaluationAgent — %s", submission_id)
         await _persist(db, submission_id, dossier, SubmissionStatus.evaluation)
 
@@ -109,7 +119,7 @@ async def run_pipeline(submission_id: str) -> None:
 
         await _persist(db, submission_id, dossier, SubmissionStatus.evaluation)
 
-        # ── Stage 3: VerificationAgent ────────────────────────────────────────
+        # ── Stage 3: VerificationAgent — Confidence Card + HITL routing ──────
         log.info("Pipeline [3/3] VerificationAgent — %s", submission_id)
         dossier, final_status = run_verification(dossier)
         await _persist(db, submission_id, dossier, final_status)

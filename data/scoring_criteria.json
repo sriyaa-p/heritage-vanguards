@@ -1,0 +1,131 @@
+{
+  "version": "1.0",
+  "description": "Deterministic scoring rubric for Heritage Sentinel AI. Each category defines keyword signals and score tiers. The scoring engine applies these rules to Gemini-extracted evidence text to produce consistent, reproducible scores.",
+  "categories": {
+    "historic_features": {
+      "max": 30,
+      "tiers": [
+        {
+          "label": "Outstanding",
+          "min": 25, "max": 30,
+          "signals": ["century", "AD", "BC", "BCE", "CE", "dynasty", "empire", "civilisation", "civilization", "excavation", "archaeological", "dated to", "constructed in", "built in", "founded in", "established in", "monolithic", "megalithic", "prehistoric"]
+        },
+        {
+          "label": "Significant",
+          "min": 15, "max": 24,
+          "signals": ["historical", "ancient", "medieval", "colonial", "ruins", "remnants", "heritage", "era", "period", "age", "fortress", "palace", "temple", "monastery", "cathedral", "mosque", "shrine"]
+        },
+        {
+          "label": "Limited",
+          "min": 5, "max": 14,
+          "signals": ["old", "traditional", "historic", "past", "former", "original"]
+        },
+        {
+          "label": "Insufficient",
+          "min": 0, "max": 4,
+          "signals": []
+        }
+      ]
+    },
+    "cultural_significance": {
+      "max": 25,
+      "tiers": [
+        {
+          "label": "Outstanding",
+          "min": 20, "max": 25,
+          "signals": ["UNESCO", "world heritage", "universal value", "pilgrimage", "sacred", "ritual", "intangible", "living tradition", "cultural exchange", "masterpiece", "unique", "exceptional", "coexistence", "multicultural", "syncretic"]
+        },
+        {
+          "label": "Significant",
+          "min": 12, "max": 19,
+          "signals": ["religious", "spiritual", "cultural", "artistic", "symbolic", "festival", "ceremony", "community", "identity", "ethnic", "indigenous", "folk", "craft", "music", "dance"]
+        },
+        {
+          "label": "Limited",
+          "min": 4, "max": 11,
+          "signals": ["local", "regional", "significance", "important", "valued", "meaningful"]
+        },
+        {
+          "label": "Insufficient",
+          "min": 0, "max": 3,
+          "signals": []
+        }
+      ]
+    },
+    "geographic_context": {
+      "max": 15,
+      "tiers": [
+        {
+          "label": "Outstanding",
+          "min": 12, "max": 15,
+          "signals": ["landscape", "ecosystem", "biodiversity", "geological", "topography", "basin", "plateau", "valley", "coast", "estuary", "volcanic", "tectonic", "endemic", "habitat", "natural boundary", "watershed"]
+        },
+        {
+          "label": "Notable",
+          "min": 7, "max": 11,
+          "signals": ["located in", "situated", "region", "province", "district", "coordinates", "elevation", "climate", "terrain", "geography", "river", "mountain", "forest", "desert", "island"]
+        },
+        {
+          "label": "Generic",
+          "min": 2, "max": 6,
+          "signals": ["area", "zone", "place", "site", "location", "nearby", "surrounding"]
+        },
+        {
+          "label": "Insufficient",
+          "min": 0, "max": 1,
+          "signals": []
+        }
+      ]
+    },
+    "documentation": {
+      "max": 15,
+      "tiers": [
+        {
+          "label": "Extensive",
+          "min": 12, "max": 15,
+          "signals": ["published", "academic", "research", "study", "survey", "excavation report", "archaeological survey", "ASI", "UNESCO", "ICOMOS", "documented", "archive", "records", "bibliography", "journal", "peer-reviewed", "carbon dating", "scientific"]
+        },
+        {
+          "label": "Partial",
+          "min": 7, "max": 11,
+          "signals": ["documented", "records", "historical account", "colonial record", "government", "museum", "inscription", "text", "manuscript", "map", "photograph", "census"]
+        },
+        {
+          "label": "Anecdotal",
+          "min": 2, "max": 6,
+          "signals": ["mentioned", "known", "reportedly", "said to", "believed", "oral", "tradition", "legend", "local knowledge"]
+        },
+        {
+          "label": "None",
+          "min": 0, "max": 1,
+          "signals": []
+        }
+      ]
+    },
+    "supporting_evidence": {
+      "max": 15,
+      "tiers": [
+        {
+          "label": "Strong",
+          "min": 12, "max": 15,
+          "signals": ["high-quality", "detailed", "multiple photos", "interior", "exterior", "facade", "sculpture", "inscription visible", "aerial", "drone", "professional", "high resolution", "360"]
+        },
+        {
+          "label": "Adequate",
+          "min": 7, "max": 11,
+          "signals": ["photos provided", "photographs", "images", "pictures", "photo", "image", "snapshot", "video"]
+        },
+        {
+          "label": "Minimal",
+          "min": 2, "max": 6,
+          "signals": ["one photo", "single image", "limited", "low quality", "blurry", "distant"]
+        },
+        {
+          "label": "Absent",
+          "min": 0, "max": 1,
+          "signals": []
+        }
+      ]
+    }
+  }
+}

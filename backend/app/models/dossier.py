@@ -65,6 +65,7 @@ class RawEvidence(BaseModel):
     description: str
     photo_urls: list[str] = Field(default_factory=list)
     language_detected: Optional[str] = None
+    translated_description: Optional[str] = None
 
 
 class BM25Candidate(BaseModel):

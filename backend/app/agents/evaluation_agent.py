@@ -1,15 +1,13 @@
 """
 EvaluationAgent — Heritage Sentinel AI
 ---------------------------------------
-Uses Gemini 2.5 Flash to extract structured evidence from a submission's
-raw description and score it across five heritage criteria.
+Implements the two-step evaluation architecture from PROJECT.md:
 
-Scoring rubric (total = 100):
-  Historic Features      0–30
-  Cultural Significance  0–25
-  Geographic Context     0–15
-  Documentation          0–15
-  Supporting Evidence    0–15
+  Step 1 — Gemini 2.5 Flash extracts structured evidence (text only, no scores)
+  Step 2 — Deterministic ScoringEngine assigns points from data/scoring_criteria.json
+
+Gemini never assigns scores. The scoring engine applies fixed rules so that
+identical inputs always produce identical scores (reproducibility requirement).
 """
 
 from __future__ import annotations
@@ -22,53 +20,42 @@ from typing import Any
 from google import genai
 from google.genai import types as genai_types
 
+from app.agents.scoring_engine import score_evidence
 from app.core.config import settings
-from app.models.dossier import CanonicalDossier, ExtractedEvidence, ScoringResult
+from app.models.dossier import CanonicalDossier, ExtractedEvidence
 
 log = logging.getLogger(__name__)
 
 _client = genai.Client(api_key=settings.GEMINI_API_KEY)
 _MODEL = "gemini-2.5-flash"
 
-_SYSTEM_PROMPT = """
-You are an expert UNESCO heritage site evaluator. Given a community submission about a
-potential heritage site, extract structured evidence and assign scores.
+_EXTRACTION_PROMPT = """
+You are a UNESCO heritage site evidence analyst. Extract structured evidence
+from the community submission below. Return ONLY a JSON object — no markdown,
+no explanation, no extra text.
 
-Return a single JSON object with EXACTLY these keys — no extra text, no markdown fences:
-
+Required JSON keys:
 {
-  "historic_features": "<string: evidence of age, historical events, architectural periods>",
-  "cultural_significance": "<string: religious, artistic, social, or intangible cultural value>",
-  "geographic_context": "<string: landscape, location, ecological or territorial significance>",
-  "documentation_quality": "<string: available records, academic studies, photographs, archives>",
-  "supporting_evidence": "<string: assessment of photos and materials provided by the submitter>",
-  "score_historic_features": <integer 0–30>,
-  "score_cultural_significance": <integer 0–25>,
-  "score_geographic_context": <integer 0–15>,
-  "score_documentation": <integer 0–15>,
-  "score_supporting_evidence": <integer 0–15>,
-  "rationale": "<string: 2-3 sentences explaining the overall score and key strengths/gaps>"
+  "historic_features": "<evidence of age, historical events, architectural periods, archaeological significance>",
+  "cultural_significance": "<religious, artistic, social, intangible cultural value, living traditions>",
+  "geographic_context": "<landscape, location, ecological or territorial significance, coordinates if mentioned>",
+  "documentation_quality": "<available records, academic studies, government surveys, inscriptions, archives>",
+  "supporting_evidence": "<assessment of photos and materials provided — quality, count, what they show>"
 }
 
-Scoring guidance:
-- Historic Features (0–30): 25–30 = internationally significant, 15–24 = regionally important, 0–14 = limited evidence
-- Cultural Significance (0–25): 20–25 = profound living or historic significance, 10–19 = moderate, 0–9 = unclear
-- Geographic Context (0–15): 12–15 = exceptional landscape or ecological value, 6–11 = notable, 0–5 = generic
-- Documentation (0–15): 12–15 = extensive published records, 6–11 = partial, 0–5 = anecdotal only
-- Supporting Evidence (0–15): 12–15 = high-quality photos with clear detail, 6–11 = adequate, 0–5 = absent or poor
-
-Be honest and critical. Not every site deserves a high score.
+Rules:
+- Extract only what is stated in the submission. Do not invent evidence.
+- If a category has no evidence, write: "No evidence provided."
+- Be specific — include dates, names, measurements when mentioned.
+- Keep each field under 150 words.
 """.strip()
 
 
 def _extract_json(text: str) -> dict[str, Any]:
-    """Pull the first JSON object out of Gemini's response text."""
-    # Strip markdown code fences if present
     cleaned = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
     try:
         return json.loads(cleaned)
     except json.JSONDecodeError:
-        # Try to find a {...} block inside the text
         match = re.search(r"\{.*\}", cleaned, re.DOTALL)
         if match:
             return json.loads(match.group())
@@ -77,81 +64,65 @@ def _extract_json(text: str) -> dict[str, Any]:
 
 async def run_evaluation(dossier: CanonicalDossier) -> CanonicalDossier:
     """
-    Call Gemini 2.5 Flash to evaluate the submission.
-    Updates dossier.extracted_evidence and dossier.scoring in place.
+    Two-step evaluation:
+      1. Call Gemini to extract structured evidence text.
+      2. Pass extracted evidence to the deterministic ScoringEngine.
+
+    Updates dossier.extracted_evidence and dossier.scoring.
     Returns the updated dossier.
     """
     meta = dossier.metadata
     raw = dossier.raw_evidence
 
-    prompt = f"""
+    # Build the submission context for Gemini
+    description = raw.translated_description or raw.description
+    submission_context = f"""
 Site Name: {meta.location_name}
 Country: {meta.country}
-Submitted Description:
-{raw.description}
-
-Number of photos provided: {len(raw.photo_urls)}
+Description:
+{description}
+Number of photos submitted: {len(raw.photo_urls)}
 """.strip()
 
-    log.info("EvaluationAgent: calling Gemini for %s", meta.submission_id)
+    log.info("EvaluationAgent [1/2]: calling Gemini for evidence extraction — %s", meta.submission_id)
 
     try:
         response = _client.models.generate_content(
             model=_MODEL,
-            contents=f"{_SYSTEM_PROMPT}\n\n---\n\n{prompt}",
+            contents=f"{_EXTRACTION_PROMPT}\n\n---\n\n{submission_context}",
             config=genai_types.GenerateContentConfig(
-                temperature=0.2,
+                temperature=0.1,   # Near-deterministic for consistent extraction
                 max_output_tokens=1024,
             ),
         )
         data = _extract_json(response.text)
     except Exception as exc:
-        log.error("EvaluationAgent: Gemini call failed for %s — %s", meta.submission_id, exc)
-        # Return conservative fallback scores so pipeline can continue
+        log.error("EvaluationAgent: Gemini extraction failed for %s — %s", meta.submission_id, exc)
         data = {
-            "historic_features": "Unable to extract — evaluation service unavailable.",
-            "cultural_significance": "Unable to extract — evaluation service unavailable.",
-            "geographic_context": "Unable to extract — evaluation service unavailable.",
-            "documentation_quality": "Unable to extract — evaluation service unavailable.",
-            "supporting_evidence": "Unable to extract — evaluation service unavailable.",
-            "score_historic_features": 0,
-            "score_cultural_significance": 0,
-            "score_geographic_context": 0,
-            "score_documentation": 0,
-            "score_supporting_evidence": 0,
-            "rationale": f"Evaluation could not be completed: {exc}",
+            "historic_features": "Extraction unavailable — evaluation service error.",
+            "cultural_significance": "Extraction unavailable — evaluation service error.",
+            "geographic_context": "Extraction unavailable — evaluation service error.",
+            "documentation_quality": "Extraction unavailable — evaluation service error.",
+            "supporting_evidence": "Extraction unavailable — evaluation service error.",
         }
 
     extracted = ExtractedEvidence(
-        historic_features=data.get("historic_features", ""),
-        cultural_significance=data.get("cultural_significance", ""),
-        geographic_context=data.get("geographic_context", ""),
-        documentation_quality=data.get("documentation_quality", ""),
-        supporting_evidence=data.get("supporting_evidence", ""),
-    )
-
-    hf = min(int(data.get("score_historic_features", 0)), 30)
-    cs = min(int(data.get("score_cultural_significance", 0)), 25)
-    gc = min(int(data.get("score_geographic_context", 0)), 15)
-    doc = min(int(data.get("score_documentation", 0)), 15)
-    se = min(int(data.get("score_supporting_evidence", 0)), 15)
-
-    scoring = ScoringResult(
-        historic_features=hf,
-        cultural_significance=cs,
-        geographic_context=gc,
-        documentation=doc,
-        supporting_evidence=se,
-        total=hf + cs + gc + doc + se,
-        rationale=data.get("rationale", ""),
+        historic_features=data.get("historic_features", "No evidence provided."),
+        cultural_significance=data.get("cultural_significance", "No evidence provided."),
+        geographic_context=data.get("geographic_context", "No evidence provided."),
+        documentation_quality=data.get("documentation_quality", "No evidence provided."),
+        supporting_evidence=data.get("supporting_evidence", "No evidence provided."),
     )
 
     dossier.extracted_evidence = extracted
-    dossier.scoring = scoring
+
+    # Step 2: deterministic scoring — no Gemini involved
+    log.info("EvaluationAgent [2/2]: deterministic scoring — %s", meta.submission_id)
+    dossier.scoring = score_evidence(extracted, photo_count=len(raw.photo_urls))
 
     log.info(
-        "EvaluationAgent: %s scored %d/100",
+        "EvaluationAgent complete: %s scored %d/100",
         meta.submission_id,
-        scoring.total,
+        dossier.scoring.total,
     )
     return dossier

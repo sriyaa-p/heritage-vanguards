@@ -27,7 +27,7 @@ function ScoreBar({ score, max }: { score: number; max: number }) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex-1 bg-gray-100 rounded-full h-2">
-        <div className={`${color} h-2 rounded-full`} style={{ width: `${pct}%` }} />
+        <div className={`${color} h-2 rounded-full transition-all`} style={{ width: `${pct}%` }} />
       </div>
       <span className="text-xs font-mono w-12 text-right text-gray-600">{score}/{max}</span>
     </div>
@@ -156,7 +156,7 @@ export default function ConfidenceCardPage() {
             </div>
             <div className="text-right shrink-0">
               <p className="text-4xl font-bold text-gray-900">{totalScore}<span className="text-lg text-gray-400">/100</span></p>
-              <p className={`text-sm font-semibold ${confidenceColor}`}>{confidence} Confidence</p>
+              <p className={`text-sm font-semibold ${confidenceColor}`}>{confidence}</p>
             </div>
           </div>
         </div>

@@ -116,6 +116,7 @@ export default function SubmitPage() {
       submitted_by: "community_user",
     };
 
+    const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
     try {
       const res = await fetch(`${API}/submissions`, {
         method: "POST",
