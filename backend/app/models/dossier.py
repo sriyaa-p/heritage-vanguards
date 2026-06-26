@@ -83,20 +83,35 @@ class RegistryCheck(BaseModel):
 
 
 class ExtractedEvidence(BaseModel):
+    # OUV criteria i, iii, iv — human history, architecture, archaeology
     historic_features: str
+    # OUV criteria ii, v, vi — cultural exchange, living traditions, intangible heritage
     cultural_significance: str
+    # UNESCO Pillar: Integrity — wholeness, intactness, legal protection status
+    integrity: str
+    # UNESCO Pillar: Authenticity — original materials, form, design, use (cultural sites)
+    authenticity: str
+    # OUV criteria vii–x — natural values, landscape, ecology, biodiversity
     geographic_context: str
+    # Documentation quality — academic, governmental, archival sources
     documentation_quality: str
+    # Management & Protection — management plan, legal framework
+    management_protection: str
+    # Visual evidence — photos, videos, surveys submitted
     supporting_evidence: str
 
 
 class ScoringResult(BaseModel):
-    historic_features: int = Field(ge=0, le=30)
-    cultural_significance: int = Field(ge=0, le=25)
-    geographic_context: int = Field(ge=0, le=15)
-    documentation: int = Field(ge=0, le=15)
-    supporting_evidence: int = Field(ge=0, le=15)
-    total: int = Field(ge=0, le=100)
+    # UNESCO-aligned weights — total must equal 100
+    historic_features: int = Field(ge=0, le=25)       # OUV criteria i, iii, iv
+    cultural_significance: int = Field(ge=0, le=20)   # OUV criteria ii, v, vi
+    integrity: int = Field(ge=0, le=15)               # UNESCO Integrity pillar
+    authenticity: int = Field(ge=0, le=15)            # UNESCO Authenticity pillar
+    geographic_context: int = Field(ge=0, le=10)      # OUV criteria vii–x
+    documentation: int = Field(ge=0, le=10)           # Documentation quality
+    management_protection: int = Field(ge=0, le=5)    # Management & Protection
+    supporting_evidence: int = Field(ge=0, le=15)     # Visual evidence
+    total: int = Field(ge=0, le=100)                  # Max is 100 (25+20+15+15+10+10+5 = 100)
     rationale: str
 
 

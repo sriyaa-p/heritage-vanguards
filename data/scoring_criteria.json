@@ -1,49 +1,26 @@
 {
-  "version": "1.0",
-  "description": "Deterministic scoring rubric for Heritage Sentinel AI. Each category defines keyword signals and score tiers. The scoring engine applies these rules to Gemini-extracted evidence text to produce consistent, reproducible scores.",
+  "version": "2.0",
+  "description": "UNESCO Operational Guidelines-aligned scoring rubric for Heritage Sentinel AI (WHC.25/01). Evaluation covers all three UNESCO nomination pillars: Outstanding Universal Value (OUV criteria i-x), Integrity, Authenticity, and Management & Protection. The scoring engine applies these rules deterministically to Gemini-extracted evidence text.",
   "categories": {
     "historic_features": {
-      "max": 30,
-      "tiers": [
-        {
-          "label": "Outstanding",
-          "min": 25, "max": 30,
-          "signals": ["century", "AD", "BC", "BCE", "CE", "dynasty", "empire", "civilisation", "civilization", "excavation", "archaeological", "dated to", "constructed in", "built in", "founded in", "established in", "monolithic", "megalithic", "prehistoric"]
-        },
-        {
-          "label": "Significant",
-          "min": 15, "max": 24,
-          "signals": ["historical", "ancient", "medieval", "colonial", "ruins", "remnants", "heritage", "era", "period", "age", "fortress", "palace", "temple", "monastery", "cathedral", "mosque", "shrine"]
-        },
-        {
-          "label": "Limited",
-          "min": 5, "max": 14,
-          "signals": ["old", "traditional", "historic", "past", "former", "original"]
-        },
-        {
-          "label": "Insufficient",
-          "min": 0, "max": 4,
-          "signals": []
-        }
-      ]
-    },
-    "cultural_significance": {
       "max": 25,
+      "ouv_criteria": ["i", "iii", "iv"],
+      "description": "Evidence of Outstanding Universal Value in human history, architecture, and archaeology (OUV criteria i, iii, iv)",
       "tiers": [
         {
           "label": "Outstanding",
           "min": 20, "max": 25,
-          "signals": ["UNESCO", "world heritage", "universal value", "pilgrimage", "sacred", "ritual", "intangible", "living tradition", "cultural exchange", "masterpiece", "unique", "exceptional", "coexistence", "multicultural", "syncretic"]
+          "signals": ["century", "AD", "BC", "BCE", "CE", "dynasty", "empire", "civilisation", "civilization", "excavation", "archaeological", "dated to", "constructed in", "built in", "founded in", "established in", "monolithic", "megalithic", "prehistoric", "masterpiece", "creative genius", "architectural achievement", "engineering feat", "technological innovation", "outstanding example", "significant stage"]
         },
         {
           "label": "Significant",
           "min": 12, "max": 19,
-          "signals": ["religious", "spiritual", "cultural", "artistic", "symbolic", "festival", "ceremony", "community", "identity", "ethnic", "indigenous", "folk", "craft", "music", "dance"]
+          "signals": ["historical", "ancient", "medieval", "colonial", "ruins", "remnants", "heritage", "era", "period", "age", "fortress", "palace", "temple", "monastery", "cathedral", "mosque", "shrine", "citadel", "settlement", "artifact", "inscription", "stratigraphy", "human history"]
         },
         {
           "label": "Limited",
           "min": 4, "max": 11,
-          "signals": ["local", "regional", "significance", "important", "valued", "meaningful"]
+          "signals": ["old", "traditional", "historic", "past", "former", "original", "built", "constructed", "structure", "building"]
         },
         {
           "label": "Insufficient",
@@ -52,51 +29,158 @@
         }
       ]
     },
-    "geographic_context": {
-      "max": 15,
+    "cultural_significance": {
+      "max": 20,
+      "ouv_criteria": ["ii", "v", "vi"],
+      "description": "Cultural exchange, living traditions, intangible heritage, and traditional land use (OUV criteria ii, v, vi)",
       "tiers": [
         {
           "label": "Outstanding",
-          "min": 12, "max": 15,
-          "signals": ["landscape", "ecosystem", "biodiversity", "geological", "topography", "basin", "plateau", "valley", "coast", "estuary", "volcanic", "tectonic", "endemic", "habitat", "natural boundary", "watershed"]
+          "min": 16, "max": 20,
+          "signals": ["UNESCO", "world heritage", "universal value", "pilgrimage", "sacred", "ritual", "intangible", "living tradition", "cultural exchange", "masterpiece", "unique", "exceptional", "coexistence", "multicultural", "syncretic", "interchange", "human values", "direct association", "events or living", "artistic works", "outstanding significance", "traditional settlement", "vernacular", "land use", "indigenous community", "vulnerable culture", "endangered tradition"]
         },
         {
-          "label": "Notable",
-          "min": 7, "max": 11,
-          "signals": ["located in", "situated", "region", "province", "district", "coordinates", "elevation", "climate", "terrain", "geography", "river", "mountain", "forest", "desert", "island"]
+          "label": "Significant",
+          "min": 9, "max": 15,
+          "signals": ["religious", "spiritual", "cultural", "artistic", "symbolic", "festival", "ceremony", "community", "identity", "ethnic", "indigenous", "folk", "craft", "music", "dance", "belief", "practice", "custom", "way of life", "oral tradition", "knowledge system"]
         },
         {
-          "label": "Generic",
-          "min": 2, "max": 6,
-          "signals": ["area", "zone", "place", "site", "location", "nearby", "surrounding"]
+          "label": "Limited",
+          "min": 3, "max": 8,
+          "signals": ["local", "regional", "significance", "important", "valued", "meaningful", "celebrated", "commemorated"]
         },
         {
           "label": "Insufficient",
+          "min": 0, "max": 2,
+          "signals": []
+        }
+      ]
+    },
+    "integrity": {
+      "max": 15,
+      "ouv_criteria": ["all"],
+      "description": "Wholeness and intactness of the property — UNESCO requires all properties to demonstrate integrity",
+      "tiers": [
+        {
+          "label": "High Integrity",
+          "min": 12, "max": 15,
+          "signals": ["intact", "well-preserved", "conservation", "protected area", "buffer zone", "undisturbed", "original condition", "no encroachment", "boundary protection", "management zone", "integrity", "wholeness", "complete", "undamaged", "pristine", "safeguarded", "legal protection", "national monument", "protected status"]
+        },
+        {
+          "label": "Partial Integrity",
+          "min": 7, "max": 11,
+          "signals": ["partially preserved", "some damage", "restored", "restoration", "maintained", "maintenance", "ongoing conservation", "conservation effort", "under protection", "protected", "preservation", "stabilised", "stabilized", "repair", "consolidated"]
+        },
+        {
+          "label": "Threatened",
+          "min": 2, "max": 6,
+          "signals": ["threatened", "at risk", "deteriorating", "vulnerable", "encroachment", "urban pressure", "tourism pressure", "climate risk", "neglected", "degraded", "partial loss"]
+        },
+        {
+          "label": "Unknown",
           "min": 0, "max": 1,
           "signals": []
         }
       ]
     },
-    "documentation": {
+    "authenticity": {
       "max": 15,
+      "ouv_criteria": ["cultural"],
+      "description": "Authenticity of cultural heritage — original materials, form, design, use, and setting (required for all cultural properties)",
+      "tiers": [
+        {
+          "label": "High Authenticity",
+          "min": 12, "max": 15,
+          "signals": ["original materials", "original form", "original design", "authentic", "authenticity", "traditional techniques", "traditional craftsmanship", "original fabric", "indigenous materials", "vernacular construction", "historic fabric", "original setting", "original function", "unchanged", "unaltered", "original use", "form and design", "materials and substance"]
+        },
+        {
+          "label": "Moderate Authenticity",
+          "min": 7, "max": 11,
+          "signals": ["partly original", "traditional style", "reconstructed using", "faithful reconstruction", "historically accurate", "period-appropriate", "traditional methods", "craftsmanship", "local materials", "heritage material", "original structure", "retained"]
+        },
+        {
+          "label": "Low Authenticity",
+          "min": 2, "max": 6,
+          "signals": ["reconstructed", "rebuilt", "replica", "reproduction", "modern reconstruction", "partially reconstructed", "restoration work", "renovated", "refurbished"]
+        },
+        {
+          "label": "Unknown",
+          "min": 0, "max": 1,
+          "signals": []
+        }
+      ]
+    },
+    "geographic_context": {
+      "max": 10,
+      "ouv_criteria": ["vii", "viii", "ix", "x"],
+      "description": "Natural values, landscape setting, and ecological significance (OUV criteria vii–x)",
+      "tiers": [
+        {
+          "label": "Outstanding",
+          "min": 8, "max": 10,
+          "signals": ["landscape", "ecosystem", "biodiversity", "geological", "topography", "basin", "plateau", "valley", "coast", "estuary", "volcanic", "tectonic", "endemic", "habitat", "natural boundary", "watershed", "superlative", "natural phenomenon", "exceptional natural beauty", "major stages of earth", "geological process", "threatened species", "endemic species", "IUCN", "conservation status", "biological diversity", "in-situ conservation"]
+        },
+        {
+          "label": "Notable",
+          "min": 5, "max": 7,
+          "signals": ["located in", "situated", "region", "province", "district", "coordinates", "elevation", "climate", "terrain", "geography", "river", "mountain", "forest", "desert", "island", "natural setting", "scenic", "landscape setting"]
+        },
+        {
+          "label": "Generic",
+          "min": 1, "max": 4,
+          "signals": ["area", "zone", "place", "site", "location", "nearby", "surrounding", "countryside"]
+        },
+        {
+          "label": "Insufficient",
+          "min": 0, "max": 0,
+          "signals": []
+        }
+      ]
+    },
+    "documentation": {
+      "max": 10,
+      "ouv_criteria": [],
+      "description": "Quality and depth of academic, governmental, and archival documentation supporting the nomination",
       "tiers": [
         {
           "label": "Extensive",
-          "min": 12, "max": 15,
-          "signals": ["published", "academic", "research", "study", "survey", "excavation report", "archaeological survey", "ASI", "UNESCO", "ICOMOS", "documented", "archive", "records", "bibliography", "journal", "peer-reviewed", "carbon dating", "scientific"]
+          "min": 8, "max": 10,
+          "signals": ["published", "academic", "research", "study", "survey", "excavation report", "archaeological survey", "ASI", "UNESCO", "ICOMOS", "IUCN", "documented", "archive", "records", "bibliography", "journal", "peer-reviewed", "carbon dating", "scientific", "nomination dossier", "tentative list", "state of conservation", "world heritage committee"]
         },
         {
           "label": "Partial",
-          "min": 7, "max": 11,
-          "signals": ["documented", "records", "historical account", "colonial record", "government", "museum", "inscription", "text", "manuscript", "map", "photograph", "census"]
+          "min": 5, "max": 7,
+          "signals": ["documented", "historical account", "colonial record", "government", "museum", "inscription", "text", "manuscript", "map", "photograph", "census", "official record", "national register", "inventory"]
         },
         {
           "label": "Anecdotal",
-          "min": 2, "max": 6,
-          "signals": ["mentioned", "known", "reportedly", "said to", "believed", "oral", "tradition", "legend", "local knowledge"]
+          "min": 1, "max": 4,
+          "signals": ["mentioned", "known", "reportedly", "said to", "believed", "oral", "tradition", "legend", "local knowledge", "community account"]
         },
         {
           "label": "None",
+          "min": 0, "max": 0,
+          "signals": []
+        }
+      ]
+    },
+    "management_protection": {
+      "max": 5,
+      "ouv_criteria": [],
+      "description": "Legal protection framework and management plan — UNESCO requires every nominated property to have adequate protection and management",
+      "tiers": [
+        {
+          "label": "Strong",
+          "min": 4, "max": 5,
+          "signals": ["management plan", "protected by law", "national legislation", "conservation authority", "heritage authority", "national park", "protected zone", "legal protection", "government protected", "state protection", "ministry", "department of archaeology", "world heritage fund", "conservation budget", "site management", "management body", "conservation plan", "protection order"]
+        },
+        {
+          "label": "Partial",
+          "min": 2, "max": 3,
+          "signals": ["under government", "government oversight", "officially recognised", "nationally recognised", "state-owned", "public ownership", "heritage listing", "nationally listed", "protected monument", "conservation society", "NGO protection", "community management"]
+        },
+        {
+          "label": "Unclear",
           "min": 0, "max": 1,
           "signals": []
         }
@@ -104,21 +188,23 @@
     },
     "supporting_evidence": {
       "max": 15,
+      "ouv_criteria": [],
+      "description": "Quality and quantity of visual documentation (photos, videos, surveys) submitted alongside the nomination",
       "tiers": [
         {
           "label": "Strong",
           "min": 12, "max": 15,
-          "signals": ["high-quality", "detailed", "multiple photos", "interior", "exterior", "facade", "sculpture", "inscription visible", "aerial", "drone", "professional", "high resolution", "360"]
+          "signals": ["high-quality", "detailed", "multiple photos", "interior", "exterior", "facade", "sculpture", "inscription visible", "aerial", "drone", "professional", "high resolution", "360", "survey photograph", "satellite image", "photogrammetry", "3D scan", "video documentation"]
         },
         {
           "label": "Adequate",
           "min": 7, "max": 11,
-          "signals": ["photos provided", "photographs", "images", "pictures", "photo", "image", "snapshot", "video"]
+          "signals": ["photos provided", "photographs", "images", "pictures", "photo", "image", "snapshot", "video", "documentation provided"]
         },
         {
           "label": "Minimal",
           "min": 2, "max": 6,
-          "signals": ["one photo", "single image", "limited", "low quality", "blurry", "distant"]
+          "signals": ["one photo", "single image", "limited", "low quality", "blurry", "distant", "partial view"]
         },
         {
           "label": "Absent",
