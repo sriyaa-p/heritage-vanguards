@@ -1,12 +1,14 @@
 "use client";
-import { useState } from "react";
-import sampleDossier from "../../../../public/sample_dossier.json";
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const SCORE_CATEGORIES = [
-  { key: "historic_features", label: "Historic Features", max: 30 },
+  { key: "historic_features",   label: "Historic Features",   max: 30 },
   { key: "cultural_significance", label: "Cultural Significance", max: 25 },
-  { key: "geographic_context", label: "Geographic Context", max: 15 },
-  { key: "documentation", label: "Documentation", max: 15 },
+  { key: "geographic_context",  label: "Geographic Context",  max: 15 },
+  { key: "documentation",       label: "Documentation",       max: 15 },
   { key: "supporting_evidence", label: "Supporting Evidence", max: 15 },
 ];
 
@@ -16,7 +18,7 @@ function ScoreBar({ score, max }: { score: number; max: number }) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex-1 bg-gray-100 rounded-full h-2">
-        <div className={`${color} h-2 rounded-full`} style={{ width: `${pct}%` }} />
+        <div className={`${color} h-2 rounded-full transition-all`} style={{ width: `${pct}%` }} />
       </div>
       <span className="text-xs font-mono w-12 text-right text-gray-600">{score}/{max}</span>
     </div>
@@ -24,12 +26,62 @@ function ScoreBar({ score, max }: { score: number; max: number }) {
 }
 
 export default function ConfidenceCardPage() {
-  const d = sampleDossier;
+  const { id } = useParams<{ id: string }>();
+  const router = useRouter();
+  const [dossier, setDossier] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [decision, setDecision] = useState<"approved" | "rejected" | null>(null);
   const [notes, setNotes] = useState("");
-  const totalScore = d.scoring.total;
-  const confidence = totalScore >= 80 ? "High" : totalScore >= 60 ? "Moderate" : "Low";
-  const confidenceColor = confidence === "High" ? "text-green-600" : confidence === "Moderate" ? "text-yellow-600" : "text-red-500";
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch(`${API}/submissions/${id}`);
+        if (!res.ok) throw new Error("Not found");
+        const data = await res.json();
+        setDossier(data.dossier);
+      } catch {
+        setDossier(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [id]);
+
+  async function handleDecision(d: "approved" | "rejected") {
+    setSubmitting(true);
+    try {
+      await fetch(`${API}/submissions/${id}/review?decision=${d}&notes=${encodeURIComponent(notes)}&reviewer_id=archaeologist`, {
+        method: "PATCH",
+      });
+      setDecision(d);
+    } catch {
+      setDecision(d); // optimistic for demo
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  if (loading) {
+    return (
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <p className="text-gray-400 text-sm animate-pulse">Loading Confidence Card...</p>
+      </main>
+    );
+  }
+
+  if (!dossier) {
+    return (
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-500 mb-4">Submission not found.</p>
+          <button onClick={() => router.push("/review")} className="text-blue-600 hover:underline text-sm">← Back to queue</button>
+        </div>
+      </main>
+    );
+  }
 
   if (decision) {
     return (
@@ -37,58 +89,105 @@ export default function ConfidenceCardPage() {
         <div className="bg-white rounded-xl shadow p-8 max-w-md w-full text-center">
           <div className="text-5xl mb-4">{decision === "approved" ? "✅" : "❌"}</div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2 capitalize">{decision}</h2>
-          <p className="text-gray-500">{d.metadata.location_name} has been {decision}.</p>
+          <p className="text-gray-500 mb-6">{dossier.metadata?.location_name} has been {decision}.</p>
+          <button onClick={() => router.push("/review")} className="text-blue-600 hover:underline text-sm">← Back to queue</button>
         </div>
       </main>
     );
   }
 
-  return (
-    <main className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-2xl mx-auto space-y-5">
+  const meta = dossier.metadata || {};
+  const scoring = dossier.scoring || {};
+  const evidence = dossier.extracted_evidence || {};
+  const photos: string[] = dossier.raw_evidence?.photo_urls || [];
+  const totalScore = scoring.total ?? 0;
+  const confidence = totalScore >= 80 ? "High Confidence" : totalScore >= 60 ? "Moderate Confidence" : "Low Confidence";
+  const confidenceColor = totalScore >= 80 ? "text-green-600" : totalScore >= 60 ? "text-yellow-600" : "text-red-500";
+  const lang = dossier.raw_evidence?.language_detected;
+  const translated = dossier.raw_evidence?.translated_description;
 
-        <div className="bg-white rounded-xl shadow p-6">
-          <div className="flex items-start justify-between">
+  return (
+    <main className="min-h-screen bg-gray-50 p-4 sm:p-8">
+      <div className="max-w-2xl mx-auto space-y-4">
+
+        <button onClick={() => router.push("/review")} className="text-blue-600 hover:underline text-sm">← Back to queue</button>
+
+        {/* Header */}
+        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
+          <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{d.metadata.location_name}</h1>
-              <p className="text-gray-500 text-sm">{d.metadata.country} · {d.metadata.submission_id}</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{meta.location_name}</h1>
+              <p className="text-gray-500 text-sm">{meta.country} · {meta.submission_id}</p>
+              {lang && lang !== "en" && lang !== "unknown" && (
+                <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full mt-1 inline-block">
+                  Translated from {lang.toUpperCase()}
+                </span>
+              )}
             </div>
-            <div className="text-right">
+            <div className="text-right shrink-0">
               <p className="text-4xl font-bold text-gray-900">{totalScore}<span className="text-lg text-gray-400">/100</span></p>
-              <p className={`text-sm font-semibold ${confidenceColor}`}>{confidence} Confidence</p>
+              <p className={`text-sm font-semibold ${confidenceColor}`}>{confidence}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow p-6">
+        {/* Photos */}
+        {photos.length > 0 && (
+          <div className="bg-white rounded-xl shadow p-5">
+            <h2 className="font-semibold text-gray-900 mb-3">Submitted Photos</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {photos.map((url, i) => (
+                <img
+                  key={i}
+                  src={url.startsWith("/") ? `${API}${url}` : url}
+                  alt={`Photo ${i + 1}`}
+                  className="w-full h-32 object-cover rounded-lg bg-gray-100"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Score breakdown */}
+        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
           <h2 className="font-semibold text-gray-900 mb-4">Heritage Score Breakdown</h2>
           <div className="space-y-3">
             {SCORE_CATEGORIES.map(({ key, label, max }) => (
               <div key={key}>
-                <div className="flex justify-between text-sm text-gray-600 mb-1">
-                  <span>{label}</span>
-                </div>
-                <ScoreBar score={(d.scoring as Record<string, number>)[key]} max={max} />
+                <p className="text-sm text-gray-600 mb-1">{label}</p>
+                <ScoreBar score={(scoring as Record<string, number>)[key] ?? 0} max={max} />
               </div>
             ))}
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow p-6">
-          <h2 className="font-semibold text-gray-900 mb-3">Evidence Summary</h2>
-          <div className="space-y-3 text-sm text-gray-700">
-            <p><span className="font-medium">Historic Features:</span> {d.extracted_evidence.historic_features}</p>
-            <p><span className="font-medium">Cultural Significance:</span> {d.extracted_evidence.cultural_significance}</p>
-            <p><span className="font-medium">Geographic Context:</span> {d.extracted_evidence.geographic_context}</p>
-            <p><span className="font-medium">Documentation:</span> {d.extracted_evidence.documentation_quality}</p>
-            <p><span className="font-medium">Supporting Evidence:</span> {d.extracted_evidence.supporting_evidence}</p>
+        {/* Evidence summary */}
+        {Object.values(evidence).some(Boolean) && (
+          <div className="bg-white rounded-xl shadow p-5 sm:p-6">
+            <h2 className="font-semibold text-gray-900 mb-3">Evidence Summary</h2>
+            {lang && lang !== "en" && lang !== "unknown" && translated && (
+              <div className="mb-3 p-3 bg-blue-50 rounded-lg text-sm text-blue-700">
+                <span className="font-medium">Translated description:</span> {translated}
+              </div>
+            )}
+            <div className="space-y-3 text-sm text-gray-700">
+              {evidence.historic_features && <p><span className="font-medium">Historic Features:</span> {evidence.historic_features}</p>}
+              {evidence.cultural_significance && <p><span className="font-medium">Cultural Significance:</span> {evidence.cultural_significance}</p>}
+              {evidence.geographic_context && <p><span className="font-medium">Geographic Context:</span> {evidence.geographic_context}</p>}
+              {evidence.documentation_quality && <p><span className="font-medium">Documentation:</span> {evidence.documentation_quality}</p>}
+              {evidence.supporting_evidence && <p><span className="font-medium">Supporting Evidence:</span> {evidence.supporting_evidence}</p>}
+            </div>
+            {scoring.rationale && (
+              <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600 italic">
+                {scoring.rationale}
+              </div>
+            )}
           </div>
-          <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600 italic">
-            {d.scoring.rationale}
-          </div>
-        </div>
+        )}
 
-        <div className="bg-white rounded-xl shadow p-6">
+        {/* Reviewer decision */}
+        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
           <h2 className="font-semibold text-gray-900 mb-3">Reviewer Decision</h2>
           <textarea
             className="w-full border rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -99,14 +198,16 @@ export default function ConfidenceCardPage() {
           />
           <div className="flex gap-3">
             <button
-              onClick={() => setDecision("approved")}
-              className="flex-1 bg-green-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-green-700 transition"
+              onClick={() => handleDecision("approved")}
+              disabled={submitting}
+              className="flex-1 bg-green-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-green-700 transition disabled:opacity-50"
             >
               Approve
             </button>
             <button
-              onClick={() => setDecision("rejected")}
-              className="flex-1 bg-red-500 text-white rounded-lg py-2 text-sm font-medium hover:bg-red-600 transition"
+              onClick={() => handleDecision("rejected")}
+              disabled={submitting}
+              className="flex-1 bg-red-500 text-white rounded-lg py-2 text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
             >
               Reject
             </button>
