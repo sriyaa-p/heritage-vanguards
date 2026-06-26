@@ -1,16 +1,105 @@
 "use client";
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+const PIPELINE_STAGES = [
+  { status: "pending",        label: "Received",          desc: "Submission saved" },
+  { status: "registry_check", label: "Registry Check",    desc: "Checking UNESCO database for duplicates" },
+  { status: "evaluation",     label: "AI Evaluation",     desc: "Gemini extracting evidence and scoring" },
+  { status: "verification",   label: "Ready for Review",  desc: "Confidence Card ready for archaeologist" },
+];
+
+const TERMINAL = ["approved", "rejected", "verification"];
+
+function PipelineTracker({ submissionId }: { submissionId: string }) {
+  const [status, setStatus] = useState("pending");
+  const [rejected, setRejected] = useState(false);
+  const router = useRouter();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    intervalRef.current = setInterval(async () => {
+      try {
+        const res = await fetch(`${API}/submissions/${submissionId}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const s = data.status;
+        setStatus(s);
+
+        if (s === "rejected") {
+          setRejected(true);
+          clearInterval(intervalRef.current!);
+        } else if (s === "verification") {
+          clearInterval(intervalRef.current!);
+          setTimeout(() => router.push(`/review/${submissionId}`), 1500);
+        }
+      } catch { /* keep polling */ }
+    }, 2000);
+
+    return () => clearInterval(intervalRef.current!);
+  }, [submissionId, router]);
+
+  const currentIdx = PIPELINE_STAGES.findIndex((s) => s.status === status);
+
+  if (rejected) {
+    return (
+      <div className="bg-white rounded-xl shadow p-8 max-w-md w-full text-center">
+        <div className="text-5xl mb-4">🚫</div>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">Submission Rejected</h2>
+        <p className="text-gray-500 text-sm mb-1">This site was flagged as a duplicate or scored below the minimum threshold.</p>
+        <p className="text-xs font-mono bg-gray-100 rounded p-2 mt-3">{submissionId}</p>
+        <button onClick={() => router.push("/submit")} className="mt-4 text-blue-600 hover:underline text-sm">
+          Submit a different site →
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-xl shadow p-8 max-w-md w-full">
+      <h2 className="text-lg font-bold text-gray-900 mb-1">Processing your submission</h2>
+      <p className="text-xs font-mono text-gray-400 mb-6">{submissionId}</p>
+
+      <div className="space-y-4">
+        {PIPELINE_STAGES.map((stage, i) => {
+          const done = i < currentIdx || (i === currentIdx && TERMINAL.includes(status));
+          const active = i === currentIdx && !TERMINAL.includes(status);
+          return (
+            <div key={stage.status} className="flex items-start gap-3">
+              <div className={`mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-bold
+                ${done ? "bg-green-500 text-white" : active ? "bg-blue-500 text-white animate-pulse" : "bg-gray-100 text-gray-400"}`}>
+                {done ? "✓" : i + 1}
+              </div>
+              <div>
+                <p className={`text-sm font-medium ${done ? "text-green-700" : active ? "text-blue-700" : "text-gray-400"}`}>
+                  {stage.label}
+                </p>
+                {active && <p className="text-xs text-gray-500 mt-0.5">{stage.desc}</p>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {status === "verification" && (
+        <p className="mt-6 text-center text-sm text-green-600 font-medium animate-pulse">
+          Redirecting to Confidence Card…
+        </p>
+      )}
+    </div>
+  );
+}
 
 export default function SubmitPage() {
-  const [submitted, setSubmitted] = useState(false);
   const [submissionId, setSubmissionId] = useState("");
+  const [submitted, setSubmitted] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files) {
-      setPhotos(Array.from(e.target.files));
-    }
+    if (e.target.files) setPhotos(Array.from(e.target.files));
   }
 
   function removePhoto(index: number) {
@@ -37,14 +126,10 @@ export default function SubmitPage() {
       const result = await res.json();
       const sid = result.submission_id;
 
-      // Upload photos if any were selected
       if (photos.length > 0) {
         const formData = new FormData();
         photos.forEach((file) => formData.append("files", file));
-        await fetch(`${API}/submissions/${sid}/photos`, {
-          method: "POST",
-          body: formData,
-        });
+        await fetch(`${API}/submissions/${sid}/photos`, { method: "POST", body: formData });
       }
 
       setSubmissionId(sid);
@@ -58,13 +143,7 @@ export default function SubmitPage() {
   if (submitted) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <div className="bg-white rounded-xl shadow p-8 max-w-md w-full text-center">
-          <div className="text-5xl mb-4">✅</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Submitted!</h2>
-          <p className="text-gray-500 mb-4">Your site has been received and is being processed.</p>
-          <p className="text-sm font-mono bg-gray-100 rounded p-2">{submissionId}</p>
-          <p className="text-xs text-gray-400 mt-2">Save this ID to track your submission.</p>
-        </div>
+        <PipelineTracker submissionId={submissionId} />
       </main>
     );
   }
@@ -78,75 +157,34 @@ export default function SubmitPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Site Name / Location</label>
-            <input
-              name="location"
-              required
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g. Hampi Ruins"
-            />
+            <input name="location" required className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Hampi Ruins" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-            <input
-              name="country"
-              required
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g. India"
-            />
+            <input name="country" required className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. India" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <textarea
-              name="description"
-              required
-              rows={4}
-              className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Describe the site — its history, cultural significance, and what makes it special."
-            />
+            <textarea name="description" required rows={4} className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Describe the site — its history, cultural significance, and what makes it special." />
           </div>
-
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Photos</label>
-            <div
-              className="border-2 border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-blue-400 transition"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                multiple
-                className="hidden"
-                onChange={handleFileChange}
-              />
-              <p className="text-sm text-gray-400">
-                📸 Click to select photos <span className="text-gray-300">(JPG, PNG, WEBP)</span>
-              </p>
-              <p className="text-xs text-gray-300 mt-1">Up to 5 images — processing will happen after submission</p>
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-blue-400 transition" onClick={() => fileInputRef.current?.click()}>
+              <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
+              <p className="text-sm text-gray-400">📸 Click to select photos <span className="text-gray-300">(JPG, PNG, WEBP)</span></p>
             </div>
-
             {photos.length > 0 && (
               <ul className="mt-2 space-y-1">
                 {photos.map((file, i) => (
                   <li key={i} className="flex items-center justify-between text-sm bg-gray-50 rounded px-3 py-1">
                     <span className="text-gray-700 truncate max-w-xs">{file.name}</span>
-                    <button
-                      type="button"
-                      onClick={() => removePhoto(i)}
-                      className="text-red-400 hover:text-red-600 ml-2 text-xs"
-                    >
-                      Remove
-                    </button>
+                    <button type="button" onClick={() => removePhoto(i)} className="text-red-400 hover:text-red-600 ml-2 text-xs">Remove</button>
                   </li>
                 ))}
               </ul>
             )}
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-blue-700 transition"
-          >
+          <button type="submit" className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-blue-700 transition">
             Submit Site
           </button>
         </form>

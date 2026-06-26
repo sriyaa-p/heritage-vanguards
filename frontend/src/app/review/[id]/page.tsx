@@ -5,12 +5,21 @@ import { useParams, useRouter } from "next/navigation";
 const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const SCORE_CATEGORIES = [
-  { key: "historic_features",   label: "Historic Features",   max: 30 },
+  { key: "historic_features",    label: "Historic Features",    max: 30 },
   { key: "cultural_significance", label: "Cultural Significance", max: 25 },
-  { key: "geographic_context",  label: "Geographic Context",  max: 15 },
-  { key: "documentation",       label: "Documentation",       max: 15 },
-  { key: "supporting_evidence", label: "Supporting Evidence", max: 15 },
+  { key: "geographic_context",   label: "Geographic Context",   max: 15 },
+  { key: "documentation",        label: "Documentation",        max: 15 },
+  { key: "supporting_evidence",  label: "Supporting Evidence",  max: 15 },
 ];
+
+const STATUS_LABEL: Record<string, string> = {
+  pending: "Queued",
+  registry_check: "Registry Check",
+  evaluation: "AI Evaluation",
+  verification: "Awaiting Review",
+  approved: "Approved",
+  rejected: "Rejected",
+};
 
 function ScoreBar({ score, max }: { score: number; max: number }) {
   const pct = Math.round((score / max) * 100);
@@ -28,99 +37,120 @@ function ScoreBar({ score, max }: { score: number; max: number }) {
 export default function ConfidenceCardPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+
   const [dossier, setDossier] = useState<any>(null);
+  const [status, setStatus] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const [decision, setDecision] = useState<"approved" | "rejected" | null>(null);
   const [notes, setNotes] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [deciding, setDeciding] = useState(false);
+  const [finalDecision, setFinalDecision] = useState<string | null>(null);
 
   useEffect(() => {
-    async function load() {
+    if (!id) return;
+    const fetchData = async () => {
       try {
         const res = await fetch(`${API}/submissions/${id}`);
         if (!res.ok) throw new Error("Not found");
         const data = await res.json();
         setDossier(data.dossier);
+        setStatus(data.status);
       } catch {
         setDossier(null);
       } finally {
         setLoading(false);
       }
-    }
-    load();
+    };
+    fetchData();
   }, [id]);
 
-  async function handleDecision(d: "approved" | "rejected") {
-    setSubmitting(true);
+  async function handleDecision(decision: "approved" | "rejected") {
+    setDeciding(true);
     try {
-      await fetch(`${API}/submissions/${id}/review?decision=${d}&notes=${encodeURIComponent(notes)}&reviewer_id=archaeologist`, {
+      await fetch(`${API}/submissions/${id}/review?decision=${decision}&notes=${encodeURIComponent(notes)}`, {
         method: "PATCH",
       });
-      setDecision(d);
+      setFinalDecision(decision);
     } catch {
-      setDecision(d); // optimistic for demo
+      alert("Failed to submit decision. Please try again.");
     } finally {
-      setSubmitting(false);
+      setDeciding(false);
     }
   }
 
   if (loading) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-400 text-sm animate-pulse">Loading Confidence Card...</p>
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-500 text-sm">Loading dossier…</p>
+        </div>
       </main>
     );
   }
 
   if (!dossier) {
     return (
-      <main className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
         <div className="text-center">
-          <p className="text-gray-500 mb-4">Submission not found.</p>
+          <p className="text-2xl mb-2">404</p>
+          <p className="text-gray-500 mb-4">Submission not found</p>
           <button onClick={() => router.push("/review")} className="text-blue-600 hover:underline text-sm">← Back to queue</button>
         </div>
       </main>
     );
   }
 
-  if (decision) {
+  if (finalDecision) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
         <div className="bg-white rounded-xl shadow p-8 max-w-md w-full text-center">
-          <div className="text-5xl mb-4">{decision === "approved" ? "✅" : "❌"}</div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2 capitalize">{decision}</h2>
-          <p className="text-gray-500 mb-6">{dossier.metadata?.location_name} has been {decision}.</p>
-          <button onClick={() => router.push("/review")} className="text-blue-600 hover:underline text-sm">← Back to queue</button>
+          <div className="text-5xl mb-4">{finalDecision === "approved" ? "✅" : "❌"}</div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 capitalize">{finalDecision}</h2>
+          <p className="text-gray-500">{dossier.metadata?.location_name} has been {finalDecision}.</p>
+          <button onClick={() => router.push("/review")} className="mt-6 text-blue-600 hover:underline text-sm">← Back to review queue</button>
         </div>
       </main>
     );
   }
 
-  const meta = dossier.metadata || {};
-  const scoring = dossier.scoring || {};
-  const evidence = dossier.extracted_evidence || {};
-  const photos: string[] = dossier.raw_evidence?.photo_urls || [];
-  const totalScore = scoring.total ?? 0;
-  const confidence = totalScore >= 80 ? "High Confidence" : totalScore >= 60 ? "Moderate Confidence" : "Low Confidence";
-  const confidenceColor = totalScore >= 80 ? "text-green-600" : totalScore >= 60 ? "text-yellow-600" : "text-red-500";
-  const lang = dossier.raw_evidence?.language_detected;
-  const translated = dossier.raw_evidence?.translated_description;
+  // Pipeline still running
+  if (["pending", "registry_check", "evaluation"].includes(status)) {
+    return (
+      <main className="min-h-screen bg-gray-50 flex items-center justify-center p-8">
+        <div className="bg-white rounded-xl shadow p-8 max-w-md w-full text-center">
+          <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <h2 className="text-lg font-bold text-gray-900 mb-2">Pipeline in progress</h2>
+          <p className="text-gray-500 text-sm">Stage: <span className="font-medium">{STATUS_LABEL[status] ?? status}</span></p>
+          <p className="text-xs text-gray-400 mt-1">This page will be ready when evaluation completes.</p>
+          <p className="text-xs font-mono bg-gray-100 rounded p-2 mt-4">{id}</p>
+        </div>
+      </main>
+    );
+  }
+
+  const meta = dossier.metadata ?? {};
+  const evidence = dossier.extracted_evidence ?? {};
+  const scoring = dossier.scoring ?? {};
+  const raw = dossier.raw_evidence ?? {};
+  const photos: string[] = raw.photo_urls ?? [];
+  const totalScore: number = scoring.total ?? 0;
+  const confidence = totalScore >= 80 ? "High" : totalScore >= 60 ? "Moderate" : "Low";
+  const confidenceColor = confidence === "High" ? "text-green-600" : confidence === "Moderate" ? "text-yellow-600" : "text-red-500";
+  const alreadyDecided = ["approved", "rejected"].includes(status);
 
   return (
-    <main className="min-h-screen bg-gray-50 p-4 sm:p-8">
-      <div className="max-w-2xl mx-auto space-y-4">
-
-        <button onClick={() => router.push("/review")} className="text-blue-600 hover:underline text-sm">← Back to queue</button>
+    <main className="min-h-screen bg-gray-50 p-6 sm:p-8">
+      <div className="max-w-2xl mx-auto space-y-5">
 
         {/* Header */}
-        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
+        <div className="bg-white rounded-xl shadow p-6">
           <div className="flex items-start justify-between gap-4">
             <div>
-              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{meta.location_name}</h1>
-              <p className="text-gray-500 text-sm">{meta.country} · {meta.submission_id}</p>
-              {lang && lang !== "en" && lang !== "unknown" && (
-                <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full mt-1 inline-block">
-                  Translated from {lang.toUpperCase()}
+              <h1 className="text-2xl font-bold text-gray-900">{meta.location_name ?? "Unknown Site"}</h1>
+              <p className="text-gray-500 text-sm">{meta.country} · <span className="font-mono">{meta.submission_id}</span></p>
+              {raw.language_detected && raw.language_detected !== "en" && (
+                <span className="mt-1 inline-block text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full">
+                  Translated from {raw.language_detected.toUpperCase()}
                 </span>
               )}
             </div>
@@ -133,50 +163,34 @@ export default function ConfidenceCardPage() {
 
         {/* Photos */}
         {photos.length > 0 && (
-          <div className="bg-white rounded-xl shadow p-5">
-            <h2 className="font-semibold text-gray-900 mb-3">Submitted Photos</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+          <div className="bg-white rounded-xl shadow p-6">
+            <h2 className="font-semibold text-gray-900 mb-3">Submission Photos</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {photos.map((url, i) => (
                 <img
                   key={i}
                   src={url.startsWith("/") ? `${API}${url}` : url}
-                  alt={`Photo ${i + 1}`}
-                  className="w-full h-32 object-cover rounded-lg bg-gray-100"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                  alt={`Site photo ${i + 1}`}
+                  className="rounded-lg object-cover w-full h-32 bg-gray-100"
                 />
               ))}
             </div>
           </div>
         )}
 
-        {/* Score breakdown */}
-        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
-          <h2 className="font-semibold text-gray-900 mb-4">Heritage Score Breakdown</h2>
-          <div className="space-y-3">
-            {SCORE_CATEGORIES.map(({ key, label, max }) => (
-              <div key={key}>
-                <p className="text-sm text-gray-600 mb-1">{label}</p>
-                <ScoreBar score={(scoring as Record<string, number>)[key] ?? 0} max={max} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Evidence summary */}
-        {Object.values(evidence).some(Boolean) && (
-          <div className="bg-white rounded-xl shadow p-5 sm:p-6">
-            <h2 className="font-semibold text-gray-900 mb-3">Evidence Summary</h2>
-            {lang && lang !== "en" && lang !== "unknown" && translated && (
-              <div className="mb-3 p-3 bg-blue-50 rounded-lg text-sm text-blue-700">
-                <span className="font-medium">Translated description:</span> {translated}
-              </div>
-            )}
-            <div className="space-y-3 text-sm text-gray-700">
-              {evidence.historic_features && <p><span className="font-medium">Historic Features:</span> {evidence.historic_features}</p>}
-              {evidence.cultural_significance && <p><span className="font-medium">Cultural Significance:</span> {evidence.cultural_significance}</p>}
-              {evidence.geographic_context && <p><span className="font-medium">Geographic Context:</span> {evidence.geographic_context}</p>}
-              {evidence.documentation_quality && <p><span className="font-medium">Documentation:</span> {evidence.documentation_quality}</p>}
-              {evidence.supporting_evidence && <p><span className="font-medium">Supporting Evidence:</span> {evidence.supporting_evidence}</p>}
+        {/* Score Breakdown */}
+        {scoring.total !== undefined && (
+          <div className="bg-white rounded-xl shadow p-6">
+            <h2 className="font-semibold text-gray-900 mb-4">Heritage Score Breakdown</h2>
+            <div className="space-y-3">
+              {SCORE_CATEGORIES.map(({ key, label, max }) => (
+                <div key={key}>
+                  <div className="flex justify-between text-sm text-gray-600 mb-1">
+                    <span>{label}</span>
+                  </div>
+                  <ScoreBar score={(scoring as Record<string, number>)[key] ?? 0} max={max} />
+                </div>
+              ))}
             </div>
             {scoring.rationale && (
               <div className="mt-4 p-3 bg-gray-50 rounded-lg text-sm text-gray-600 italic">
@@ -186,33 +200,66 @@ export default function ConfidenceCardPage() {
           </div>
         )}
 
-        {/* Reviewer decision */}
-        <div className="bg-white rounded-xl shadow p-5 sm:p-6">
-          <h2 className="font-semibold text-gray-900 mb-3">Reviewer Decision</h2>
-          <textarea
-            className="w-full border rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={3}
-            placeholder="Optional notes..."
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-          />
-          <div className="flex gap-3">
-            <button
-              onClick={() => handleDecision("approved")}
-              disabled={submitting}
-              className="flex-1 bg-green-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-green-700 transition disabled:opacity-50"
-            >
-              Approve
-            </button>
-            <button
-              onClick={() => handleDecision("rejected")}
-              disabled={submitting}
-              className="flex-1 bg-red-500 text-white rounded-lg py-2 text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
-            >
-              Reject
-            </button>
+        {/* Evidence Summary */}
+        {evidence.historic_features && (
+          <div className="bg-white rounded-xl shadow p-6">
+            <h2 className="font-semibold text-gray-900 mb-3">Evidence Summary</h2>
+            <div className="space-y-3 text-sm text-gray-700">
+              <p><span className="font-medium">Historic Features:</span> {evidence.historic_features}</p>
+              <p><span className="font-medium">Cultural Significance:</span> {evidence.cultural_significance}</p>
+              <p><span className="font-medium">Geographic Context:</span> {evidence.geographic_context}</p>
+              <p><span className="font-medium">Documentation:</span> {evidence.documentation_quality}</p>
+              <p><span className="font-medium">Supporting Evidence:</span> {evidence.supporting_evidence}</p>
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Registry Check */}
+        {dossier.registry_check && (
+          <div className="bg-white rounded-xl shadow p-6">
+            <h2 className="font-semibold text-gray-900 mb-2">Registry Check</h2>
+            <div className="flex items-center gap-2 text-sm">
+              <span className={`w-2 h-2 rounded-full ${dossier.registry_check.is_duplicate ? "bg-red-500" : "bg-green-500"}`} />
+              <span>{dossier.registry_check.is_duplicate ? `Duplicate of ${dossier.registry_check.matched_site}` : "No duplicate found in UNESCO registry"}</span>
+            </div>
+          </div>
+        )}
+
+        {/* Reviewer Decision */}
+        {alreadyDecided ? (
+          <div className="bg-white rounded-xl shadow p-6 text-center">
+            <p className="text-sm text-gray-500">This submission has already been <span className="font-semibold capitalize">{status}</span>.</p>
+            <button onClick={() => router.push("/review")} className="mt-3 text-blue-600 hover:underline text-sm">← Back to review queue</button>
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow p-6">
+            <h2 className="font-semibold text-gray-900 mb-3">Reviewer Decision</h2>
+            <textarea
+              className="w-full border rounded-lg px-3 py-2 text-sm mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={3}
+              placeholder="Optional notes..."
+              value={notes}
+              onChange={(e) => setNotes(e.target.value)}
+              disabled={deciding}
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => handleDecision("approved")}
+                disabled={deciding}
+                className="flex-1 bg-green-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-green-700 transition disabled:opacity-50"
+              >
+                {deciding ? "Saving…" : "Approve"}
+              </button>
+              <button
+                onClick={() => handleDecision("rejected")}
+                disabled={deciding}
+                className="flex-1 bg-red-500 text-white rounded-lg py-2 text-sm font-medium hover:bg-red-600 transition disabled:opacity-50"
+              >
+                {deciding ? "Saving…" : "Reject"}
+              </button>
+            </div>
+          </div>
+        )}
 
       </div>
     </main>

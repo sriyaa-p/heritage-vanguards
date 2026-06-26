@@ -4,7 +4,7 @@ import uuid
 from datetime import datetime, timezone
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
-from sqlalchemy import select, update
+from sqlalchemy import select, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
@@ -147,6 +147,31 @@ async def list_submissions(
         }
         for r in rows
     ]
+
+
+@router.get("/stats")
+async def get_stats(db: AsyncSession = Depends(get_db)):
+    """Aggregate counts by status for the admin dashboard."""
+    result = await db.execute(
+        select(Submission.status, func.count().label("count"))
+        .group_by(Submission.status)
+    )
+    rows = result.all()
+    counts = {row.status: row.count for row in rows}
+
+    total = sum(counts.values())
+    duplicates_blocked = counts.get(SubmissionStatus.rejected, 0)
+
+    return {
+        "total": total,
+        "pending": counts.get(SubmissionStatus.pending, 0),
+        "registry_check": counts.get(SubmissionStatus.registry_check, 0),
+        "evaluation": counts.get(SubmissionStatus.evaluation, 0),
+        "in_review": counts.get(SubmissionStatus.verification, 0),
+        "approved": counts.get(SubmissionStatus.approved, 0),
+        "rejected": counts.get(SubmissionStatus.rejected, 0),
+        "duplicates_blocked": duplicates_blocked,
+    }
 
 
 @router.get("/{submission_id}")
