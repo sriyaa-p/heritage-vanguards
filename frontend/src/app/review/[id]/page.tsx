@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { API } from "@/lib/api";
 
 const SCORE_CATEGORIES = [
   { key: "historic_features",     label: "Historic Features",     max: 25 },
@@ -65,6 +64,24 @@ export default function ConfidenceCardPage() {
     };
     fetchData();
   }, [id]);
+
+  // Poll while the pipeline is still running (UX-01 fix)
+  useEffect(() => {
+    if (!id || !["pending", "registry_check", "evaluation"].includes(status)) return;
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch(`${API}/submissions/${id}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        setStatus(data.status);
+        if (["verification", "approved", "rejected"].includes(data.status)) {
+          setDossier(data.dossier);
+          clearInterval(interval);
+        }
+      } catch { /* keep polling */ }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [id, status]);
 
   async function handleDecision(decision: "approved" | "rejected") {
     setDeciding(true);

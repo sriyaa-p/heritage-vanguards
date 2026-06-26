@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { API } from "@/lib/api";
 
 const PIPELINE_STAGES = [
   { status: "pending",        label: "Received",          desc: "Submission saved" },
@@ -116,7 +115,7 @@ export default function SubmitPage() {
       submitted_by: "community_user",
     };
 
-    const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
     try {
       const res = await fetch(`${API}/submissions`, {
         method: "POST",
