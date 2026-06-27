@@ -98,6 +98,7 @@ Is this submission a duplicate of any registry entry?
         config=genai_types.GenerateContentConfig(
             temperature=0.0,
             max_output_tokens=256,
+            thinking_config=genai_types.ThinkingConfig(thinking_budget=0),
         ),
     )
     return _parse_gemini_json(response.text)
