@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { API } from "@/lib/api";
 
+const MIN_DESC_LENGTH = 20;
+
 const PIPELINE_STAGES = [
   { status: "pending",        label: "Received",          desc: "Submission saved" },
   { status: "registry_check", label: "Registry Check",    desc: "Checking UNESCO database for duplicates" },
@@ -108,13 +110,20 @@ export default function SubmitPage() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
+    const description = (form.elements.namedItem("description") as HTMLTextAreaElement).value;
+
+    // Client-Side Validation
+    if (description.trim().length < MIN_DESC_LENGTH) {
+      alert(`Description is too short. Please provide at least ${MIN_DESC_LENGTH} characters.`);
+      return;
+    }
+
     const data = {
       location_name: (form.elements.namedItem("location") as HTMLInputElement).value,
       country: (form.elements.namedItem("country") as HTMLInputElement).value,
-      description: (form.elements.namedItem("description") as HTMLTextAreaElement).value,
+      description: description,
       submitted_by: "community_user",
     };
-
 
     try {
       const res = await fetch(`${API}/submissions`, {
@@ -122,6 +131,12 @@ export default function SubmitPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
+
+      if (res.status === 422) {
+        alert("Submission rejected: Please ensure your description is detailed enough.");
+        return;
+      }
+
       const result = await res.json();
       const sid = result.submission_id;
 
