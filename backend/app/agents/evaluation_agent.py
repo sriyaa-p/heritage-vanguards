@@ -100,6 +100,7 @@ Number of photos submitted: {len(raw.photo_urls)}
             config=genai_types.GenerateContentConfig(
                 temperature=0.1,   # Near-deterministic for consistent extraction
                 max_output_tokens=1024,
+                thinking_config=genai_types.ThinkingConfig(thinking_budget=0),
             ),
         )
         data = _extract_json(response.text)
