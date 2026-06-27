@@ -44,6 +44,10 @@ services:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8000
+      # Enable polling-based file watching so Next.js hot-reload works on
+      # Windows Docker volumes (inotify events don't propagate into containers).
+      WATCHPACK_POLLING: "true"
+      CHOKIDAR_USEPOLLING: "true"
     volumes:
       - ./frontend:/app
       - /app/node_modules

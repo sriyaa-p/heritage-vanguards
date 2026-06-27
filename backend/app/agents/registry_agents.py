@@ -124,12 +124,16 @@ async def lookup_unesco_registry(
         all_sites_result = await db.execute(select(UnescoSite))
         all_sites: list[UnescoSite] = list(all_sites_result.scalars().all())
 
-        exact_stmt = select(UnescoSite).where(
-            UnescoSite.name.ilike(f"%{site_name}%"),
-            UnescoSite.country.ilike(f"%{country}%"),
-        )
-        exact_result = await db.execute(exact_stmt)
-        sql_match: UnescoSite | None = exact_result.scalars().first()
+        # Only do an ilike match when the site name is meaningful (>=4 chars).
+        # Single letters like 'A' would match every site containing that letter.
+        sql_match: UnescoSite | None = None
+        if len(site_name.strip()) >= 4:
+            exact_stmt = select(UnescoSite).where(
+                UnescoSite.name.ilike(f"%{site_name}%"),
+                UnescoSite.country.ilike(f"%{country}%"),
+            )
+            exact_result = await db.execute(exact_stmt)
+            sql_match = exact_result.scalars().first()
 
     checked_at = datetime.now(timezone.utc).isoformat()
 
@@ -143,8 +147,14 @@ async def lookup_unesco_registry(
         scores = bm25.get_scores(_tokenize(site_name + " " + country))
 
         ranked = sorted(zip(scores, all_sites), key=lambda t: t[0], reverse=True)
-        top_raw = ranked[0][0] if ranked else 1.0
-        norm = (lambda s: round(s / top_raw, 4)) if top_raw > 0 else (lambda s: 0.0)
+
+        # Use the query's own score as the ceiling so scores reflect actual
+        # similarity — not just rank. A weak query like "A" won't get inflated
+        # to 1.0 just because it beats every other candidate by a tiny margin.
+        query_tokens = _tokenize(site_name + " " + country)
+        query_self_score = bm25.get_scores(query_tokens).max() if ranked else 1.0
+        ceiling = max(query_self_score, ranked[0][0]) if ranked else 1.0
+        norm = (lambda s: round(min(s / ceiling, 1.0), 4)) if ceiling > 0 else (lambda s: 0.0)
 
         top_candidates = [
             {"site_name": s.name, "country": s.country, "similarity_score": norm(sc)}

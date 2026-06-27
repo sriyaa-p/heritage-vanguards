@@ -12,9 +12,9 @@ const PIPELINE_STAGES = [
 
 const TERMINAL = ["approved", "rejected", "verification"];
 
-function PipelineTracker({ submissionId }: { submissionId: string }) {
+function PipelineTracker({ submissionId, onReset }: { submissionId: string; onReset: () => void }) {
   const [status, setStatus] = useState("pending");
-  const [rejected, setRejected] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const router = useRouter();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -28,7 +28,8 @@ function PipelineTracker({ submissionId }: { submissionId: string }) {
         setStatus(s);
 
         if (s === "rejected") {
-          setRejected(true);
+          const reason = data.dossier?.review?.reviewer_notes ?? null;
+          setRejectionReason(reason);
           clearInterval(intervalRef.current!);
         } else if (s === "verification") {
           clearInterval(intervalRef.current!);
@@ -42,15 +43,23 @@ function PipelineTracker({ submissionId }: { submissionId: string }) {
 
   const currentIdx = PIPELINE_STAGES.findIndex((s) => s.status === status);
 
-  if (rejected) {
+  if (rejectionReason !== null) {
+    const isDuplicate = rejectionReason.toLowerCase().includes("already exists in the unesco");
     return (
       <div className="bg-white rounded-xl shadow p-8 max-w-md w-full text-center">
-        <div className="text-5xl mb-4">🚫</div>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Submission Rejected</h2>
-        <p className="text-gray-500 text-sm mb-1">This site was flagged as a duplicate or scored below the minimum threshold.</p>
-        <p className="text-xs font-mono bg-gray-100 rounded p-2 mt-3">{submissionId}</p>
-        <button onClick={() => router.push("/submit")} className="mt-4 text-blue-600 hover:underline text-sm">
-          Submit a different site →
+        <div className="text-5xl mb-4">{isDuplicate ? "📋" : "📊"}</div>
+        <h2 className="text-xl font-bold text-gray-900 mb-2">
+          {isDuplicate ? "Site Already Listed" : "Insufficient Evidence"}
+        </h2>
+        <p className="text-gray-600 text-sm mb-4 text-left leading-relaxed">{rejectionReason}</p>
+        <p className="text-xs font-mono bg-gray-100 rounded p-2 mb-4">{submissionId}</p>
+        {!isDuplicate && (
+          <button onClick={onReset} className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-blue-700 transition mb-2">
+            Improve and resubmit →
+          </button>
+        )}
+        <button onClick={onReset} className="text-gray-400 hover:text-gray-600 text-sm">
+          Submit a different site
         </button>
       </div>
     );
@@ -139,10 +148,16 @@ export default function SubmitPage() {
     }
   }
 
+  function handleReset() {
+    setSubmissionId("");
+    setSubmitted(false);
+    setPhotos([]);
+  }
+
   if (submitted) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <PipelineTracker submissionId={submissionId} />
+        <PipelineTracker submissionId={submissionId} onReset={handleReset} />
       </main>
     );
   }

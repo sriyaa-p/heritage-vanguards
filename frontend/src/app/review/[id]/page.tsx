@@ -24,11 +24,11 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 function ScoreBar({ score, max }: { score: number; max: number }) {
-  const pct = Math.round((score / max) * 100);
+  const pct = Math.min(Math.round((score / max) * 100), 100);
   const color = pct >= 80 ? "bg-green-500" : pct >= 60 ? "bg-yellow-400" : "bg-red-400";
   return (
     <div className="flex items-center gap-3">
-      <div className="flex-1 bg-gray-100 rounded-full h-2">
+      <div className="flex-1 bg-gray-100 rounded-full h-2 overflow-hidden">
         <div className={`${color} h-2 rounded-full transition-all`} style={{ width: `${pct}%` }} />
       </div>
       <span className="text-xs font-mono w-12 text-right text-gray-600">{score}/{max}</span>

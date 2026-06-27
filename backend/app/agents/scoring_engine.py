@@ -58,9 +58,8 @@ def _score_field(text: str, category_criteria: dict) -> int:
             best_signal_count = found
 
     if best_tier is None:
-        # No signals found — minimum score
-        lowest_tier = tiers[-1]
-        return lowest_tier["min"]
+        # No signals found — zero score, not a floor minimum
+        return 0
 
     tier_min = best_tier["min"]
     tier_max = best_tier["max"]

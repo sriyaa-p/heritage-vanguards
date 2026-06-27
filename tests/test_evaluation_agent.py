@@ -50,19 +50,20 @@ def test_verification_routes_high_score_to_review():
     assert updated.review.decision == ReviewDecisionType.pending
 
 
-def test_verification_auto_rejects_low_score():
+def test_verification_auto_rejects_obvious_junk():
+    """Score below 25 (junk threshold) → auto-rejected."""
     dossier = _make_dossier()
     dossier.scoring = ScoringResult(
-        historic_features=5, cultural_significance=4,
-        integrity=2, authenticity=2,
-        geographic_context=2, documentation=2,
+        historic_features=3, cultural_significance=2,
+        integrity=1, authenticity=1,
+        geographic_context=1, documentation=1,
         management_protection=0,
-        supporting_evidence=2, total=19, rationale="Insufficient evidence."
+        supporting_evidence=2, total=11, rationale="Insufficient evidence."
     )
     updated, status = run_verification(dossier)
     assert status == SubmissionStatus.rejected
     assert updated.review.decision == ReviewDecisionType.rejected
-    assert "19/100" in updated.review.reviewer_notes
+    assert "11/100" in updated.review.reviewer_notes
 
 
 def test_verification_rejects_duplicate():
@@ -77,27 +78,43 @@ def test_verification_rejects_duplicate():
     assert "duplicate" in updated.review.reviewer_notes.lower()
 
 
-def test_verification_routes_boundary_score_60():
+def test_verification_routes_low_score_to_human_review():
+    """Score between 25-59 → routed to human review (not auto-rejected)."""
     dossier = _make_dossier()
     dossier.scoring = ScoringResult(
-        historic_features=18, cultural_significance=14,
-        integrity=8, authenticity=8,
-        geographic_context=5, documentation=5,
-        management_protection=2,
-        supporting_evidence=0, total=60, rationale="Borderline."
+        historic_features=8, cultural_significance=6,
+        integrity=4, authenticity=4,
+        geographic_context=3, documentation=3,
+        management_protection=1,
+        supporting_evidence=2, total=31, rationale="Low confidence."
     )
     _, status = run_verification(dossier)
     assert status == SubmissionStatus.verification
 
 
-def test_verification_auto_rejects_score_59():
+def test_verification_routes_boundary_score_25():
+    """Score exactly 25 → routed to human review."""
     dossier = _make_dossier()
     dossier.scoring = ScoringResult(
-        historic_features=18, cultural_significance=14,
-        integrity=8, authenticity=7,
-        geographic_context=5, documentation=5,
-        management_protection=2,
-        supporting_evidence=0, total=59, rationale="Just below threshold."
+        historic_features=8, cultural_significance=6,
+        integrity=3, authenticity=3,
+        geographic_context=2, documentation=2,
+        management_protection=1,
+        supporting_evidence=0, total=25, rationale="Borderline."
+    )
+    _, status = run_verification(dossier)
+    assert status == SubmissionStatus.verification
+
+
+def test_verification_auto_rejects_score_24():
+    """Score 24 → auto-rejected as junk."""
+    dossier = _make_dossier()
+    dossier.scoring = ScoringResult(
+        historic_features=8, cultural_significance=5,
+        integrity=3, authenticity=3,
+        geographic_context=2, documentation=2,
+        management_protection=1,
+        supporting_evidence=0, total=24, rationale="Just below junk threshold."
     )
     _, status = run_verification(dossier)
     assert status == SubmissionStatus.rejected
