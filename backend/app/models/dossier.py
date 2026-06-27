@@ -23,7 +23,7 @@ class UnescoSite(Base):
 
     __tablename__ = "unesco_sites"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String(512), nullable=False, index=True)
     country = Column(String(256), nullable=False, index=True)
     region = Column(String(256), nullable=True)

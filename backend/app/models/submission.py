@@ -15,12 +15,14 @@ class Submission(Base):
         SAEnum(SubmissionStatus, name="submissionstatus"),
         nullable=False,
         default=SubmissionStatus.pending,
+        index=True,
     )
     dossier = Column(JSONB, nullable=False, default=dict)
     created_at = Column(
         DateTime(timezone=True),
         nullable=False,
         server_default=text("now()"),
+        index=True,
     )
     updated_at = Column(
         DateTime(timezone=True),

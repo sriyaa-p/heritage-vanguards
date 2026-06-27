@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { API } from "@/lib/api";
 
 const STATUS_COLOR: Record<string, string> = {
   verification: "bg-blue-100 text-blue-700",
@@ -45,26 +44,15 @@ export default function ReviewQueuePage() {
           : `${API}/submissions?status=${filter}`;
         const res = await fetch(url);
         const data = await res.json();
-        // Enrich each submission with score from its dossier
-        const enriched = await Promise.all(
-          data.map(async (row: any) => {
-            let score: number | null = null;
-            try {
-              const detail = await fetch(`${API}/submissions/${row.submission_id}`);
-              const d = await detail.json();
-              score = d.dossier?.scoring?.total ?? null;
-            } catch { /* skip */ }
-            return {
-              submission_id: row.submission_id,
-              location_name: row.location_name ?? "Unknown",
-              country: row.country ?? "—",
-              status: row.status,
-              score,
-              created_at: row.created_at,
-            };
-          })
-        );
-        setItems(enriched);
+        const mapped: QueueItem[] = data.map((row: any) => ({
+          submission_id: row.submission_id,
+          location_name: row.location_name ?? "Unknown",
+          country: row.country ?? "—",
+          status: row.status,
+          score: row.score ?? null,
+          created_at: row.created_at,
+        }));
+        setItems(mapped);
       } catch {
         setItems([]);
       } finally {

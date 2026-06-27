@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+import { API } from "@/lib/api";
 
 const STATUS_COLOR: Record<string, string> = {
   verification: "bg-blue-100 text-blue-700",
@@ -63,26 +62,16 @@ export default function DashboardPage() {
 
         setStats(statsData);
 
-        // Enrich first 10 with scores
-        const enriched = await Promise.all(
-          listData.slice(0, 10).map(async (row: any) => {
-            let score: number | null = null;
-            try {
-              const detail = await fetch(`${API}/submissions/${row.submission_id}`);
-              const d = await detail.json();
-              score = d.dossier?.scoring?.total ?? null;
-            } catch { /* skip */ }
-            return {
-              submission_id: row.submission_id,
-              location_name: row.location_name ?? "Unknown",
-              country: row.country ?? "—",
-              status: row.status,
-              score,
-              created_at: row.created_at,
-            };
-          })
-        );
-        setRecent(enriched);
+        // Map first 10 items directly — score is included in the list response
+        const mapped: RecentItem[] = listData.slice(0, 10).map((row: any) => ({
+          submission_id: row.submission_id,
+          location_name: row.location_name ?? "Unknown",
+          country: row.country ?? "—",
+          status: row.status,
+          score: row.score ?? null,
+          created_at: row.created_at,
+        }));
+        setRecent(mapped);
       } catch {
         setStats(null);
       } finally {

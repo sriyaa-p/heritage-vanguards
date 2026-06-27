@@ -99,9 +99,16 @@ async def upload_photos(
     upload_dir = os.path.join(_UPLOADS_DIR, submission_id)
     os.makedirs(upload_dir, exist_ok=True)
 
+    _ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+
     saved_urls = []
     for file in files:
-        ext = os.path.splitext(file.filename or "photo.jpg")[1] or ".jpg"
+        ext = os.path.splitext(file.filename or "photo.jpg")[1].lower() or ".jpg"
+        if ext not in _ALLOWED_EXTENSIONS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File type '{ext}' is not allowed. Only image files ({', '.join(sorted(_ALLOWED_EXTENSIONS))}) are accepted.",
+            )
         filename = f"{uuid.uuid4().hex}{ext}"
         dest = os.path.join(upload_dir, filename)
         with open(dest, "wb") as f:
@@ -143,6 +150,7 @@ async def list_submissions(
             "status": r.status,
             "location_name": r.dossier.get("metadata", {}).get("location_name"),
             "country": r.dossier.get("metadata", {}).get("country"),
+            "score": r.dossier.get("scoring", {}).get("total") if r.dossier.get("scoring") else None,
             "created_at": r.created_at,
         }
         for r in rows
