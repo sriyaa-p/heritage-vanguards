@@ -34,7 +34,6 @@ frontend/.next/
 frontend/out/
 node_modules/
 frontend/next-env.d.ts
-frontend/tsconfig.json
 
 # ── Docker ─────────────────────────────────────────────────────────────────
 # (docker-compose.override.yml is intentionally NOT ignored — commit it if present)
@@ -65,5 +64,4 @@ __pycache__/
 frontend/.next/
 frontend/node_modules/
 frontend/next-env.d.ts
-frontend/tsconfig.json
 frontend/yarn.lock
