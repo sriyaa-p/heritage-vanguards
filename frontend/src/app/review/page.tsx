@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { API } from "@/lib/api";
 
 const STATUS_COLOR: Record<string, string> = {
@@ -31,9 +32,11 @@ interface QueueItem {
 }
 
 export default function ReviewQueuePage() {
+  const searchParams = useSearchParams();
   const [items, setItems] = useState<QueueItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("verification");
+  const initialFilter = searchParams.get("status") ?? "verification";
+  const [filter, setFilter] = useState(initialFilter);
 
   useEffect(() => {
     const fetchQueue = async () => {

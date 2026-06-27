@@ -32,17 +32,25 @@ interface RecentItem {
   created_at: string;
 }
 
-function StatCard({ label, value, color, loading }: { label: string; value: number; color: string; loading: boolean }) {
-  return (
-    <div className="bg-white rounded-xl shadow p-4 sm:p-5">
+function StatCard({ label, value, color, loading, href }: { label: string; value: number; color: string; loading: boolean; href?: string }) {
+  const inner = (
+    <>
       <p className="text-xs sm:text-sm text-gray-500">{label}</p>
       {loading ? (
         <div className="h-8 w-12 bg-gray-100 animate-pulse rounded mt-1" />
       ) : (
         <p className={`text-2xl sm:text-3xl font-bold mt-1 ${color}`}>{value}</p>
       )}
-    </div>
+    </>
   );
+  if (href) {
+    return (
+      <Link href={href} className="bg-white rounded-xl shadow p-4 sm:p-5 hover:shadow-md hover:ring-2 hover:ring-blue-100 transition block">
+        {inner}
+      </Link>
+    );
+  }
+  return <div className="bg-white rounded-xl shadow p-4 sm:p-5">{inner}</div>;
 }
 
 export default function DashboardPage() {
@@ -93,12 +101,12 @@ export default function DashboardPage() {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
-          <StatCard label="Total Submissions" value={stats?.total ?? 0}             color="text-gray-900"    loading={loading} />
-          <StatCard label="Awaiting Review"   value={stats?.in_review ?? 0}         color="text-blue-600"   loading={loading} />
-          <StatCard label="In Pipeline"       value={(stats?.pending ?? 0) + (stats?.registry_check ?? 0) + (stats?.evaluation ?? 0)} color="text-yellow-600" loading={loading} />
-          <StatCard label="Approved"          value={stats?.approved ?? 0}           color="text-green-600"  loading={loading} />
-          <StatCard label="Rejected"          value={stats?.rejected ?? 0}           color="text-red-500"    loading={loading} />
-          <StatCard label="Duplicates Blocked" value={stats?.duplicates_blocked ?? 0} color="text-purple-600" loading={loading} />
+          <StatCard label="Total Submissions"  value={stats?.total ?? 0}             color="text-gray-900"    loading={loading} href="/review?status=all" />
+          <StatCard label="Awaiting Review"    value={stats?.in_review ?? 0}         color="text-blue-600"   loading={loading} href="/review?status=verification" />
+          <StatCard label="In Pipeline"        value={(stats?.pending ?? 0) + (stats?.registry_check ?? 0) + (stats?.evaluation ?? 0)} color="text-yellow-600" loading={loading} />
+          <StatCard label="Approved"           value={stats?.approved ?? 0}          color="text-green-600"  loading={loading} href="/review?status=approved" />
+          <StatCard label="Rejected"           value={stats?.rejected ?? 0}          color="text-red-500"    loading={loading} href="/review?status=rejected" />
+          <StatCard label="Duplicates Blocked" value={stats?.duplicates_blocked ?? 0} color="text-purple-600" loading={loading} href="/review?status=rejected" />
         </div>
 
         <div className="bg-white rounded-xl shadow overflow-hidden">

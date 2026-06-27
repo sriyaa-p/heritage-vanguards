@@ -112,6 +112,12 @@ async def run_pipeline(submission_id: str) -> None:
         log.info("Pipeline [2/3] EvaluationAgent — %s", submission_id)
         await _persist(db, submission_id, dossier, SubmissionStatus.evaluation)
 
+        # Re-fetch from DB so any photos uploaded after submission creation are included
+        fresh = await _load_submission(db, submission_id)
+        if fresh:
+            fresh_dossier = CanonicalDossier.model_validate(fresh.dossier)
+            dossier.raw_evidence.photo_urls = fresh_dossier.raw_evidence.photo_urls
+
         try:
             dossier = await run_evaluation(dossier)
         except Exception as exc:
