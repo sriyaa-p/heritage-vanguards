@@ -5,15 +5,15 @@
     "region": "Asia and the Pacific",
     "inscription_year": 1983,
     "criteria": "i",
-    "description": "Immense mausoleum of white marble built in Agra 1631-1648 by Mughal emperor Shah Jahan in memory of his favourite wife."
+    "description": "Immense mausoleum of white marble built in Agra between 1631 and 1648 by Mughal emperor Shah Jahan."
   },
   {
-    "name": "Ellora Caves",
+    "name": "Agra Fort",
     "country": "India",
     "region": "Asia and the Pacific",
     "inscription_year": 1983,
-    "criteria": "i,iii,vi",
-    "description": "34 monasteries and temples dug into a basalt cliff between the 6th and 11th century AD. Represents Buddhist, Hindu and Jain religious art."
+    "criteria": "iii",
+    "description": "Massive 16th-century Mughal fort in Agra containing palaces, mosques and audience halls."
   },
   {
     "name": "Ajanta Caves",
@@ -21,31 +21,31 @@
     "region": "Asia and the Pacific",
     "inscription_year": 1983,
     "criteria": "i,ii,iii,vi",
-    "description": "Masterpieces of Buddhist religious art whose paintings and sculptures influenced Indian art that followed."
+    "description": "Buddhist cave monuments dating from 2nd century BC with paintings and sculptures."
   },
   {
-    "name": "Elephanta Caves",
+    "name": "Ellora Caves",
     "country": "India",
     "region": "Asia and the Pacific",
-    "inscription_year": 1987,
+    "inscription_year": 1983,
+    "criteria": "i,iii,vi",
+    "description": "34 rock-cut Buddhist, Hindu and Jain cave temples from 6th to 11th centuries."
+  },
+  {
+    "name": "Konark Sun Temple",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1984,
     "criteria": "i,iii",
-    "description": "Collection of rock art linked to the cult of Shiva on an island near Mumbai. Main cave has five chambers with colossal statues."
+    "description": "13th-century chariot-shaped temple dedicated to the Sun God on the Bay of Bengal coast."
   },
   {
-    "name": "Rock Shelters of Bhimbetka",
+    "name": "Mahabodhi Temple Complex at Bodh Gaya",
     "country": "India",
     "region": "Asia and the Pacific",
-    "inscription_year": 2003,
-    "criteria": "iii,v",
-    "description": "Natural rock shelters displaying paintings from the Mesolithic period through to the historical period in the Vindhyan Mountains."
-  },
-  {
-    "name": "Hampi",
-    "country": "India",
-    "region": "Asia and the Pacific",
-    "inscription_year": 1986,
-    "criteria": "i,iii,iv",
-    "description": "Ruins of Vijayanagara, former capital of one of the greatest Hindu kingdoms. Outstanding example of Dravidian architecture including Vittala Temple."
+    "inscription_year": 2002,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Site where Siddhartha Gautama attained enlightenment under the Bodhi tree."
   },
   {
     "name": "Qutb Minar and its Monuments",
@@ -53,23 +53,143 @@
     "region": "Asia and the Pacific",
     "inscription_year": 1993,
     "criteria": "iv",
-    "description": "The Qutb Minar, at 72.5 m, is the tallest brick minaret in the world. The surrounding funerary buildings are among the finest examples of early Indo-Islamic architecture."
+    "description": "73-metre minaret built in 1193 with surrounding ruins of the first mosque in India."
   },
   {
-    "name": "Great Wall of China",
-    "country": "China",
+    "name": "Hampi",
+    "country": "India",
     "region": "Asia and the Pacific",
-    "inscription_year": 1987,
-    "criteria": "i,ii,iii,iv,vi",
-    "description": "Greatest military edifice in history. Built over many centuries from the 7th century BC to protect China from invaders."
+    "inscription_year": 1986,
+    "criteria": "i,iii,iv",
+    "description": "Ruins of Vijayanagara Empire capital, including temples, palaces and market streets."
   },
   {
-    "name": "Forbidden City",
-    "country": "China",
+    "name": "Elephanta Caves",
+    "country": "India",
     "region": "Asia and the Pacific",
     "inscription_year": 1987,
+    "criteria": "i,iii",
+    "description": "Rock-cut cave temples dedicated to Shiva on an island in Mumbai harbour."
+  },
+  {
+    "name": "Rock Shelters of Bhimbetka",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2003,
+    "criteria": "iii,v",
+    "description": "Prehistoric cave paintings spanning over 10,000 years in central India."
+  },
+  {
+    "name": "Chhatrapati Shivaji Terminus",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2004,
+    "criteria": "ii,iv",
+    "description": "Victorian Gothic Revival-style railway station in Mumbai, built in 1887."
+  },
+  {
+    "name": "Red Fort Complex",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2007,
+    "criteria": "ii,iii,vi",
+    "description": "Palatial fort in Delhi built by Mughal Emperor Shah Jahan in 1639."
+  },
+  {
+    "name": "Jantar Mantar Jaipur",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2010,
     "criteria": "i,ii,iii,iv",
-    "description": "Imperial Palace of the Ming and Qing Dynasties, the largest and best-preserved imperial palace complex in the world, built 1406-1420."
+    "description": "18th-century astronomical observation site with massive masonry instruments."
+  },
+  {
+    "name": "Hill Forts of Rajasthan",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2013,
+    "criteria": "ii,iii",
+    "description": "Series of six majestic hill forts in the Aravalli hills of Rajasthan."
+  },
+  {
+    "name": "Rani-ki-Vav",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2014,
+    "criteria": "i,iv",
+    "description": "Intricately constructed stepwell on the banks of the Saraswati River in Patan."
+  },
+  {
+    "name": "Nalanda Mahavihara",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2016,
+    "criteria": "iv,vi",
+    "description": "Archaeological site of Nalanda, a monastic and scholastic institution from 3rd century BC."
+  },
+  {
+    "name": "Khajuraho Group of Monuments",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1986,
+    "criteria": "i,iii",
+    "description": "Group of Hindu and Jain temples known for their intricate erotic sculptures."
+  },
+  {
+    "name": "Buddhist Monuments at Sanchi",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1989,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Buddhist sanctuaries dating back to the 3rd century BC including the Great Stupa."
+  },
+  {
+    "name": "Churches and Convents of Goa",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1986,
+    "criteria": "ii,iv,vi",
+    "description": "Portuguese colonial churches including Basilica of Bom Jesus with relics of St. Francis Xavier."
+  },
+  {
+    "name": "Pattadakal Group of Monuments",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "iii,iv",
+    "description": "8th-century temples blending northern and southern Indian architectural styles."
+  },
+  {
+    "name": "Nanda Devi and Valley of Flowers National Parks",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1988,
+    "criteria": "vii,x",
+    "description": "Remote Himalayan sanctuaries known for alpine flowers and snow leopards."
+  },
+  {
+    "name": "Kaziranga National Park",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1985,
+    "criteria": "ix,x",
+    "description": "Park on the banks of the Brahmaputra with two-thirds of the world's great one-horned rhinoceroses."
+  },
+  {
+    "name": "Sundarbans National Park",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "ix,x",
+    "description": "Largest tidal mangrove forest in the world at the mouth of the Ganges."
+  },
+  {
+    "name": "Western Ghats",
+    "country": "India",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2012,
+    "criteria": "ix,x",
+    "description": "Mountain chain older than the Himalayas with exceptional biodiversity."
   },
   {
     "name": "Angkor",
@@ -77,7 +197,215 @@
     "region": "Asia and the Pacific",
     "inscription_year": 1992,
     "criteria": "i,ii,iii,iv",
-    "description": "Most important archaeological site in South-East Asia containing remains of the Khmer Empire capitals stretching over 400 km2."
+    "description": "Remains of the Khmer Empire capitals from 9th to 15th centuries, including Angkor Wat temple complex."
+  },
+  {
+    "name": "Angkor Wat",
+    "country": "Cambodia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1992,
+    "criteria": "i,ii,iii,iv",
+    "description": "12th-century temple complex and the largest religious monument in the world, built by the Khmer Empire."
+  },
+  {
+    "name": "Temple of Preah Vihear",
+    "country": "Cambodia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2008,
+    "criteria": "i",
+    "description": "11th-century Hindu sanctuary on the edge of a cliff on the Dangrek Mountains."
+  },
+  {
+    "name": "Great Wall of China",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Series of fortifications built across northern China over many centuries."
+  },
+  {
+    "name": "Forbidden City",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv",
+    "description": "Imperial palace complex in Beijing, home to 24 emperors of the Ming and Qing dynasties."
+  },
+  {
+    "name": "Mausoleum of the First Qin Emperor",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "i,iii,iv,vi",
+    "description": "Tomb complex of Emperor Qin Shi Huang including the famous Terracotta Army."
+  },
+  {
+    "name": "Mogao Caves",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,v,vi",
+    "description": "492 cells and cave sanctuaries carved into cliffs along the ancient Silk Road."
+  },
+  {
+    "name": "Huangshan",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1990,
+    "criteria": "ii,vii,x",
+    "description": "Mountain range in eastern China renowned for scenery that has influenced Chinese art."
+  },
+  {
+    "name": "Jiuzhaigou Valley",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1992,
+    "criteria": "vii",
+    "description": "Valley with colourful lakes and waterfalls in Sichuan Province."
+  },
+  {
+    "name": "Old Town of Lijiang",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1997,
+    "criteria": "ii,iv,v",
+    "description": "Ancient trading town of the Naxi people, well preserved for 800 years."
+  },
+  {
+    "name": "Summer Palace Beijing",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1998,
+    "criteria": "i,ii,iii",
+    "description": "Masterpiece of Chinese landscape garden design with Kunming Lake and Longevity Hill."
+  },
+  {
+    "name": "Temple of Heaven Beijing",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1998,
+    "criteria": "i,ii,iii",
+    "description": "Complex of Taoist buildings where emperors performed annual rituals for good harvests."
+  },
+  {
+    "name": "Longmen Grottoes",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2000,
+    "criteria": "i,ii,iii",
+    "description": "Buddhist cave temples carved from 493 AD containing over 100,000 Buddhist stone carvings."
+  },
+  {
+    "name": "Yungang Grottoes",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2001,
+    "criteria": "i,ii,iii,iv",
+    "description": "Ancient Buddhist cave art from 5th and 6th centuries in Shanxi Province."
+  },
+  {
+    "name": "West Lake Cultural Landscape of Hangzhou",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2011,
+    "criteria": "ii,iii,vi",
+    "description": "Cultural landscape that inspired garden designs in East Asia and the West."
+  },
+  {
+    "name": "Three Parallel Rivers of Yunnan Protected Areas",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2003,
+    "criteria": "vii,viii,ix,x",
+    "description": "Gorges of the Yangtze, Mekong and Salween rivers in Yunnan Province."
+  },
+  {
+    "name": "Wulingyuan Scenic and Historic Interest Area",
+    "country": "China",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1992,
+    "criteria": "vii",
+    "description": "Over 3,000 quartzite sandstone pillars in Hunan Province."
+  },
+  {
+    "name": "Himeji Castle",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1993,
+    "criteria": "i,iv",
+    "description": "Finest surviving example of early 17th-century Japanese castle architecture."
+  },
+  {
+    "name": "Buddhist Monuments in the Horyu-ji Area",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1993,
+    "criteria": "i,ii,iv,vi",
+    "description": "Oldest surviving wooden structures in the world dating from 7th century."
+  },
+  {
+    "name": "Historic Monuments of Ancient Kyoto",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1994,
+    "criteria": "ii,iv",
+    "description": "17 Buddhist temples, Shinto shrines and a castle from the ancient capital of Japan."
+  },
+  {
+    "name": "Historic Villages of Shirakawa-go and Gokayama",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1995,
+    "criteria": "iv,v",
+    "description": "Farmhouses with steep thatched roofs in isolated mountain villages."
+  },
+  {
+    "name": "Hiroshima Peace Memorial",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1996,
+    "criteria": "vi",
+    "description": "Genbaku Dome, the only structure left standing near the 1945 atomic bomb hypocenter."
+  },
+  {
+    "name": "Itsukushima Shinto Shrine",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1996,
+    "criteria": "i,ii,iv,vi",
+    "description": "Shinto shrine on the island of Miyajima with famous floating torii gate."
+  },
+  {
+    "name": "Historic Monuments of Ancient Nara",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1998,
+    "criteria": "ii,iii,iv,vi",
+    "description": "Monuments representing the flowering of Japanese culture under Chinese influence."
+  },
+  {
+    "name": "Shrines and Temples of Nikko",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1999,
+    "criteria": "i,iv,vi",
+    "description": "Elaborate 17th-century shrines and mausoleums in a sacred mountain forest."
+  },
+  {
+    "name": "Fujisan Sacred Place",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2013,
+    "criteria": "iii,vi",
+    "description": "Sacred mountain and source of artistic inspiration for centuries of Japanese culture."
+  },
+  {
+    "name": "Sacred Sites and Pilgrimage Routes in the Kii Mountain Range",
+    "country": "Japan",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2004,
+    "criteria": "ii,iii,iv,vi",
+    "description": "Sacred forests, shrines and pilgrimage routes in the mountainous Kii Peninsula."
   },
   {
     "name": "Borobudur Temple Compounds",
@@ -85,31 +413,199 @@
     "region": "Asia and the Pacific",
     "inscription_year": 1991,
     "criteria": "i,ii,vi",
-    "description": "9th-century Mahayana Buddhist temple in Central Java decorated with 2,672 relief panels and 504 Buddha statues."
+    "description": "9th-century Mahayana Buddhist temple, the world's largest Buddhist monument."
   },
   {
-    "name": "Historic City of Ayutthaya",
+    "name": "Prambanan Temple Compounds",
+    "country": "Indonesia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1991,
+    "criteria": "i,iv",
+    "description": "9th-century Hindu temple compound dedicated to the Trimurti in Java."
+  },
+  {
+    "name": "Komodo National Park",
+    "country": "Indonesia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1991,
+    "criteria": "vii,x",
+    "description": "Islands of Komodo, Rinca and Padar with the last population of Komodo dragons."
+  },
+  {
+    "name": "Bali Cultural Landscape of Subak System",
+    "country": "Indonesia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2012,
+    "criteria": "ii,iii,v,vi",
+    "description": "Landscape of water temples, rice paddies and rural villages in Bali."
+  },
+  {
+    "name": "Haeinsa Temple Janggyeong Panjeon",
+    "country": "Republic of Korea",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1995,
+    "criteria": "iv,vi",
+    "description": "Depository for the Tripitaka Koreana woodblocks from the 13th century."
+  },
+  {
+    "name": "Seokguram Grotto and Bulguksa Temple",
+    "country": "Republic of Korea",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1995,
+    "criteria": "i,iv",
+    "description": "8th-century Buddhist temple and artificial grotto with a granite Buddha."
+  },
+  {
+    "name": "Changdeokgung Palace Complex",
+    "country": "Republic of Korea",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1997,
+    "criteria": "ii,iii,iv",
+    "description": "Palace complex including the Secret Garden built during the Joseon Dynasty."
+  },
+  {
+    "name": "Gyeongju Historic Areas",
+    "country": "Republic of Korea",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2000,
+    "criteria": "ii,iii",
+    "description": "Cultural landscape of the Silla kingdom with Buddhist temples and burial mounds."
+  },
+  {
+    "name": "Jeju Volcanic Island and Lava Tubes",
+    "country": "Republic of Korea",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2007,
+    "criteria": "vii,viii",
+    "description": "Hallasan National Park, Geomunoreum lava tube system and Seongsan Ilchulbong tuff cone."
+  },
+  {
+    "name": "Ayutthaya Historic City",
     "country": "Thailand",
     "region": "Asia and the Pacific",
     "inscription_year": 1991,
     "criteria": "iii",
-    "description": "Founded in 1350 as capital of the Siamese Kingdom, Ayutthaya rose to be one of the world largest and most cosmopolitan cities."
+    "description": "Capital of Ayutthaya Kingdom with Buddhist monuments from 1350 to 1767."
   },
   {
-    "name": "Historic Centre of Rome",
-    "country": "Italy",
-    "region": "Europe and North America",
-    "inscription_year": 1980,
-    "criteria": "i,ii,iii,iv,vi",
-    "description": "Centre of the Roman Republic, then the Roman Empire, then capital of the Christian world. Contains the Colosseum and Roman Forum."
+    "name": "Sukhothai Historic Town",
+    "country": "Thailand",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1991,
+    "criteria": "i,iii",
+    "description": "First capital of the Siamese Kingdom with monuments from the 13th century."
   },
   {
-    "name": "Venice and its Lagoon",
-    "country": "Italy",
-    "region": "Europe and North America",
-    "inscription_year": 1987,
-    "criteria": "i,ii,iii,iv,v,vi",
-    "description": "Built on 118 small islands separated by canals, Venice is an astonishing architectural masterpiece featuring works by Titian, Tintoretto, and Veronese."
+    "name": "Hoi An Ancient Town",
+    "country": "Viet Nam",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1999,
+    "criteria": "ii,v",
+    "description": "Exceptionally well-preserved trading port from the 15th to 19th centuries."
+  },
+  {
+    "name": "Hue Complex of Monuments",
+    "country": "Viet Nam",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1993,
+    "criteria": "iii,iv",
+    "description": "Imperial citadel and tombs of the Nguyen Dynasty emperors in central Vietnam."
+  },
+  {
+    "name": "My Son Sanctuary",
+    "country": "Viet Nam",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1999,
+    "criteria": "ii,iii",
+    "description": "Ruins of the Cham Empire Hindu temples from 4th to 13th centuries."
+  },
+  {
+    "name": "Ha Long Bay",
+    "country": "Viet Nam",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1994,
+    "criteria": "vii,viii",
+    "description": "Bay with 1,600 limestone islets forming a seascape of exceptional beauty."
+  },
+  {
+    "name": "Kathmandu Valley",
+    "country": "Nepal",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1979,
+    "criteria": "iii,iv,vi",
+    "description": "Seven groups of Hindu and Buddhist monuments and buildings including Pashupatinath."
+  },
+  {
+    "name": "Sagarmatha National Park",
+    "country": "Nepal",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1979,
+    "criteria": "vii",
+    "description": "National park containing Mount Everest with Sherpa cultural heritage."
+  },
+  {
+    "name": "Ancient City of Sigiriya",
+    "country": "Sri Lanka",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1982,
+    "criteria": "ii,iii,iv",
+    "description": "5th-century rock fortress and palace with water gardens and frescoes."
+  },
+  {
+    "name": "Sacred City of Kandy",
+    "country": "Sri Lanka",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1988,
+    "criteria": "iv,vi",
+    "description": "Last capital of the ancient Sinhala kingdom with the Temple of the Tooth."
+  },
+  {
+    "name": "Old Town of Galle and its Fortifications",
+    "country": "Sri Lanka",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1988,
+    "criteria": "iv",
+    "description": "Dutch colonial fortification founded in the 16th century on the southwest coast."
+  },
+  {
+    "name": "Bagan",
+    "country": "Myanmar",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2019,
+    "criteria": "iii,iv",
+    "description": "Archaeological area with thousands of Buddhist temples from the 9th to 13th centuries."
+  },
+  {
+    "name": "Luang Prabang",
+    "country": "Lao PDR",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1995,
+    "criteria": "ii,iv,v",
+    "description": "Town at the junction of the Mekong and Nam Khan rivers with temples and colonial architecture."
+  },
+  {
+    "name": "George Town and Malacca",
+    "country": "Malaysia",
+    "region": "Asia and the Pacific",
+    "inscription_year": 2008,
+    "criteria": "ii",
+    "description": "Historic cities on the Straits of Malacca with multi-cultural trading heritage."
+  },
+  {
+    "name": "Rice Terraces of the Philippine Cordilleras",
+    "country": "Philippines",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1995,
+    "criteria": "iii,iv,v",
+    "description": "2,000-year-old terraces carved into the mountains by the Ifugao people."
+  },
+  {
+    "name": "Historic City of Vigan",
+    "country": "Philippines",
+    "region": "Asia and the Pacific",
+    "inscription_year": 1999,
+    "criteria": "ii,iv",
+    "description": "Best preserved Spanish colonial town in Asia dating from the 16th century."
   },
   {
     "name": "Acropolis Athens",
@@ -117,7 +613,103 @@
     "region": "Europe and North America",
     "inscription_year": 1987,
     "criteria": "i,ii,iii,iv,vi",
-    "description": "Universal symbols of classical civilisation forming the greatest architectural and artistic complex bequeathed by Greek Antiquity to the world."
+    "description": "Ancient citadel containing the Parthenon and other classical Greek monuments."
+  },
+  {
+    "name": "Delphi",
+    "country": "Greece",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Pan-Hellenic sanctuary and oracle of the god Apollo at the foot of Mount Parnassus."
+  },
+  {
+    "name": "Meteora",
+    "country": "Greece",
+    "region": "Europe and North America",
+    "inscription_year": 1988,
+    "criteria": "i,ii,iv,v,vii",
+    "description": "Monasteries perched atop towering natural sandstone pillars in Thessaly."
+  },
+  {
+    "name": "Mount Athos",
+    "country": "Greece",
+    "region": "Europe and North America",
+    "inscription_year": 1988,
+    "criteria": "i,ii,iv,v,vi",
+    "description": "Autonomous monastic state with 20 Eastern Orthodox Christian monasteries."
+  },
+  {
+    "name": "Historic Centre of Rome",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1980,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Roman monuments including the Colosseum, Forum, Pantheon and Papal Rome."
+  },
+  {
+    "name": "Venice and its Lagoon",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,v,vi",
+    "description": "City built on 118 islands with canals and outstanding Renaissance architecture."
+  },
+  {
+    "name": "Historic Centre of Florence",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1982,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Renaissance city with Brunelleschi's dome, Uffizi Gallery and Piazza della Signoria."
+  },
+  {
+    "name": "Piazza del Duomo Pisa",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iv,vi",
+    "description": "Square with the Cathedral, Baptistry, Campanile (Leaning Tower) and Monumental Cemetery."
+  },
+  {
+    "name": "Pompeii Herculaneum and Torre Annunziata",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1997,
+    "criteria": "iii,iv,v",
+    "description": "Roman towns preserved under volcanic ash from the 79 AD Vesuvius eruption."
+  },
+  {
+    "name": "Amalfi Coast",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1997,
+    "criteria": "ii,iv,v",
+    "description": "Outstanding example of a Mediterranean landscape with terraced vineyards and villages."
+  },
+  {
+    "name": "Cinque Terre",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1997,
+    "criteria": "ii,iv,v",
+    "description": "Five villages clinging to terraced hillsides on the Ligurian coast."
+  },
+  {
+    "name": "Aeolian Islands",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 2000,
+    "criteria": "viii",
+    "description": "Volcanic island archipelago north of Sicily with ongoing volcanic activity."
+  },
+  {
+    "name": "Historic Centre of Naples",
+    "country": "Italy",
+    "region": "Europe and North America",
+    "inscription_year": 1995,
+    "criteria": "ii,iv",
+    "description": "One of the oldest continuously inhabited cities in the world, founded by Greeks."
   },
   {
     "name": "Stonehenge Avebury and Associated Sites",
@@ -125,7 +717,47 @@
     "region": "Europe and North America",
     "inscription_year": 1986,
     "criteria": "i,ii,iii",
-    "description": "Among the most famous groups of megaliths in the world. Circles of menhirs whose astronomical significance is still being explored."
+    "description": "Prehistoric ceremonial and sacred sites including the megalithic monuments of Stonehenge."
+  },
+  {
+    "name": "Palace of Westminster and Westminster Abbey",
+    "country": "United Kingdom",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iv",
+    "description": "Gothic Abbey, medieval palace and St Margaret's Church on the Thames."
+  },
+  {
+    "name": "Tower of London",
+    "country": "United Kingdom",
+    "region": "Europe and North America",
+    "inscription_year": 1988,
+    "criteria": "ii,iv",
+    "description": "Fortress founded in 1066 with the White Tower and Crown Jewels."
+  },
+  {
+    "name": "Canterbury Cathedral",
+    "country": "United Kingdom",
+    "region": "Europe and North America",
+    "inscription_year": 1988,
+    "criteria": "i,ii,vi",
+    "description": "Mother Church of the worldwide Anglican communion with medieval architecture."
+  },
+  {
+    "name": "Edinburgh Old and New Towns",
+    "country": "United Kingdom",
+    "region": "Europe and North America",
+    "inscription_year": 1995,
+    "criteria": "ii,iv",
+    "description": "Scottish capital with medieval Old Town dominated by castle and 18th-century New Town."
+  },
+  {
+    "name": "Blenheim Palace",
+    "country": "United Kingdom",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "ii,iv",
+    "description": "English Baroque palace built for John Churchill, birthplace of Winston Churchill."
   },
   {
     "name": "Palace of Versailles",
@@ -133,7 +765,15 @@
     "region": "Europe and North America",
     "inscription_year": 1979,
     "criteria": "i,ii,vi",
-    "description": "Principal residence of the French kings from Louis XIV to Louis XVI. Transformed from a hunting lodge into a monumental palace for the whole court."
+    "description": "Royal residence built for Louis XIV with its famous Hall of Mirrors and gardens."
+  },
+  {
+    "name": "Mont Saint Michel and its Bay",
+    "country": "France",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "i,iii,vi",
+    "description": "Island monastery rising from tidal flats off the Normandy coast."
   },
   {
     "name": "Chartres Cathedral",
@@ -141,7 +781,7 @@
     "region": "Europe and North America",
     "inscription_year": 1979,
     "criteria": "i,ii,iv",
-    "description": "Built in the 12th and 13th centuries, marks the high point of French Gothic art and strongly influenced subsequent Gothic architecture in Europe."
+    "description": "High Gothic cathedral with intact medieval stained glass and sculpted portals."
   },
   {
     "name": "Prehistoric Sites and Decorated Caves of the Vezere Valley",
@@ -149,15 +789,47 @@
     "region": "Europe and North America",
     "inscription_year": 1979,
     "criteria": "i,iii",
-    "description": "147 sites containing the most remarkable group of prehistoric paintings, engravings and sculptures including the famous Lascaux cave."
+    "description": "147 prehistoric sites including the Lascaux cave with 17,000-year-old paintings."
+  },
+  {
+    "name": "Pont du Gard",
+    "country": "France",
+    "region": "Europe and North America",
+    "inscription_year": 1985,
+    "criteria": "i,ii,iv",
+    "description": "Roman aqueduct bridge built in the 1st century AD across the Gardon River."
+  },
+  {
+    "name": "Paris Banks of the Seine",
+    "country": "France",
+    "region": "Europe and North America",
+    "inscription_year": 1991,
+    "criteria": "i,ii",
+    "description": "Historic buildings along the Seine including Notre-Dame and the Louvre."
+  },
+  {
+    "name": "Carcassonne Historic Fortified City",
+    "country": "France",
+    "region": "Europe and North America",
+    "inscription_year": 1997,
+    "criteria": "ii,iv",
+    "description": "Medieval fortified city with 52 towers and double ring of walls."
   },
   {
     "name": "Alhambra Generalife and Albayzin Granada",
     "country": "Spain",
     "region": "Europe and North America",
     "inscription_year": 1984,
-    "criteria": "i,iii,iv",
-    "description": "Royal city of the Nasrid emirs ruling the last Moorish kingdom in Iberia. Architecture and gardens reflect exceptional Hispano-Islamic culture."
+    "criteria": "i,ii,iii,iv",
+    "description": "Moorish palaces, citadel and gardens in Granada from the Nasrid sultans."
+  },
+  {
+    "name": "Burgos Cathedral",
+    "country": "Spain",
+    "region": "Europe and North America",
+    "inscription_year": 1984,
+    "criteria": "ii,iv,vi",
+    "description": "Gothic cathedral begun in 1221 with fine towers and ornate Golden Staircase."
   },
   {
     "name": "Works of Antoni Gaudi",
@@ -165,7 +837,39 @@
     "region": "Europe and North America",
     "inscription_year": 1984,
     "criteria": "i,ii,iv",
-    "description": "Extraordinary contribution to late 19th and early 20th century architecture. The Sagrada Familia is an expressionist synthesis of Gothic and Art Nouveau."
+    "description": "Seven buildings designed by Antoni Gaudí including Sagrada Família and Park Güell in Barcelona."
+  },
+  {
+    "name": "Altamira Cave and Palaeolithic Cave Art of Northern Spain",
+    "country": "Spain",
+    "region": "Europe and North America",
+    "inscription_year": 1985,
+    "criteria": "i,iii",
+    "description": "17 prehistoric decorated caves with spectacular painted animal figures."
+  },
+  {
+    "name": "Seville Cathedral Alcazar and Archivo de Indias",
+    "country": "Spain",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,vi",
+    "description": "Gothic cathedral, Moorish fortress and colonial archives in Seville."
+  },
+  {
+    "name": "Old Town of Salamanca",
+    "country": "Spain",
+    "region": "Europe and North America",
+    "inscription_year": 1988,
+    "criteria": "i,ii,iv",
+    "description": "University city with Romanesque, Gothic, Moorish, Renaissance and Baroque buildings."
+  },
+  {
+    "name": "Route of Santiago de Compostela",
+    "country": "Spain",
+    "region": "Europe and North America",
+    "inscription_year": 1993,
+    "criteria": "ii,iv,vi",
+    "description": "Pilgrimage route with over 1,800 buildings including the Cathedral of Santiago."
   },
   {
     "name": "Cologne Cathedral",
@@ -173,7 +877,95 @@
     "region": "Europe and North America",
     "inscription_year": 1996,
     "criteria": "i,ii,iv",
-    "description": "Gothic masterpiece begun in 1248 and completed in 1880, dedicated to St Peter and the Virgin Mary, one of the finest examples of Gothic architecture."
+    "description": "Gothic cathedral begun in 1248, containing the relics of the Three Magi."
+  },
+  {
+    "name": "Aachen Cathedral",
+    "country": "Germany",
+    "region": "Europe and North America",
+    "inscription_year": 1978,
+    "criteria": "i,ii,iv,vi",
+    "description": "Palatine Chapel built by Charlemagne in 796 AD, finest Carolingian architecture."
+  },
+  {
+    "name": "Museumsinsel Berlin",
+    "country": "Germany",
+    "region": "Europe and North America",
+    "inscription_year": 1999,
+    "criteria": "ii,iv",
+    "description": "Museum island in Berlin with five world-renowned museums from the 19th century."
+  },
+  {
+    "name": "Bauhaus and its Sites in Weimar Dessau and Bernau",
+    "country": "Germany",
+    "region": "Europe and North America",
+    "inscription_year": 1996,
+    "criteria": "ii,iv,vi",
+    "description": "Buildings created by the Bauhaus school between 1919 and 1933."
+  },
+  {
+    "name": "Historic Centres of Berne",
+    "country": "Switzerland",
+    "region": "Europe and North America",
+    "inscription_year": 1983,
+    "criteria": "iii",
+    "description": "Medieval old city with an unusual concentration of arcaded walks and 16th-century fountains."
+  },
+  {
+    "name": "Swiss Alps Jungfrau-Aletsch",
+    "country": "Switzerland",
+    "region": "Europe and North America",
+    "inscription_year": 2001,
+    "criteria": "vii,viii,ix",
+    "description": "The largest glacier in the Alps and geological record of four ice ages."
+  },
+  {
+    "name": "Vienna Historic Centre",
+    "country": "Austria",
+    "region": "Europe and North America",
+    "inscription_year": 2001,
+    "criteria": "ii,iv,vi",
+    "description": "Baroque palaces, imperial buildings and fin-de-siècle architecture of the Habsburgs."
+  },
+  {
+    "name": "Historic Centre of Prague",
+    "country": "Czechia",
+    "region": "Europe and North America",
+    "inscription_year": 1992,
+    "criteria": "ii,iv,vi",
+    "description": "Bohemian capital with medieval Old Town, Prague Castle and Charles Bridge."
+  },
+  {
+    "name": "Historic Centre of Warsaw",
+    "country": "Poland",
+    "region": "Europe and North America",
+    "inscription_year": 1980,
+    "criteria": "vi",
+    "description": "Old Town of Warsaw, almost entirely destroyed in 1944 and faithfully rebuilt."
+  },
+  {
+    "name": "Kraków Historic Centre",
+    "country": "Poland",
+    "region": "Europe and North America",
+    "inscription_year": 1978,
+    "criteria": "iv,vi",
+    "description": "Medieval Polish capital with Wawel Royal Castle, Cathedral and Cloth Hall."
+  },
+  {
+    "name": "Auschwitz Birkenau",
+    "country": "Poland",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "vi",
+    "description": "German Nazi Concentration and Extermination Camp from 1940 to 1945."
+  },
+  {
+    "name": "Wieliczka and Bochnia Royal Salt Mines",
+    "country": "Poland",
+    "region": "Europe and North America",
+    "inscription_year": 1978,
+    "criteria": "iv",
+    "description": "Salt mines continuously exploited since the 13th century with underground chapels."
   },
   {
     "name": "Kremlin and Red Square Moscow",
@@ -181,15 +973,151 @@
     "region": "Europe and North America",
     "inscription_year": 1990,
     "criteria": "i,ii,iv,vi",
-    "description": "Built in the 15th century on a hill above the Moscow River, serving as the symbolic heart of Russia for centuries."
+    "description": "Symbol of Russian power with fortifications, palaces, churches and State Historical Museum."
   },
   {
-    "name": "Historic Centre of Prague",
-    "country": "Czech Republic",
+    "name": "Historic Centre of Saint Petersburg",
+    "country": "Russian Federation",
     "region": "Europe and North America",
-    "inscription_year": 1992,
-    "criteria": "ii,iv,vi",
-    "description": "Comprising the Old Town, Mala Strana and New Town built between the 11th and 18th centuries, an outstanding example of interplaying architectural styles."
+    "inscription_year": 1990,
+    "criteria": "i,ii,iv",
+    "description": "City founded by Peter the Great with imperial palaces including the Hermitage Museum."
+  },
+  {
+    "name": "Lake Baikal",
+    "country": "Russian Federation",
+    "region": "Europe and North America",
+    "inscription_year": 1996,
+    "criteria": "vii,viii,ix,x",
+    "description": "World's oldest and deepest lake containing 20% of the world's surface fresh water."
+  },
+  {
+    "name": "Historic Centre of Tallinn",
+    "country": "Estonia",
+    "region": "Europe and North America",
+    "inscription_year": 1997,
+    "criteria": "ii,iv",
+    "description": "Medieval Old Town with intact city walls, towers and limestone buildings."
+  },
+  {
+    "name": "Old Town of Riga",
+    "country": "Latvia",
+    "region": "Europe and North America",
+    "inscription_year": 1997,
+    "criteria": "i,ii",
+    "description": "Medieval city with the finest collection of Art Nouveau architecture in Europe."
+  },
+  {
+    "name": "Vilnius Historic Centre",
+    "country": "Lithuania",
+    "region": "Europe and North America",
+    "inscription_year": 1994,
+    "criteria": "ii,iii,iv",
+    "description": "Old town with outstanding university buildings and Baroque architecture."
+  },
+  {
+    "name": "Budapest including the Banks of the Danube",
+    "country": "Hungary",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "ii,iv",
+    "description": "Buda Castle quarter, Parliament building and Andrássy Avenue on the Danube banks."
+  },
+  {
+    "name": "Old Town of Dubrovnik",
+    "country": "Croatia",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "i,iii,iv",
+    "description": "Medieval walled city on the Adriatic with marble streets and Baroque fountains."
+  },
+  {
+    "name": "Historical Complex of Split with Diocletian's Palace",
+    "country": "Croatia",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "ii,iii,iv",
+    "description": "Late Roman Diocletian's Palace with medieval city built within its walls."
+  },
+  {
+    "name": "Plitvice Lakes National Park",
+    "country": "Croatia",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "vii,viii",
+    "description": "16 terraced lakes joined by waterfalls with exceptional natural beauty."
+  },
+  {
+    "name": "Natural and Culturo-Historical Region of Kotor",
+    "country": "Montenegro",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "i,ii,iii,iv",
+    "description": "Natural and historical city of Kotor on the Adriatic coast."
+  },
+  {
+    "name": "Historic Areas of Istanbul",
+    "country": "Turkey",
+    "region": "Europe and North America",
+    "inscription_year": 1985,
+    "criteria": "i,ii,iii,iv",
+    "description": "Byzantine and Ottoman capital with Hagia Sophia, Topkapi Palace and Blue Mosque."
+  },
+  {
+    "name": "Göreme National Park and Rock Sites of Cappadocia",
+    "country": "Turkey",
+    "region": "Europe and North America",
+    "inscription_year": 1985,
+    "criteria": "i,iii,v,vii",
+    "description": "Fairy chimneys and rock-cut dwellings and churches of Cappadocia."
+  },
+  {
+    "name": "Hierapolis-Pamukkale",
+    "country": "Turkey",
+    "region": "Europe and North America",
+    "inscription_year": 1988,
+    "criteria": "iii,iv,vii",
+    "description": "Ancient spa city with white calcium carbonate terraces and thermal pools."
+  },
+  {
+    "name": "Ephesus",
+    "country": "Turkey",
+    "region": "Europe and North America",
+    "inscription_year": 2015,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Ancient Greek city on the Ionian coast with Temple of Artemis ruins."
+  },
+  {
+    "name": "Troy",
+    "country": "Turkey",
+    "region": "Europe and North America",
+    "inscription_year": 1998,
+    "criteria": "ii,iii,vi",
+    "description": "Archaeological site of ancient Troy, setting for Homer's Iliad."
+  },
+  {
+    "name": "Hattusha the Hittite Capital",
+    "country": "Turkey",
+    "region": "Europe and North America",
+    "inscription_year": 1986,
+    "criteria": "i,ii,iii,iv",
+    "description": "Capital of the Hittite Empire showing major Bronze Age civilization."
+  },
+  {
+    "name": "Independence Hall",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "vi",
+    "description": "Building in Philadelphia where the Declaration of Independence and Constitution were signed."
+  },
+  {
+    "name": "Statue of Liberty",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1984,
+    "criteria": "i,vi",
+    "description": "Colossal neoclassical sculpture on Liberty Island in New York Harbor."
   },
   {
     "name": "Yellowstone National Park",
@@ -197,7 +1125,7 @@
     "region": "Europe and North America",
     "inscription_year": 1978,
     "criteria": "vii,viii,ix,x",
-    "description": "The world first national park, containing half of all the world geysers. Created by the largest supervolcanic system in North America."
+    "description": "World's first national park with geysers, hot springs and diverse wildlife."
   },
   {
     "name": "Grand Canyon National Park",
@@ -205,7 +1133,79 @@
     "region": "Europe and North America",
     "inscription_year": 1979,
     "criteria": "vii,viii,ix,x",
-    "description": "Natural landscape of exceptional beauty in the Colorado River valley, Arizona. Over 1.6 km deep, revealing 2 billion years of geological history."
+    "description": "Spectacular canyon carved by the Colorado River with geological record of 2 billion years."
+  },
+  {
+    "name": "Everglades National Park",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1979,
+    "criteria": "vii,viii,ix,x",
+    "description": "Subtropical wilderness in southern Florida, the largest mangrove ecosystem in the Americas."
+  },
+  {
+    "name": "Yosemite National Park",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1984,
+    "criteria": "vii,viii",
+    "description": "Glaciated valley in the Sierra Nevada with outstanding scenery and giant sequoias."
+  },
+  {
+    "name": "Mesa Verde National Park",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1978,
+    "criteria": "iii",
+    "description": "Ancestral Puebloan cliff dwellings dating from 600 to 1300 AD."
+  },
+  {
+    "name": "Cahokia Mounds State Historic Site",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1982,
+    "criteria": "iii,iv",
+    "description": "Pre-Columbian urban centre with over 120 mounds built between 700 and 1400 AD."
+  },
+  {
+    "name": "Taos Pueblo",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1992,
+    "criteria": "iv",
+    "description": "Living Pueblo community inhabited for over 1,000 years in northern New Mexico."
+  },
+  {
+    "name": "Hawaiian Volcanoes National Park",
+    "country": "United States of America",
+    "region": "Europe and North America",
+    "inscription_year": 1987,
+    "criteria": "viii,ix,x",
+    "description": "Active volcanoes Kilauea and Mauna Loa in the Hawaiian island chain."
+  },
+  {
+    "name": "Canadian Rocky Mountain Parks",
+    "country": "Canada",
+    "region": "Europe and North America",
+    "inscription_year": 1984,
+    "criteria": "vii,viii",
+    "description": "Banff, Jasper, Kootenay and Yoho parks with mountain peaks, glaciers and fossil sites."
+  },
+  {
+    "name": "Old Quebec",
+    "country": "Canada",
+    "region": "Europe and North America",
+    "inscription_year": 1985,
+    "criteria": "iv,vi",
+    "description": "Fortified city of New France with remarkable historic urban landscape."
+  },
+  {
+    "name": "L'Anse aux Meadows National Historic Site",
+    "country": "Canada",
+    "region": "Europe and North America",
+    "inscription_year": 1978,
+    "criteria": "vi",
+    "description": "Only confirmed Norse settlement in North America, dating from the 11th century."
   },
   {
     "name": "Historic Sanctuary of Machu Picchu",
@@ -213,47 +1213,175 @@
     "region": "Latin America and the Caribbean",
     "inscription_year": 1983,
     "criteria": "i,iii,vii,ix",
-    "description": "Standing 2,430 m above sea-level in a tropical mountain forest, probably the most amazing urban creation of the Inca Empire."
+    "description": "15th-century Inca citadel high in the Andes, one of the world's greatest cultural sites."
   },
   {
-    "name": "Chichen-Itza",
-    "country": "Mexico",
+    "name": "Lines and Geoglyphs of Nasca and Palpa",
+    "country": "Peru",
     "region": "Latin America and the Caribbean",
-    "inscription_year": 1988,
-    "criteria": "i,ii,iii",
-    "description": "Most important city of the Maya civilization on the Yucatan Peninsula, the political and economic centre flourishing between the 9th and 12th centuries."
+    "inscription_year": 1994,
+    "criteria": "i,iii,iv",
+    "description": "Geometric and animal geoglyphs etched on desert plateau, visible only from the air."
   },
   {
-    "name": "Pre-Hispanic City of Teotihuacan",
-    "country": "Mexico",
+    "name": "City of Cuzco",
+    "country": "Peru",
     "region": "Latin America and the Caribbean",
-    "inscription_year": 1987,
-    "criteria": "i,ii,iii,iv,vi",
-    "description": "Holy city built between the 1st and 7th centuries AD, characterized by the Temple of the Sun and Moon. One of the largest cities in the ancient world."
+    "inscription_year": 1983,
+    "criteria": "iii,iv",
+    "description": "Former capital of the Inca Empire overlaid with colonial Spanish architecture."
+  },
+  {
+    "name": "Chan Chan Archaeological Zone",
+    "country": "Peru",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1986,
+    "criteria": "i,iii",
+    "description": "Capital of the Chimu Kingdom, largest pre-Columbian city in South America."
+  },
+  {
+    "name": "Rio de Janeiro Carioca Landscapes",
+    "country": "Brazil",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 2012,
+    "criteria": "v,vi",
+    "description": "Exceptional natural landscape between mountain and sea including Sugarloaf and Corcovado."
+  },
+  {
+    "name": "Historic Town of Ouro Preto",
+    "country": "Brazil",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1980,
+    "criteria": "i,iii",
+    "description": "Former Brazilian capital with outstanding examples of Baroque architecture."
+  },
+  {
+    "name": "Iguaçu National Park",
+    "country": "Brazil",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1986,
+    "criteria": "vii,x",
+    "description": "Spectacular Iguaçu Falls with subtropical rainforest on the Brazil-Argentina border."
+  },
+  {
+    "name": "Iguazu National Park",
+    "country": "Argentina",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1984,
+    "criteria": "vii",
+    "description": "Iguazú Falls, one of the world's great waterfall systems, with subtropical forest."
+  },
+  {
+    "name": "Los Glaciares National Park",
+    "country": "Argentina",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1981,
+    "criteria": "vii,viii",
+    "description": "Glacial park in Patagonia with Perito Moreno Glacier and Mount Fitzroy."
   },
   {
     "name": "Rapa Nui National Park",
     "country": "Chile",
     "region": "Latin America and the Caribbean",
     "inscription_year": 1995,
-    "criteria": "i,iii,v",
-    "description": "Easter Island is an extraordinary testimony to a unique cultural tradition, containing the famous moai monolithic human figures erected by the Rapa Nui people."
+    "criteria": "i,iii",
+    "description": "Easter Island with monolithic statues (moai) of the Rapa Nui culture."
   },
   {
-    "name": "Old Havana and its Fortification System",
-    "country": "Cuba",
+    "name": "City of Potosi",
+    "country": "Bolivia",
     "region": "Latin America and the Caribbean",
-    "inscription_year": 1982,
-    "criteria": "iv,v",
-    "description": "Founded in the 16th century, Havana was one of the most important bastions in the Spanish colonial empire. Its fortifications are the most complete military architecture in the Americas."
+    "inscription_year": 1987,
+    "criteria": "ii,iv,vi",
+    "description": "16th-century silver mining city which produced enormous wealth for the Spanish Empire."
   },
   {
-    "name": "Galapagos Islands",
+    "name": "Cartagena Port City Fortifications",
+    "country": "Colombia",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1984,
+    "criteria": "iv,vi",
+    "description": "Spanish colonial port city with finest military architecture in South America."
+  },
+  {
+    "name": "Galápagos Islands",
     "country": "Ecuador",
     "region": "Latin America and the Caribbean",
     "inscription_year": 1978,
     "criteria": "vii,viii,ix,x",
-    "description": "Situated in the Pacific Ocean, the Galapagos Islands inspired Darwin theory of evolution and continue to be a living laboratory of evolution."
+    "description": "Volcanic archipelago that inspired Darwin's theory of evolution with unique wildlife."
+  },
+  {
+    "name": "City of Quito",
+    "country": "Ecuador",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1978,
+    "criteria": "ii,iv",
+    "description": "Best-preserved historic centre in Latin America with colonial churches and convents."
+  },
+  {
+    "name": "Teotihuacan",
+    "country": "Mexico",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "Pre-Columbian city with the pyramids of the Sun and Moon from 1st to 7th centuries."
+  },
+  {
+    "name": "Historic Centre of Mexico City and Xochimilco",
+    "country": "Mexico",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1987,
+    "criteria": "ii,iii,iv,v",
+    "description": "Founded by the Aztecs in 1325 on an island with Aztec ruins and colonial buildings."
+  },
+  {
+    "name": "Pre-Hispanic City of Chichén-Itzá",
+    "country": "Mexico",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1988,
+    "criteria": "i,ii,iii",
+    "description": "Maya city with El Castillo pyramid, astronomical observatory and sacred cenote."
+  },
+  {
+    "name": "Pre-Hispanic Town of Uxmal",
+    "country": "Mexico",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1996,
+    "criteria": "i,ii,iii",
+    "description": "Maya city from the Classic period with the Pyramid of the Magician."
+  },
+  {
+    "name": "Mayan Site of Palenque",
+    "country": "Mexico",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1987,
+    "criteria": "i,ii,iii,iv",
+    "description": "Maya city from the 7th century with the Temple of the Inscriptions and royal tomb."
+  },
+  {
+    "name": "Historic District of Old Havana",
+    "country": "Cuba",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1982,
+    "criteria": "iv,v",
+    "description": "Colonial city founded in 1519 with Baroque and neoclassical monuments."
+  },
+  {
+    "name": "Trinidad and the Valley de los Ingenios",
+    "country": "Cuba",
+    "region": "Latin America and the Caribbean",
+    "inscription_year": 1988,
+    "criteria": "iv,v",
+    "description": "Colonial city with remains of 19th-century sugar plantations in central Cuba."
+  },
+  {
+    "name": "Pyramids of Giza and Sphinx",
+    "country": "Egypt",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "i,iii,vi",
+    "description": "Ancient pyramids of Khufu, Khafre and Menkaure and the Great Sphinx of Giza."
   },
   {
     "name": "Memphis and its Necropolis",
@@ -261,15 +1389,71 @@
     "region": "Arab States",
     "inscription_year": 1979,
     "criteria": "i,iii,vi",
-    "description": "Capital of ancient Egypt at the height of its power, including the pyramid fields from Giza to Dahshur, outstanding proof of ancient Egyptian civilization."
+    "description": "Capital of the Old Kingdom with the pyramids from Dahshur to Giza."
   },
   {
-    "name": "Nubian Monuments from Abu Simbel to Philae",
+    "name": "Abu Simbel to Philae Nubian Monuments",
     "country": "Egypt",
     "region": "Arab States",
     "inscription_year": 1979,
     "criteria": "i,iii,vi",
-    "description": "Contains the Temples of Ramses II at Abu Simbel and the Sanctuary of Isis at Philae. Unique artistic achievements saved from flooding by UNESCO."
+    "description": "Nubian monuments including the rock temples of Ramesses II at Abu Simbel."
+  },
+  {
+    "name": "Ancient Thebes with its Necropolis",
+    "country": "Egypt",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "i,iii,vi",
+    "description": "Luxor with the Valley of the Kings, Karnak Temple and Luxor Temple."
+  },
+  {
+    "name": "Islamic Cairo",
+    "country": "Egypt",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "i,v,vi",
+    "description": "Historic Cairo with mosques, madrasas and mausoleums of the Fatimid period."
+  },
+  {
+    "name": "Medina of Fez",
+    "country": "Morocco",
+    "region": "Arab States",
+    "inscription_year": 1981,
+    "criteria": "ii,v",
+    "description": "Oldest medieval medina in the world, founded in the 9th century."
+  },
+  {
+    "name": "Medina of Marrakesh",
+    "country": "Morocco",
+    "region": "Arab States",
+    "inscription_year": 1985,
+    "criteria": "i,ii,iv,v",
+    "description": "Moroccan capital from 11th to 20th centuries with souks and mosques."
+  },
+  {
+    "name": "Ksar of Ait-Ben-Haddou",
+    "country": "Morocco",
+    "region": "Arab States",
+    "inscription_year": 1987,
+    "criteria": "iv,v",
+    "description": "Fortified village (ksar) on the former route between the Sahara and Marrakesh."
+  },
+  {
+    "name": "Kairouan",
+    "country": "Tunisia",
+    "region": "Arab States",
+    "inscription_year": 1988,
+    "criteria": "i,ii,iii,v",
+    "description": "Founded in 670, one of the holiest cities of Islam with the Great Mosque."
+  },
+  {
+    "name": "Carthage",
+    "country": "Tunisia",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "ii,iii,vi",
+    "description": "Ruins of the ancient Phoenician and Roman city near Tunis."
   },
   {
     "name": "Petra",
@@ -277,31 +1461,87 @@
     "region": "Arab States",
     "inscription_year": 1985,
     "criteria": "i,iii,iv",
-    "description": "Capital of the Nabataean Empire between the 4th century BC and the 2nd century AD. Half-built, half-carved in the rock, surrounded by mountains."
+    "description": "Rose-red Nabataean rock-carved city called the Rose City, dating from 4th century BC."
+  },
+  {
+    "name": "Wadi Rum",
+    "country": "Jordan",
+    "region": "Arab States",
+    "inscription_year": 2011,
+    "criteria": "iii,v,vii",
+    "description": "Moon Valley desert landscape with rock formations and ancient inscriptions."
+  },
+  {
+    "name": "Ancient City of Damascus",
+    "country": "Syrian Arab Republic",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "i,ii,iii,iv,vi",
+    "description": "One of the oldest continuously inhabited cities in the world."
+  },
+  {
+    "name": "Ancient City of Aleppo",
+    "country": "Syrian Arab Republic",
+    "region": "Arab States",
+    "inscription_year": 1986,
+    "criteria": "iii,iv",
+    "description": "City at the crossroads of trade routes between Asia and the Mediterranean."
+  },
+  {
+    "name": "Ruins of Palmyra",
+    "country": "Syrian Arab Republic",
+    "region": "Arab States",
+    "inscription_year": 1980,
+    "criteria": "i,ii,iv",
+    "description": "Oasis city with Roman temples and colonnaded street in the Syrian desert."
   },
   {
     "name": "Persepolis",
-    "country": "Iran",
+    "country": "Iran (Islamic Republic of)",
     "region": "Arab States",
     "inscription_year": 1979,
     "criteria": "i,iii,vi",
-    "description": "Founded by Darius I in 518 BC, Persepolis was the capital of the Achaemenid Empire and a unique testimony to Achaemenid civilization."
+    "description": "Achaemenid ceremonial capital built by Darius I in 515 BC with Palace of 100 Columns."
   },
   {
-    "name": "Old City of Jerusalem and its Walls",
-    "country": "Jordan",
+    "name": "Naqsh-e Jahan Square Isfahan",
+    "country": "Iran (Islamic Republic of)",
     "region": "Arab States",
-    "inscription_year": 1981,
-    "criteria": "ii,iii,vi",
-    "description": "Jerusalem holds a unique position in the history of Judaism, Christianity and Islam, containing some of the most sacred sites of these three religions."
+    "inscription_year": 1979,
+    "criteria": "i,v,vi",
+    "description": "Safavid royal square (maidan) in Isfahan with mosques, palaces and bazaars."
   },
   {
-    "name": "Great Barrier Reef",
-    "country": "Australia",
-    "region": "Asia and the Pacific",
-    "inscription_year": 1981,
-    "criteria": "vii,viii,ix,x",
-    "description": "The world most extensive stretch of coral reef on the north-east coast of Australia, home to 1,500 species of fish and 4,000 types of mollusc."
+    "name": "Pasargadae",
+    "country": "Iran (Islamic Republic of)",
+    "region": "Arab States",
+    "inscription_year": 2004,
+    "criteria": "i,ii,iii,iv",
+    "description": "First capital of the Achaemenid Empire founded by Cyrus the Great."
+  },
+  {
+    "name": "Historic City of Yazd",
+    "country": "Iran (Islamic Republic of)",
+    "region": "Arab States",
+    "inscription_year": 2017,
+    "criteria": "ii,iii,iv,v",
+    "description": "Living historical city with adobe architecture and ancient water management system."
+  },
+  {
+    "name": "Al-Hijr Archaeological Site Madain Salih",
+    "country": "Saudi Arabia",
+    "region": "Arab States",
+    "inscription_year": 2008,
+    "criteria": "ii,iii",
+    "description": "First UNESCO site in Saudi Arabia with Nabataean tombs similar to Petra."
+  },
+  {
+    "name": "Qadisha Valley and Forest of Cedars of God",
+    "country": "Lebanon",
+    "region": "Arab States",
+    "inscription_year": 1998,
+    "criteria": "iii,iv",
+    "description": "Valley with early Christian hermitages and the last Cedar of Lebanon trees."
   },
   {
     "name": "Serengeti National Park",
@@ -309,7 +1549,15 @@
     "region": "Africa",
     "inscription_year": 1981,
     "criteria": "vii,x",
-    "description": "The vast plains of the Serengeti comprise 1.5 million ha of savannah. The annual migration of wildebeest is one of the most spectacular events in nature."
+    "description": "Vast savanna park with the largest animal migration on earth."
+  },
+  {
+    "name": "Ngorongoro Conservation Area",
+    "country": "United Republic of Tanzania",
+    "region": "Africa",
+    "inscription_year": 1979,
+    "criteria": "iv,vii,viii,ix,x",
+    "description": "Volcanic caldera with extraordinarily dense animal populations."
   },
   {
     "name": "Kilimanjaro National Park",
@@ -317,7 +1565,55 @@
     "region": "Africa",
     "inscription_year": 1987,
     "criteria": "vii",
-    "description": "Mount Kilimanjaro is the highest peak in Africa at 5,895 m, encompassing vegetation from forest to alpine desert and hosting rare endemic species."
+    "description": "Africa's highest peak with glaciers and unique afro-alpine ecology."
+  },
+  {
+    "name": "Ruins of Kilwa Kisiwani and Songo Mnara",
+    "country": "United Republic of Tanzania",
+    "region": "Africa",
+    "inscription_year": 1981,
+    "criteria": "iii",
+    "description": "Ruins of two East African coastal trading towns from the 13th to 16th centuries."
+  },
+  {
+    "name": "Virunga National Park",
+    "country": "Democratic Republic of the Congo",
+    "region": "Africa",
+    "inscription_year": 1979,
+    "criteria": "vii,viii,x",
+    "description": "Africa's oldest park with mountain gorillas, active volcanoes and diverse ecosystems."
+  },
+  {
+    "name": "Okavango Delta",
+    "country": "Botswana",
+    "region": "Africa",
+    "inscription_year": 2014,
+    "criteria": "vii,ix,x",
+    "description": "Inland delta with seasonal flooding that creates one of Africa's great wildlife habitats."
+  },
+  {
+    "name": "Victoria Falls Mosi-oa-Tunya",
+    "country": "Zambia",
+    "region": "Africa",
+    "inscription_year": 1989,
+    "criteria": "vii",
+    "description": "World's largest waterfall on the Zambezi River between Zambia and Zimbabwe."
+  },
+  {
+    "name": "Great Zimbabwe National Monument",
+    "country": "Zimbabwe",
+    "region": "Africa",
+    "inscription_year": 1986,
+    "criteria": "i,iii,vi",
+    "description": "Ruins of the capital of the Kingdom of Zimbabwe from 11th to 15th centuries."
+  },
+  {
+    "name": "Island of Gorée",
+    "country": "Senegal",
+    "region": "Africa",
+    "inscription_year": 1978,
+    "criteria": "vi",
+    "description": "Largest slave-trading centre in Africa from 15th to 19th centuries."
   },
   {
     "name": "Timbuktu",
@@ -325,6 +1621,142 @@
     "region": "Africa",
     "inscription_year": 1988,
     "criteria": "ii,iv,v",
-    "description": "A major intellectual and spiritual capital and centre for Islam throughout Africa in the 15th and 16th centuries, containing three great mosques."
+    "description": "City in the Sahara, centre of the spread of Islam and learning in the 15th century."
+  },
+  {
+    "name": "Old Towns of Djenné",
+    "country": "Mali",
+    "region": "Africa",
+    "inscription_year": 1988,
+    "criteria": "iii,iv",
+    "description": "City on the Niger River with Great Mosque, the world's largest mud brick building."
+  },
+  {
+    "name": "Royal Palaces of Abomey",
+    "country": "Benin",
+    "region": "Africa",
+    "inscription_year": 1985,
+    "criteria": "iii,iv",
+    "description": "Palaces of 12 successive kings of the Kingdom of Dahomey from 1625 to 1900."
+  },
+  {
+    "name": "Forts and Castles Volta Greater Accra and Western Regions",
+    "country": "Ghana",
+    "region": "Africa",
+    "inscription_year": 1979,
+    "criteria": "vi",
+    "description": "Slave trading forts along the Ghanaian coast built from 16th to 18th centuries."
+  },
+  {
+    "name": "Aksum",
+    "country": "Ethiopia",
+    "region": "Africa",
+    "inscription_year": 1980,
+    "criteria": "i,iv",
+    "description": "Ruins of ancient Aksumite civilization with obelisks and royal tombs."
+  },
+  {
+    "name": "Lalibela Rock-Hewn Churches",
+    "country": "Ethiopia",
+    "region": "Africa",
+    "inscription_year": 1978,
+    "criteria": "i,ii,iii",
+    "description": "Eleven medieval churches carved from rock in the 12th and 13th centuries."
+  },
+  {
+    "name": "Fasil Ghebbi Gondar Region",
+    "country": "Ethiopia",
+    "region": "Africa",
+    "inscription_year": 1979,
+    "criteria": "i,ii,iii",
+    "description": "17th-century Ethiopian royal city with castles and churches."
+  },
+  {
+    "name": "Simien National Park",
+    "country": "Ethiopia",
+    "region": "Africa",
+    "inscription_year": 1978,
+    "criteria": "vii,x",
+    "description": "Spectacular highland landscape with Gelada baboons and Walia ibex."
+  },
+  {
+    "name": "Lamu Old Town",
+    "country": "Kenya",
+    "region": "Africa",
+    "inscription_year": 2001,
+    "criteria": "ii,iv",
+    "description": "Oldest and best-preserved Swahili settlement in East Africa."
+  },
+  {
+    "name": "Lake Turkana National Parks",
+    "country": "Kenya",
+    "region": "Africa",
+    "inscription_year": 1997,
+    "criteria": "viii,ix,x",
+    "description": "Oldest and largest lake in the Kenyan Rift Valley, site of hominid fossils."
+  },
+  {
+    "name": "Mount Kenya National Park and Forest",
+    "country": "Kenya",
+    "region": "Africa",
+    "inscription_year": 1997,
+    "criteria": "vii,ix",
+    "description": "Africa's second highest peak with alpine vegetation and glaciers."
+  },
+  {
+    "name": "Robben Island",
+    "country": "South Africa",
+    "region": "Africa",
+    "inscription_year": 1999,
+    "criteria": "iii,vi",
+    "description": "Island prison where Nelson Mandela was held and symbol of the anti-apartheid struggle."
+  },
+  {
+    "name": "Cape Floral Region Protected Areas",
+    "country": "South Africa",
+    "region": "Africa",
+    "inscription_year": 2004,
+    "criteria": "ix,x",
+    "description": "Region with the highest concentration of plant species per unit area in the world."
+  },
+  {
+    "name": "Fossil Hominid Sites of South Africa",
+    "country": "South Africa",
+    "region": "Africa",
+    "inscription_year": 1999,
+    "criteria": "iii,vi",
+    "description": "Cradle of Humankind with caves containing hominid fossils dating back 3.5 million years."
+  },
+  {
+    "name": "iSimangaliso Wetland Park",
+    "country": "South Africa",
+    "region": "Africa",
+    "inscription_year": 1999,
+    "criteria": "vii,ix,x",
+    "description": "Largest estuarine system in Africa with diverse ecosystems on the Indian Ocean coast."
+  },
+  {
+    "name": "Mapungubwe Cultural Landscape",
+    "country": "South Africa",
+    "region": "Africa",
+    "inscription_year": 2003,
+    "criteria": "ii,iii,iv,v",
+    "description": "Open savanna with ruins of the first kingdom in southern Africa from 900 to 1300 AD."
+  },
+  {
+    "name": "Medina of Tunis",
+    "country": "Tunisia",
+    "region": "Arab States",
+    "inscription_year": 1979,
+    "criteria": "ii,iii,v",
+    "description": "Islamic medina with the Zitouna Mosque and labyrinthine souks."
+  },
+  {
+    "name": "Dougga Thugga",
+    "country": "Tunisia",
+    "region": "Arab States",
+    "inscription_year": 1997,
+    "criteria": "ii,iii",
+    "description": "Best-preserved Roman-Berber town in North Africa with Capitol temple."
   }
 ]
