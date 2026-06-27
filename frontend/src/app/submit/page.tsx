@@ -12,7 +12,7 @@ const PIPELINE_STAGES = [
 
 const TERMINAL = ["approved", "rejected", "verification"];
 
-function PipelineTracker({ submissionId }: { submissionId: string }) {
+function PipelineTracker({ submissionId, onReset }: { submissionId: string; onReset: () => void }) {
   const [status, setStatus] = useState("pending");
   const [rejectionReason, setRejectionReason] = useState<string | null>(null);
   const router = useRouter();
@@ -54,11 +54,11 @@ function PipelineTracker({ submissionId }: { submissionId: string }) {
         <p className="text-gray-600 text-sm mb-4 text-left leading-relaxed">{rejectionReason}</p>
         <p className="text-xs font-mono bg-gray-100 rounded p-2 mb-4">{submissionId}</p>
         {!isDuplicate && (
-          <button onClick={() => router.push("/submit")} className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-blue-700 transition mb-2">
+          <button onClick={onReset} className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-blue-700 transition mb-2">
             Improve and resubmit →
           </button>
         )}
-        <button onClick={() => router.push("/submit")} className="text-gray-400 hover:text-gray-600 text-sm">
+        <button onClick={onReset} className="text-gray-400 hover:text-gray-600 text-sm">
           Submit a different site
         </button>
       </div>
@@ -148,10 +148,16 @@ export default function SubmitPage() {
     }
   }
 
+  function handleReset() {
+    setSubmissionId("");
+    setSubmitted(false);
+    setPhotos([]);
+  }
+
   if (submitted) {
     return (
       <main className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
-        <PipelineTracker submissionId={submissionId} />
+        <PipelineTracker submissionId={submissionId} onReset={handleReset} />
       </main>
     );
   }

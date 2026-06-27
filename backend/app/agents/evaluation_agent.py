@@ -17,6 +17,10 @@ import logging
 import re
 from typing import Any
 
+# Minimum combined length (site name + description) to proceed with Gemini evaluation.
+# Inputs shorter than this are clearly junk (e.g. "A", "B", "C") and get auto-zero.
+_MIN_INPUT_LENGTH = 20
+
 from google import genai
 from google.genai import types as genai_types
 
@@ -90,6 +94,36 @@ Description:
 {description}
 Number of photos submitted: {len(raw.photo_urls)}
 """.strip()
+
+    # ── Minimum input quality gate ────────────────────────────────────────────
+    # If the submission is trivially short (single letters, empty fields), skip
+    # Gemini entirely — the LLM will hallucinate significance for junk inputs.
+    combined_input = (meta.location_name.strip() + " " + description.strip()).strip()
+    if len(combined_input) < _MIN_INPUT_LENGTH:
+        log.warning(
+            "EvaluationAgent: input too short (%d chars) for %s — skipping Gemini, scoring zero",
+            len(combined_input), meta.submission_id,
+        )
+        _no_evidence = "Insufficient input — submission too short to evaluate."
+        dossier.extracted_evidence = ExtractedEvidence(
+            historic_features=_no_evidence,
+            cultural_significance=_no_evidence,
+            integrity=_no_evidence,
+            authenticity=_no_evidence,
+            geographic_context=_no_evidence,
+            documentation_quality=_no_evidence,
+            management_protection=_no_evidence,
+            supporting_evidence=_no_evidence,
+        )
+        from app.models.dossier import ScoringResult
+        dossier.scoring = ScoringResult(
+            historic_features=0, cultural_significance=0, integrity=0,
+            authenticity=0, geographic_context=0, documentation=0,
+            management_protection=0, supporting_evidence=0, total=0,
+            rationale="Submission rejected before evaluation: input too short to assess heritage value.",
+        )
+        return dossier
+    # ─────────────────────────────────────────────────────────────────────────
 
     log.info("EvaluationAgent [1/2]: calling Gemini for evidence extraction — %s", meta.submission_id)
 
