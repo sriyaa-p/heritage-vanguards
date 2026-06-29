@@ -24,6 +24,31 @@ router = APIRouter(prefix="/submissions", tags=["submissions"])
 _UPLOADS_DIR = "/data/uploads"
 os.makedirs(_UPLOADS_DIR, exist_ok=True)
 
+_ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+
+
+def _save_photos(
+    submission_id: str, files: list[UploadFile]
+) -> list[str]:
+    """Save uploaded photo files to disk and return their URL paths."""
+    upload_dir = os.path.join(_UPLOADS_DIR, submission_id)
+    os.makedirs(upload_dir, exist_ok=True)
+
+    saved_urls: list[str] = []
+    for file in files:
+        ext = os.path.splitext(file.filename or "photo.jpg")[1].lower() or ".jpg"
+        if ext not in _ALLOWED_EXTENSIONS:
+            raise HTTPException(
+                status_code=400,
+                detail=f"File type '{ext}' is not allowed. Only image files ({', '.join(sorted(_ALLOWED_EXTENSIONS))}) are accepted.",
+            )
+        filename = f"{uuid.uuid4().hex}{ext}"
+        dest = os.path.join(upload_dir, filename)
+        with open(dest, "wb") as f:
+            shutil.copyfileobj(file.file, f)
+        saved_urls.append(f"/uploads/{submission_id}/{filename}")
+    return saved_urls
+
 
 class SubmitRequest(BaseModel):
     location_name: str
@@ -79,6 +104,63 @@ async def create_submission(
     }
 
 
+@router.post("/with-photos", status_code=201)
+async def create_submission_with_photos(
+    background_tasks: BackgroundTasks,
+    location_name: str = Form(...),
+    country: str = Form(...),
+    description: str = Form(...),
+    submitted_by: str = Form("anonymous"),
+    files: list[UploadFile] = File(default=[]),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Unified submission endpoint: accepts metadata AND photo files in a single
+    multipart/form-data request. This eliminates the race condition where the
+    background pipeline could overwrite photo URLs uploaded via a second request.
+    """
+    submission_id = _make_submission_id()
+
+    # Save photos to disk BEFORE creating the dossier
+    photo_urls: list[str] = []
+    if files and files[0].filename:  # FastAPI sends [UploadFile("")] when no files
+        photo_urls = _save_photos(submission_id, files)
+
+    dossier = CanonicalDossier(
+        metadata=Metadata(
+            submission_id=submission_id,
+            submitted_by=submitted_by,
+            submitted_at=datetime.now(timezone.utc),
+            location_name=location_name,
+            country=country,
+            status=SubmissionStatus.pending,
+        ),
+        raw_evidence=RawEvidence(
+            description=description,
+            photo_urls=photo_urls,
+        ),
+        review=ReviewDecision(),
+    )
+
+    submission = Submission(
+        submission_id=submission_id,
+        status=SubmissionStatus.pending,
+        dossier=dossier.model_dump(mode="json"),
+    )
+    db.add(submission)
+    await db.commit()
+    await db.refresh(submission)
+
+    background_tasks.add_task(run_pipeline, submission_id)
+
+    return {
+        "submission_id": submission_id,
+        "status": submission.status,
+        "created_at": submission.created_at,
+        "photos_uploaded": len(photo_urls),
+    }
+
+
 @router.post("/{submission_id}/photos", status_code=200)
 async def upload_photos(
     submission_id: str,
@@ -96,24 +178,7 @@ async def upload_photos(
     if not submission:
         raise HTTPException(status_code=404, detail="Submission not found")
 
-    upload_dir = os.path.join(_UPLOADS_DIR, submission_id)
-    os.makedirs(upload_dir, exist_ok=True)
-
-    _ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
-
-    saved_urls = []
-    for file in files:
-        ext = os.path.splitext(file.filename or "photo.jpg")[1].lower() or ".jpg"
-        if ext not in _ALLOWED_EXTENSIONS:
-            raise HTTPException(
-                status_code=400,
-                detail=f"File type '{ext}' is not allowed. Only image files ({', '.join(sorted(_ALLOWED_EXTENSIONS))}) are accepted.",
-            )
-        filename = f"{uuid.uuid4().hex}{ext}"
-        dest = os.path.join(upload_dir, filename)
-        with open(dest, "wb") as f:
-            shutil.copyfileobj(file.file, f)
-        saved_urls.append(f"/uploads/{submission_id}/{filename}")
+    saved_urls = _save_photos(submission_id, files)
 
     dossier = submission.dossier or {}
     raw = dossier.setdefault("raw_evidence", {})
