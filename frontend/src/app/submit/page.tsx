@@ -135,10 +135,18 @@ export default function SubmitPage() {
     };
 
     try {
-      const res = await fetch(`${API}/submissions`, {
+      // Send metadata and photos together in a single request to prevent
+      // the race condition where the pipeline overwrites photo URLs.
+      const formData = new FormData();
+      formData.append("location_name", data.location_name);
+      formData.append("country", data.country);
+      formData.append("description", data.description);
+      formData.append("submitted_by", data.submitted_by);
+      photos.forEach((file) => formData.append("files", file));
+
+      const res = await fetch(`${API}/submissions/with-photos`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: formData,
       });
 
       if (res.status === 422) {
@@ -147,15 +155,7 @@ export default function SubmitPage() {
       }
 
       const result = await res.json();
-      const sid = result.submission_id;
-
-      if (photos.length > 0) {
-        const formData = new FormData();
-        photos.forEach((file) => formData.append("files", file));
-        await fetch(`${API}/submissions/${sid}/photos`, { method: "POST", body: formData });
-      }
-
-      setSubmissionId(sid);
+      setSubmissionId(result.submission_id);
       setSubmitted(true);
     } catch {
       setSubmissionId("SUB-DEMO-00000000");
