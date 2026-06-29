@@ -20,8 +20,8 @@ from typing import Any
 
 from google import genai
 from google.genai import types as genai_types
-from rank_bm25 import BM25Okapi
-from sqlalchemy import select
+import sqlalchemy as sa
+from sqlalchemy import select, func
 
 from app.core.config import settings
 from app.db.session import AsyncSessionLocal
@@ -54,10 +54,6 @@ Rules:
 """.strip()
 
 
-def _tokenize(text: str) -> list[str]:
-    return text.lower().split()
-
-
 def _parse_gemini_json(text: str) -> dict[str, Any]:
     cleaned = re.sub(r"```(?:json)?\s*", "", text).strip().rstrip("`").strip()
     try:
@@ -75,9 +71,9 @@ async def _gemini_compare(
     description: str,
     candidates: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    """Ask Gemini to compare the submission against the top BM25 candidates."""
+    """Ask Gemini to compare the submission against the top FTS candidates."""
     candidate_text = "\n".join(
-        f"  - {c['site_name']} ({c['country']}) — similarity: {c['similarity_score']:.2f}"
+        f"  - {c['site_name']} ({c['country']}) — similarity: {c['similarity_score']:.4f}"
         for c in candidates
     )
     prompt = f"""
@@ -86,7 +82,7 @@ Submission:
   Country: {country}
   Description: {description[:500]}
 
-Top Registry Candidates (BM25):
+Top Registry Candidates (FTS):
 {candidate_text}
 
 Is this submission a duplicate of any registry entry?
@@ -120,13 +116,14 @@ async def lookup_unesco_registry(
     Returns:
         Dict matching the RegistryCheck Pydantic model.
     """
-    async with AsyncSessionLocal() as db:
-        all_sites_result = await db.execute(select(UnescoSite))
-        all_sites: list[UnescoSite] = list(all_sites_result.scalars().all())
+    checked_at = datetime.now(timezone.utc).isoformat()
+    sql_match: UnescoSite | None = None
+    top_candidates: list[dict[str, Any]] = []
+    best_fts_score: float = 0.0
 
+    async with AsyncSessionLocal() as db:
+        # ── Step 1: Exact SQL match (fast path) ────────────────────────────────
         # Only do an ilike match when the site name is meaningful (>=4 chars).
-        # Single letters like 'A' would match every site containing that letter.
-        sql_match: UnescoSite | None = None
         if len(site_name.strip()) >= 4:
             exact_stmt = select(UnescoSite).where(
                 UnescoSite.name.ilike(f"%{site_name}%"),
@@ -135,50 +132,77 @@ async def lookup_unesco_registry(
             exact_result = await db.execute(exact_stmt)
             sql_match = exact_result.scalars().first()
 
-    checked_at = datetime.now(timezone.utc).isoformat()
+        if sql_match:
+            log.info("RegistryAgent: SQL exact match found — %s", sql_match.name)
+            return {
+                "is_duplicate": True,
+                "matched_site": sql_match.name,
+                "similarity_score": 1.0,
+                "top_candidates": [
+                    {
+                        "site_name": sql_match.name,
+                        "country": sql_match.country,
+                        "similarity_score": 1.0,
+                    }
+                ],
+                "checked_at": checked_at,
+            }
 
-    # ── BM25 ranking ─────────────────────────────────────────────────────────
-    top_candidates: list[dict[str, Any]] = []
-    best_bm25_score: float = 0.0
+        # ── Step 2: PostgreSQL Full Text Search (FTS) ──────────────────────────
+        query_text = f"{site_name} {country}".strip()
+        if query_text:
+            # Check if we are running under SQLite (e.g. in unit tests)
+            bind = db.sync_session.bind if hasattr(db, "sync_session") else db.bind
+            is_sqlite = (bind.dialect.name == "sqlite") if bind else False
 
-    if all_sites:
-        corpus = [_tokenize(s.name + " " + s.country) for s in all_sites]
-        bm25 = BM25Okapi(corpus)
-        scores = bm25.get_scores(_tokenize(site_name + " " + country))
+            if is_sqlite:
+                # Fallback for SQLite unit tests: fetch all and do simple word overlap matching
+                all_sites_result = await db.execute(select(UnescoSite))
+                all_sites = all_sites_result.scalars().all()
+                query_words = set(query_text.lower().split())
+                for s in all_sites:
+                    site_words = set((s.name + " " + s.country + " " + (s.description or "")).lower().split())
+                    overlap = len(query_words & site_words)
+                    if overlap > 0:
+                        score = round(overlap / max(len(query_words), 1), 4)
+                        top_candidates.append({
+                            "site_name": s.name,
+                            "country": s.country,
+                            "similarity_score": score,
+                        })
+                top_candidates.sort(key=lambda x: x["similarity_score"], reverse=True)
+                top_candidates = top_candidates[:_TOP_N]
+            else:
+                # plainto_tsquery converts plain text to a valid tsquery (ANDing all words)
+                ts_query = func.plainto_tsquery("english", query_text)
+                fts_stmt = (
+                    select(
+                        UnescoSite.name,
+                        UnescoSite.country,
+                        func.ts_rank(UnescoSite.search_vector, ts_query).label("rank")
+                    )
+                    .where(UnescoSite.search_vector.op("@@")(ts_query))
+                    .order_by(sa.desc("rank"))
+                    .limit(_TOP_N)
+                )
+                fts_result = await db.execute(fts_stmt)
+                for row in fts_result.all():
+                    rank = round(float(row.rank), 4)
+                    top_candidates.append({
+                        "site_name": row.name,
+                        "country": row.country,
+                        "similarity_score": min(rank, 1.0),
+                    })
 
-        ranked = sorted(zip(scores, all_sites), key=lambda t: t[0], reverse=True)
+            if top_candidates:
+                best_fts_score = top_candidates[0]["similarity_score"]
 
-        # Use the query's own score as the ceiling so scores reflect actual
-        # similarity — not just rank. A weak query like "A" won't get inflated
-        # to 1.0 just because it beats every other candidate by a tiny margin.
-        query_tokens = _tokenize(site_name + " " + country)
-        query_self_score = bm25.get_scores(query_tokens).max() if ranked else 1.0
-        ceiling = max(query_self_score, ranked[0][0]) if ranked else 1.0
-        norm = (lambda s: round(min(s / ceiling, 1.0), 4)) if ceiling > 0 else (lambda s: 0.0)
-
-        top_candidates = [
-            {"site_name": s.name, "country": s.country, "similarity_score": norm(sc)}
-            for sc, s in ranked[:_TOP_N]
-            if sc > 0
-        ]
-        best_bm25_score = top_candidates[0]["similarity_score"] if top_candidates else 0.0
-
-    # ── Fast path: exact SQL match → no need for Gemini ──────────────────────
-    if sql_match:
-        log.info("RegistryAgent: SQL exact match found — %s", sql_match.name)
-        return {
-            "is_duplicate": True,
-            "matched_site": sql_match.name,
-            "similarity_score": 1.0,
-            "top_candidates": top_candidates,
-            "checked_at": checked_at,
-        }
-
-    # ── Gemini comparison: only when BM25 finds plausible candidates ─────────
-    if top_candidates and best_bm25_score >= 0.3:
+    # ── Step 3: Gemini comparison: only when FTS finds plausible candidates ──
+    # ts_rank scores are smaller than BM25, so we use a lower threshold (>= 0.01)
+    if top_candidates and best_fts_score >= 0.01:
         log.info(
-            "RegistryAgent: BM25 top score %.2f >= 0.3, asking Gemini to compare",
-            best_bm25_score,
+            "RegistryAgent: FTS top score %.4f >= 0.01, asking Gemini to compare",
+            best_fts_score,
         )
         try:
             gemini_result = await _gemini_compare(
@@ -186,7 +210,7 @@ async def lookup_unesco_registry(
             )
             is_dup = bool(gemini_result.get("is_duplicate", False))
             matched = gemini_result.get("matched_site") if is_dup else None
-            confidence = float(gemini_result.get("confidence", best_bm25_score))
+            confidence = float(gemini_result.get("confidence", best_fts_score))
 
             log.info(
                 "RegistryAgent: Gemini says is_duplicate=%s (confidence=%.2f)",
@@ -201,14 +225,14 @@ async def lookup_unesco_registry(
             }
         except Exception as exc:
             log.warning(
-                "RegistryAgent: Gemini comparison failed (%s) — falling back to BM25 only", exc
+                "RegistryAgent: Gemini comparison failed (%s) — falling back to FTS only", exc
             )
 
     # ── Default: not a duplicate ──────────────────────────────────────────────
     return {
         "is_duplicate": False,
         "matched_site": None,
-        "similarity_score": best_bm25_score,
+        "similarity_score": best_fts_score,
         "top_candidates": top_candidates,
         "checked_at": checked_at,
     }
