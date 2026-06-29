@@ -6,6 +6,7 @@ google-generativeai
 fastapi
 uvicorn[standard]
 python-multipart
+slowapi
 
 # Database
 sqlalchemy==2.0.36
