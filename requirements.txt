@@ -1,6 +1,7 @@
 # AI / Gemini
 google-adk
 google-generativeai
+google-genai
 
 # Web framework
 fastapi
@@ -40,3 +41,5 @@ pytest
 pytest-asyncio
 pytest-mock
 anyio[asyncio]
+aiosqlite
+greenlet

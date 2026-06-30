@@ -8,6 +8,7 @@ from sqlalchemy import select, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
+from app.core.config import settings
 from app.agents.pipeline import run_pipeline
 from app.db.session import get_db
 from app.models.submission import Submission
@@ -21,8 +22,14 @@ from app.models.dossier import (
 
 router = APIRouter(prefix="/submissions", tags=["submissions"])
 
-_UPLOADS_DIR = "/data/uploads"
-os.makedirs(_UPLOADS_DIR, exist_ok=True)
+_UPLOADS_DIR = settings.UPLOADS_DIR
+try:
+    os.makedirs(_UPLOADS_DIR, exist_ok=True)
+except OSError:
+    # Local test/dev environments may not be allowed to write to /data.
+    # Docker keeps using /data/uploads; non-Docker falls back inside the repo.
+    _UPLOADS_DIR = os.path.abspath("data/uploads")
+    os.makedirs(_UPLOADS_DIR, exist_ok=True)
 
 _ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
@@ -233,7 +240,16 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
     counts = {row.status: row.count for row in rows}
 
     total = sum(counts.values())
-    duplicates_blocked = counts.get(SubmissionStatus.rejected, 0)
+    # Count only confirmed UNESCO duplicate auto-rejections, not all rejected rows.
+    rejected_result = await db.execute(
+        select(Submission).where(Submission.status == SubmissionStatus.rejected)
+    )
+    rejected_rows = rejected_result.scalars().all()
+    duplicates_blocked = sum(
+        1
+        for submission in rejected_rows
+        if (submission.dossier or {}).get("registry_check", {}).get("is_duplicate") is True
+    )
 
     return {
         "total": total,
