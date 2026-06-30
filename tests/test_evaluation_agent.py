@@ -144,9 +144,9 @@ async def test_evaluation_agent_scores_correctly():
     mock_response = MagicMock()
     mock_response.text = MOCK_GEMINI_RESPONSE
 
+    from app.agents.evaluation_agent import run_evaluation
     with patch("app.agents.evaluation_agent._client") as mock_client:
         mock_client.models.generate_content = MagicMock(return_value=mock_response)
-        from app.agents.evaluation_agent import run_evaluation
         result = await run_evaluation(dossier)
 
     assert result.scoring is not None
@@ -162,9 +162,9 @@ async def test_evaluation_agent_scores_correctly():
 async def test_evaluation_agent_handles_gemini_failure():
     dossier = _make_dossier()
 
+    from app.agents.evaluation_agent import run_evaluation
     with patch("app.agents.evaluation_agent._client") as mock_client:
         mock_client.models.generate_content = MagicMock(side_effect=Exception("API timeout"))
-        from app.agents.evaluation_agent import run_evaluation
         result = await run_evaluation(dossier)
 
     # Should not raise — scoring engine still runs on fallback text

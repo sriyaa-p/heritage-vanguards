@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { API } from "@/lib/api";
@@ -31,7 +31,7 @@ interface QueueItem {
   created_at: string;
 }
 
-export default function ReviewQueuePage() {
+function ReviewQueueContent() {
   const searchParams = useSearchParams();
   const [items, setItems] = useState<QueueItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -179,5 +179,22 @@ export default function ReviewQueuePage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function ReviewQueuePage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-gray-50 p-4 sm:p-8">
+          <div className="max-w-3xl mx-auto text-center py-20">
+            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <p className="text-gray-400 text-sm">Loading review queue…</p>
+          </div>
+        </main>
+      }
+    >
+      <ReviewQueueContent />
+    </Suspense>
   );
 }
