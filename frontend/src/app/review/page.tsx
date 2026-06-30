@@ -1,4 +1,5 @@
 "use client";
+
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -43,26 +44,19 @@ function ReviewQueueContent() {
   useEffect(() => {
     const fetchQueue = async () => {
       setLoading(true);
+      const url = filter === "all" ? `${API}/submissions` : `${API}/submissions?status=${filter}`;
       try {
-        const url = filter === "all"
-          ? `${API}/submissions`
-          : `${API}/submissions?status=${filter}`;
         const res = await fetch(url);
         const data = await res.json();
-        const mapped: QueueItem[] = data.map((row: any) => ({
+        setItems(data.map((row: any) => ({
           submission_id: row.submission_id,
-          location_name: row.location_name ?? "Unknown",
+          location_name: row.location_name ?? "Unknown Site",
           country: row.country ?? "—",
           status: row.status,
           score: row.score ?? null,
           created_at: row.created_at,
-        }));
-        setItems(mapped);
-      } catch {
-        setItems([]);
-      } finally {
-        setLoading(false);
-      }
+        })));
+      } catch { setItems([]); } finally { setLoading(false); }
     };
     fetchQueue();
   }, [filter]);
@@ -76,114 +70,75 @@ function ReviewQueueContent() {
   ];
 
   return (
-    <main className="min-h-screen bg-gray-50 p-4 sm:p-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Review Queue</h1>
-            <p className="text-gray-500 text-sm">Click any row to view the Confidence Card and make a decision.</p>
-          </div>
-          <button onClick={() => window.location.reload()} className="text-xs text-gray-400 hover:text-gray-600 mt-1">Refresh</button>
+    <div className="max-w-5xl mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-end border-b pb-4">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Review Queue</h1>
+          <p className="text-slate-500 mt-1">Manage and verify pending cultural heritage nominations.</p>
         </div>
+        <button onClick={() => window.location.reload()} className="text-sm text-slate-400 hover:text-blue-600 transition">Refresh Data</button>
+      </div>
 
-        {/* Filter tabs */}
-        <div className="flex gap-2 mb-5 overflow-x-auto pb-1">
-          {FILTERS.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setFilter(f.value)}
-              className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition
-                ${filter === f.value ? "bg-blue-600 text-white" : "bg-white text-gray-600 border hover:border-blue-400"}`}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+      {/* Filter Tabs */}
+      <div className="flex gap-2">
+        {["verification", "all", "approved", "rejected"].map((f) => (
+          <button key={f} onClick={() => setFilter(f)} 
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === f ? "bg-blue-600 text-white shadow-md" : "bg-white border text-slate-600 hover:border-blue-300"}`}>
+            {STATUS_LABEL[f] || "All Submissions"}
+          </button>
+        ))}
+      </div>
 
+      {/* Table */}
+      <div className="bg-white rounded-2xl border shadow-sm overflow-hidden">
         {loading ? (
-          <div className="text-center py-20">
-            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-gray-400 text-sm">Loading submissions…</p>
-          </div>
-        ) : items.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-xl shadow">
-            <p className="text-gray-400 text-sm">No submissions found for this filter.</p>
-            {filter === "verification" && (
-              <p className="text-gray-300 text-xs mt-1">Submissions appear here once the pipeline finishes evaluating.</p>
-            )}
-          </div>
+          <div className="p-12 text-center text-slate-400">Loading pipeline data...</div>
         ) : (
-          <>
-            {/* Mobile: stacked cards */}
-            <div className="flex flex-col gap-3 sm:hidden">
+          <table className="w-full text-sm">
+            <thead className="bg-slate-50">
+              <tr className="text-left text-slate-500">
+                <th className="px-6 py-4 font-medium">Site Location</th>
+                <th className="px-6 py-4 font-medium">Country</th>
+                <th className="px-6 py-4 font-medium">Heritage Score</th>
+                <th className="px-6 py-4 font-medium">Pipeline Status</th>
+                <th className="px-6 py-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
               {items.map((item) => (
-                <div key={item.submission_id} className="bg-white rounded-xl shadow p-4">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1 min-w-0 mr-2">
-                      <p className="font-medium text-gray-900 truncate">{item.location_name}</p>
-                      <p className="text-xs text-gray-400">{item.country}</p>
-                    </div>
-                    <span className={`text-lg font-bold shrink-0 ${item.score !== null ? (item.score >= 80 ? "text-green-600" : item.score >= 60 ? "text-yellow-600" : "text-red-500") : "text-gray-400"}`}>
-                      {item.score !== null ? `${item.score}/100` : "—"}
+                <tr key={item.submission_id} className="hover:bg-slate-50/50 transition">
+                  <td className="px-6 py-4 font-semibold text-slate-900">{item.location_name}</td>
+                  <td className="px-6 py-4 text-slate-600">{item.country}</td>
+                  <td className="px-6 py-4">
+                    {item.score !== null ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                          <div className={`h-full ${item.score >= 80 ? "bg-emerald-500" : "bg-amber-400"}`} style={{ width: `${item.score}%` }} />
+                        </div>
+                        <span className="font-mono font-bold text-slate-700">{item.score}</span>
+                      </div>
+                    ) : <span className="text-slate-300 italic">Pending</span>}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${STATUS_STYLES[item.status] || ""}`}>
+                      {STATUS_LABEL[item.status] || item.status}
                     </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLOR[item.status] ?? "bg-gray-100 text-gray-600"}`}>
-                      {STATUS_LABEL[item.status] ?? item.status}
-                    </span>
-                    <Link href={`/review/${item.submission_id}`} className="text-blue-600 hover:underline text-sm font-medium">
-                      View Card →
-                    </Link>
-                  </div>
-                </div>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <Link href={`/review/${item.submission_id}`} className="text-blue-600 hover:text-blue-800 font-bold">Review →</Link>
+                  </td>
+                </tr>
               ))}
-            </div>
-
-            {/* Desktop: table */}
-            <div className="hidden sm:block bg-white rounded-xl shadow overflow-x-auto">
-              <table className="w-full text-sm min-w-[480px]">
-                <thead className="bg-gray-50 border-b">
-                  <tr>
-                    <th className="text-left px-4 py-3 text-gray-600 font-medium">Site</th>
-                    <th className="text-left px-4 py-3 text-gray-600 font-medium">Country</th>
-                    <th className="text-left px-4 py-3 text-gray-600 font-medium">Score</th>
-                    <th className="text-left px-4 py-3 text-gray-600 font-medium">Status</th>
-                    <th className="px-4 py-3" />
-                  </tr>
-                </thead>
-                <tbody className="divide-y">
-                  {items.map((item) => (
-                    <tr key={item.submission_id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 font-medium text-gray-900">{item.location_name}</td>
-                      <td className="px-4 py-3 text-gray-500">{item.country}</td>
-                      <td className="px-4 py-3">
-                        {item.score !== null ? (
-                          <span className={`font-bold ${item.score >= 80 ? "text-green-600" : item.score >= 60 ? "text-yellow-600" : "text-red-500"}`}>
-                            {item.score}/100
-                          </span>
-                        ) : <span className="text-gray-300">—</span>}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_COLOR[item.status] ?? "bg-gray-100 text-gray-600"}`}>
-                          {STATUS_LABEL[item.status] ?? item.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <Link href={`/review/${item.submission_id}`} className="text-blue-600 hover:underline text-xs">
-                          View Card →
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
+            </tbody>
+          </table>
         )}
       </div>
-    </main>
+    </div>
   );
 }
+
+export const dynamic = "force-dynamic";
 
 export default function ReviewQueuePage() {
   return (
