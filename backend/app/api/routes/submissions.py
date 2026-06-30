@@ -17,6 +17,7 @@ from app.models.dossier import (
     Metadata,
     RawEvidence,
     ReviewDecision,
+    CommitteeDecision,
     SubmissionStatus,
 )
 
@@ -91,6 +92,7 @@ async def create_submission(
             photo_urls=body.photo_urls,
         ),
         review=ReviewDecision(),
+        committee_review=CommitteeDecision(),
     )
 
     submission = Submission(
@@ -147,6 +149,7 @@ async def create_submission_with_photos(
             photo_urls=photo_urls,
         ),
         review=ReviewDecision(),
+        committee_review=CommitteeDecision(),
     )
 
     submission = Submission(
@@ -261,9 +264,66 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
             + counts.get(SubmissionStatus.committee_review, 0)
             + counts.get(SubmissionStatus.verification, 0)
         ),
+        "reviewer_review": counts.get(SubmissionStatus.reviewer_review, 0),
+        "committee_review": counts.get(SubmissionStatus.committee_review, 0),
         "approved": counts.get(SubmissionStatus.approved, 0),
         "rejected": counts.get(SubmissionStatus.rejected, 0),
         "duplicates_blocked": duplicates_blocked,
+    }
+
+
+@router.get("/audit-log")
+async def get_audit_log(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Submission)
+        .where(Submission.status.in_([
+            SubmissionStatus.approved,
+            SubmissionStatus.rejected,
+            SubmissionStatus.committee_review
+        ]))
+        .order_by(Submission.updated_at.desc())
+    )
+    rows = result.scalars().all()
+    return [
+        {
+            "submission_id": r.submission_id,
+            "status": r.status,
+            "location_name": r.dossier.get("metadata", {}).get("location_name"),
+            "country": r.dossier.get("metadata", {}).get("country"),
+            "score": r.dossier.get("scoring", {}).get("total") if r.dossier.get("scoring") else None,
+            "reviewer_notes": r.dossier.get("review", {}).get("reviewer_notes"),
+            "committee_comments": r.dossier.get("committee_review", {}).get("committee_comments"),
+            "updated_at": r.updated_at,
+        }
+        for r in rows
+    ]
+
+
+@router.get("/{submission_id}/public")
+async def get_public_submission(submission_id: str, db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Submission).where(Submission.submission_id == submission_id)
+    )
+    submission = result.scalar_one_or_none()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+        
+    dossier = submission.dossier or {}
+    metadata = dossier.get("metadata", {})
+    raw = dossier.get("raw_evidence", {})
+    review = dossier.get("review", {})
+    comm = dossier.get("committee_review", {})
+    
+    return {
+        "submission_id": submission.submission_id,
+        "status": submission.status,
+        "created_at": submission.created_at,
+        "location_name": metadata.get("location_name"),
+        "country": metadata.get("country"),
+        "description": raw.get("description"),
+        "photo_urls": raw.get("photo_urls", []),
+        "reviewer_notes": review.get("reviewer_notes"),
+        "committee_comments": comm.get("committee_comments"),
     }
 
 
@@ -293,6 +353,45 @@ async def review_submission(
     reviewer_id: str = "reviewer",
     db: AsyncSession = Depends(get_db),
 ):
+    if decision not in ("committee_review", "rejected"):
+        raise HTTPException(status_code=400, detail="decision must be 'committee_review' or 'rejected'")
+
+    result = await db.execute(
+        select(Submission).where(Submission.submission_id == submission_id)
+    )
+    submission = result.scalar_one_or_none()
+    if not submission:
+        raise HTTPException(status_code=404, detail="Submission not found")
+
+    dossier = submission.dossier or {}
+    dossier.setdefault("review", {})
+    dossier["review"]["decision"] = "approved" if decision == "committee_review" else "rejected"
+    dossier["review"]["reviewer_id"] = reviewer_id
+    dossier["review"]["reviewer_notes"] = notes
+    dossier["review"]["decided_at"] = datetime.now(timezone.utc).isoformat()
+
+    await db.execute(
+        update(Submission)
+        .where(Submission.submission_id == submission_id)
+        .values(
+            status=SubmissionStatus(decision),
+            dossier=dossier,
+            updated_at=datetime.now(timezone.utc),
+        )
+    )
+    await db.commit()
+
+    return {"submission_id": submission_id, "status": decision}
+
+
+@router.patch("/{submission_id}/finalize")
+async def finalize_submission(
+    submission_id: str,
+    decision: str,
+    comments: str = "",
+    committee_id: str = "committee",
+    db: AsyncSession = Depends(get_db),
+):
     if decision not in ("approved", "rejected"):
         raise HTTPException(status_code=400, detail="decision must be 'approved' or 'rejected'")
 
@@ -304,11 +403,11 @@ async def review_submission(
         raise HTTPException(status_code=404, detail="Submission not found")
 
     dossier = submission.dossier or {}
-    dossier.setdefault("review", {})
-    dossier["review"]["decision"] = decision
-    dossier["review"]["reviewer_id"] = reviewer_id
-    dossier["review"]["reviewer_notes"] = notes
-    dossier["review"]["decided_at"] = datetime.now(timezone.utc).isoformat()
+    dossier.setdefault("committee_review", {})
+    dossier["committee_review"]["decision"] = decision
+    dossier["committee_review"]["committee_id"] = committee_id
+    dossier["committee_review"]["committee_comments"] = comments
+    dossier["committee_review"]["decided_at"] = datetime.now(timezone.utc).isoformat()
 
     await db.execute(
         update(Submission)

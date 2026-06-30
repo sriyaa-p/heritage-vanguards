@@ -5,7 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { API } from "@/lib/api";
 
 const STATUS_COLOR: Record<string, string> = {
-  verification: "bg-blue-100 text-blue-700",
+  reviewer_review: "bg-blue-100 text-blue-700",
+  committee_review: "bg-amber-100 text-amber-700",
   approved: "bg-green-100 text-green-700",
   rejected: "bg-red-100 text-red-700",
   evaluation: "bg-yellow-100 text-yellow-700",
@@ -14,7 +15,8 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 const STATUS_LABEL: Record<string, string> = {
-  verification: "Awaiting Review",
+  reviewer_review: "Awaiting Review",
+  committee_review: "Committee Review",
   approved: "Approved",
   rejected: "Rejected",
   evaluation: "Evaluating",
@@ -35,7 +37,7 @@ function ReviewQueueContent() {
   const searchParams = useSearchParams();
   const [items, setItems] = useState<QueueItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const initialFilter = searchParams.get("status") ?? "verification";
+  const initialFilter = searchParams.get("status") ?? "reviewer_review";
   const [filter, setFilter] = useState(initialFilter);
 
   useEffect(() => {
@@ -66,10 +68,11 @@ function ReviewQueueContent() {
   }, [filter]);
 
   const FILTERS = [
-    { value: "verification", label: "Awaiting Review" },
-    { value: "all",          label: "All Submissions" },
-    { value: "approved",     label: "Approved" },
-    { value: "rejected",     label: "Rejected" },
+    { value: "reviewer_review", label: "Awaiting Review" },
+    { value: "committee_review", label: "Recommended" },
+    { value: "all",              label: "All" },
+    { value: "approved",         label: "Approved" },
+    { value: "rejected",         label: "Rejected" },
   ];
 
   return (
