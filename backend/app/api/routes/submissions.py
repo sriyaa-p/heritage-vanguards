@@ -256,7 +256,11 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
         "pending": counts.get(SubmissionStatus.pending, 0),
         "registry_check": counts.get(SubmissionStatus.registry_check, 0),
         "evaluation": counts.get(SubmissionStatus.evaluation, 0),
-        "in_review": counts.get(SubmissionStatus.verification, 0),
+        "in_review": (
+            counts.get(SubmissionStatus.reviewer_review, 0)
+            + counts.get(SubmissionStatus.committee_review, 0)
+            + counts.get(SubmissionStatus.verification, 0)
+        ),
         "approved": counts.get(SubmissionStatus.approved, 0),
         "rejected": counts.get(SubmissionStatus.rejected, 0),
         "duplicates_blocked": duplicates_blocked,

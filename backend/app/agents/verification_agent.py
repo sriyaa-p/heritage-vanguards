@@ -75,7 +75,7 @@ def run_verification(dossier: CanonicalDossier) -> tuple[CanonicalDossier, Submi
             decision=ReviewDecisionType.pending,
             reviewer_notes="Evaluation could not be completed. Manual review required.",
         )
-        return dossier, SubmissionStatus.verification
+        return dossier, SubmissionStatus.reviewer_review
 
     label = _confidence_label(scoring.total)
     log.info(
@@ -107,7 +107,7 @@ def run_verification(dossier: CanonicalDossier) -> tuple[CanonicalDossier, Submi
             f"{scoring.rationale}"
         ),
     )
-    return dossier, SubmissionStatus.verification
+    return dossier, SubmissionStatus.reviewer_review
 
 
 def _low_scoring_categories(scoring) -> str:
