@@ -5,18 +5,19 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { API } from "@/lib/api";
 
-// Polished color palette for a professional look
-const STATUS_STYLES: Record<string, string> = {
-  verification: "bg-blue-50 text-blue-700 border-blue-200",
-  approved: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  rejected: "bg-rose-50 text-rose-700 border-rose-200",
-  evaluation: "bg-amber-50 text-amber-700 border-amber-200",
-  registry_check: "bg-violet-50 text-violet-700 border-violet-200",
-  pending: "bg-slate-50 text-slate-600 border-slate-200",
+const STATUS_COLOR: Record<string, string> = {
+  reviewer_review: "bg-blue-100 text-blue-700",
+  committee_review: "bg-amber-100 text-amber-700",
+  approved: "bg-green-100 text-green-700",
+  rejected: "bg-red-100 text-red-700",
+  evaluation: "bg-yellow-100 text-yellow-700",
+  registry_check: "bg-purple-100 text-purple-700",
+  pending: "bg-gray-100 text-gray-600",
 };
 
 const STATUS_LABEL: Record<string, string> = {
-  verification: "Awaiting Review",
+  reviewer_review: "Awaiting Review",
+  committee_review: "Committee Review",
   approved: "Approved",
   rejected: "Rejected",
   evaluation: "Evaluating",
@@ -37,7 +38,8 @@ function ReviewQueueContent() {
   const searchParams = useSearchParams();
   const [items, setItems] = useState<QueueItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState(searchParams.get("status") ?? "verification");
+  const initialFilter = searchParams.get("status") ?? "reviewer_review";
+  const [filter, setFilter] = useState(initialFilter);
 
   useEffect(() => {
     const fetchQueue = async () => {
@@ -58,6 +60,14 @@ function ReviewQueueContent() {
     };
     fetchQueue();
   }, [filter]);
+
+  const FILTERS = [
+    { value: "reviewer_review", label: "Awaiting Review" },
+    { value: "committee_review", label: "Recommended" },
+    { value: "all",              label: "All" },
+    { value: "approved",         label: "Approved" },
+    { value: "rejected",         label: "Rejected" },
+  ];
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">

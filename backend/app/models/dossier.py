@@ -163,6 +163,13 @@ class ReviewDecision(BaseModel):
     decided_at: Optional[datetime] = None
 
 
+class CommitteeDecision(BaseModel):
+    decision: ReviewDecisionType = ReviewDecisionType.pending
+    committee_id: Optional[str] = None
+    committee_comments: Optional[str] = None
+    decided_at: Optional[datetime] = None
+
+
 class CanonicalDossier(BaseModel):
     metadata: Metadata
     raw_evidence: RawEvidence
@@ -170,3 +177,4 @@ class CanonicalDossier(BaseModel):
     extracted_evidence: Optional[ExtractedEvidence] = None
     scoring: Optional[ScoringResult] = None
     review: Optional[ReviewDecision] = None
+    committee_review: Optional[CommitteeDecision] = None

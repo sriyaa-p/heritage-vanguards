@@ -9,10 +9,10 @@ const PIPELINE_STAGES = [
   { status: "pending",        label: "Received",          desc: "Submission saved" },
   { status: "registry_check", label: "Registry Check",    desc: "Checking UNESCO database for duplicates" },
   { status: "evaluation",     label: "AI Evaluation",     desc: "Gemini extracting evidence and scoring" },
-  { status: "verification",   label: "Ready for Review",  desc: "Confidence Card ready for archaeologist" },
+  { status: "reviewer_review", label: "Ready for Review",  desc: "Dossier sent to archaeologist review queue" },
 ];
 
-const TERMINAL = ["approved", "rejected", "verification"];
+const TERMINAL = ["approved", "rejected", "reviewer_review"];
 
 function PipelineTracker({ submissionId, onReset }: { submissionId: string; onReset: () => void }) {
   const [status, setStatus] = useState("pending");
@@ -33,9 +33,9 @@ function PipelineTracker({ submissionId, onReset }: { submissionId: string; onRe
           const reason = data.dossier?.review?.reviewer_notes ?? null;
           setRejectionReason(reason);
           clearInterval(intervalRef.current!);
-        } else if (s === "verification") {
+        } else if (s === "reviewer_review") {
           clearInterval(intervalRef.current!);
-          setTimeout(() => router.push(`/review/${submissionId}`), 1500);
+          setTimeout(() => router.push(`/dashboard/track/${submissionId}`), 1500);
         }
       } catch { /* keep polling */ }
     }, 2000);
@@ -93,9 +93,9 @@ function PipelineTracker({ submissionId, onReset }: { submissionId: string; onRe
         })}
       </div>
 
-      {status === "verification" && (
+      {status === "reviewer_review" && (
         <p className="mt-6 text-center text-sm text-green-600 font-medium animate-pulse">
-          Redirecting to Confidence Card…
+          Redirecting to tracking portal…
         </p>
       )}
     </div>
