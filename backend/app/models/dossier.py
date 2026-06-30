@@ -80,6 +80,8 @@ class SubmissionStatus(str, Enum):
     registry_check = "registry_check"
     evaluation = "evaluation"
     verification = "verification"
+    reviewer_review = "reviewer_review"
+    committee_review = "committee_review"
     approved = "approved"
     rejected = "rejected"
 

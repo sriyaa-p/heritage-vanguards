@@ -46,7 +46,7 @@ def test_verification_routes_high_score_to_review():
         supporting_evidence=10, total=93, rationale="Strong site."
     )
     updated, status = run_verification(dossier)
-    assert status == SubmissionStatus.verification
+    assert status == SubmissionStatus.reviewer_review
     assert updated.review.decision == ReviewDecisionType.pending
 
 
@@ -89,7 +89,7 @@ def test_verification_routes_low_score_to_human_review():
         supporting_evidence=2, total=31, rationale="Low confidence."
     )
     _, status = run_verification(dossier)
-    assert status == SubmissionStatus.verification
+    assert status == SubmissionStatus.reviewer_review
 
 
 def test_verification_routes_boundary_score_25():
@@ -103,7 +103,7 @@ def test_verification_routes_boundary_score_25():
         supporting_evidence=0, total=25, rationale="Borderline."
     )
     _, status = run_verification(dossier)
-    assert status == SubmissionStatus.verification
+    assert status == SubmissionStatus.reviewer_review
 
 
 def test_verification_auto_rejects_score_24():
