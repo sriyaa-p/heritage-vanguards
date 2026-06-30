@@ -37,6 +37,15 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    develop:
+      watch:
+        - action: rebuild
+          path: backend/Dockerfile
+        - action: rebuild
+          path: backend/entrypoint.sh
+        - action: sync
+          path: ./backend
+          target: /app
 
   frontend:
     build:

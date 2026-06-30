@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-echo "==> [entrypoint] Creating / verifying database tables..."
-python /app/sync_db.py
+echo "==> [entrypoint] Running database migrations..."
+alembic upgrade head
 
 echo "==> [entrypoint] Fetching latest UNESCO World Heritage dataset..."
 python /scripts/fetch_unesco_data.py
