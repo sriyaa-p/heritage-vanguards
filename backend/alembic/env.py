@@ -9,6 +9,7 @@ from alembic import context
 
 from app.db.session import Base
 import app.models.submission  # noqa: F401 — registers model with Base.metadata
+import app.models.dossier     # noqa: F401 — registers dossier models with Base.metadata
 
 config = context.config
 

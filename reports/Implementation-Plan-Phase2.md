@@ -63,6 +63,8 @@ Maintain a stable checkpoint before each implementation phase. If regressions oc
 
 ## Feature Plans & Design Specifications
 
+## For the hackathon as the rule suggests that login pages are not required. Please don't implement the (RBAC) role based action changes. This is for futher scaling purposes only. And not to be implemented right now.
+
 ### 1. Proper Role-Based Access Control (RBAC)
 
 #### Proposed Architecture

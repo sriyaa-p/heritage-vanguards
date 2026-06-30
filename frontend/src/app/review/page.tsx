@@ -127,7 +127,22 @@ function ReviewQueueContent() {
     </div>
   );
 }
+
 export const dynamic = "force-dynamic";
+
 export default function ReviewQueuePage() {
-  return <Suspense fallback={<div className="p-20 text-center">Loading...</div>}><ReviewQueueContent /></Suspense>;
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-gray-50 p-4 sm:p-8">
+          <div className="max-w-3xl mx-auto text-center py-20">
+            <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+            <p className="text-gray-400 text-sm">Loading review queue…</p>
+          </div>
+        </main>
+      }
+    >
+      <ReviewQueueContent />
+    </Suspense>
+  );
 }

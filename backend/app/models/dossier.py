@@ -2,12 +2,37 @@ from datetime import datetime
 from enum import Enum
 from typing import Optional
 from pydantic import BaseModel, Field
-from sqlalchemy import Column, Integer, String, Text
+from sqlalchemy import Column, Computed, Integer, String, Text
+from sqlalchemy.dialects.postgresql import TSVECTOR
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.types import TypeDecorator
+from sqlalchemy.ext.compiler import compiles
 
 
 # ---------------------------------------------------------------------------
-# SQLAlchemy declarative base (shared with app.db.session.Base via import)
+# Dialect-safe full-text search types and compilation handlers for SQLite/Postgres
+# ---------------------------------------------------------------------------
+
+class SafeTSVector(TypeDecorator):
+    """Custom type that resolves to TSVECTOR on PostgreSQL and TEXT on other databases."""
+    impl = Text
+    cache_ok = True
+
+    def load_dialect_impl(self, dialect):
+        if dialect.name == "postgresql":
+            return dialect.type_descriptor(TSVECTOR())
+        return dialect.type_descriptor(Text())
+
+
+@compiles(Computed, "sqlite")
+def compile_computed_sqlite(element, compiler, **kw):
+    """Fallback compiler for Computed columns on SQLite to avoid Postgres-specific functions."""
+    # SQLite does not support to_tsvector(), so we compile it to a standard string concatenation
+    return "GENERATED ALWAYS AS (coalesce(name, '') || ' ' || coalesce(country, '') || ' ' || coalesce(description, '')) STORED"
+
+
+# ---------------------------------------------------------------------------
+# Base & Models
 # ---------------------------------------------------------------------------
 
 class Base(DeclarativeBase):
@@ -31,6 +56,20 @@ class UnescoSite(Base):
     # Comma-separated OUV criteria codes, e.g. "i,ii,vi"
     criteria = Column(String(64), nullable=True)
     description = Column(Text, nullable=True)
+
+    # Persisted full-text search vector — computed by PostgreSQL on INSERT/UPDATE.
+    # Combines name + country + description for BM25-quality keyword matching via GIN.
+    # The GIN index (ix_unesco_sites_search_vector) is created in the Alembic migration.
+    search_vector = Column(
+        SafeTSVector(),
+        Computed(
+            "to_tsvector('english',"
+            " coalesce(name, '') || ' ' || coalesce(country, '') || ' ' || coalesce(description, '')"
+            ")",
+            persisted=True,
+        ),
+        nullable=True,
+    )
 
     def __repr__(self) -> str:  # pragma: no cover
         return f"<UnescoSite id={self.id} name={self.name!r} country={self.country!r}>"

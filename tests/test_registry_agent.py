@@ -1,4 +1,4 @@
-﻿import sys
+import sys
 from datetime import datetime
 from pathlib import Path
 
@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "backend"))
 
-from app.models.dossier import Base, RegistryCheck, UnescoSite  # noqa: E402
+from app.models.dossier import RegistryCheck, UnescoSite  # noqa: E402
 
 TEST_DB_URL = "sqlite+aiosqlite:///:memory:"
 _test_engine = create_async_engine(TEST_DB_URL, echo=False)
@@ -21,10 +21,11 @@ _TestSession = sessionmaker(_test_engine, class_=AsyncSession, expire_on_commit=
 @pytest_asyncio.fixture(scope="module", autouse=True)
 async def create_tables():
     async with _test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(UnescoSite.__table__.create)
     yield
     async with _test_engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(UnescoSite.__table__.drop)
+    await _test_engine.dispose()
 
 
 @pytest_asyncio.fixture(autouse=True)

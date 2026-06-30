@@ -16,7 +16,7 @@ COPY backend/ .
 
 # Copy and configure the startup entrypoint script
 COPY backend/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh
 
 # On startup: create tables → seed UNESCO data → launch uvicorn
 CMD ["/entrypoint.sh"]

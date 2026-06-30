@@ -59,7 +59,7 @@ def run_verification(dossier: CanonicalDossier) -> tuple[CanonicalDossier, Submi
             decision=ReviewDecisionType.rejected,
             reviewer_id="system",
             reviewer_notes=(
-                f"This site already exists in the UNESCO World Heritage registry as '{matched}'. "
+                f"This site is a duplicate. It already exists in the UNESCO World Heritage registry as '{matched}'. "
                 f"Only sites not yet inscribed on the UNESCO list are eligible for nomination."
             ),
         )
