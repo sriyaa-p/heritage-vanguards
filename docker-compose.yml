@@ -27,7 +27,9 @@ services:
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       ENV: ${ENV:-development}
     volumes:
-      - .:/app
+      - ./backend:/app
+      - ./data:/data
+      - ./tests:/app/tests
     depends_on:
       postgres:
         condition: service_healthy
