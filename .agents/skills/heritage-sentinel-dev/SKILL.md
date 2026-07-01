@@ -1,0 +1,386 @@
+---
+name: heritage-sentinel-dev
+description: >
+  Provides architecture context and dev workflow for the Heritage Sentinel AI
+  codebase. Use whenever working on this repo: making code changes, running
+  the app locally, debugging the agent pipeline, writing migrations, adding
+  tests, or understanding how a piece of the system works.
+---
+
+# Heritage Sentinel AI — Developer Skill
+
+## Using this skill outside Claude
+
+This file is self-contained: the System Overview, Architecture Map, and
+Golden Path below cover everything needed for typical tasks (starting
+the stack, running migrations, adding an agent stage, running tests).
+If you are an assistant that doesn't auto-load linked files, read this
+document in full — it does not assume you'll separately open
+`references/architecture.md` or `references/workflows.md`, though you're
+welcome to if this repo's tooling gives you access to them and the task
+needs schema-level or troubleshooting detail beyond what's here.
+
+---
+
+## System Overview
+
+Heritage Sentinel AI is a multi-agent system that helps archaeologists review
+potential UNESCO World Heritage Site submissions. Community members submit
+photos and descriptions of candidate sites. Four sequential agents process
+each submission and produce a structured Confidence Card for a human expert
+who makes the final decision. The system **never** autonomously designates
+heritage status — all genuine submissions are routed to human reviewers.
+
+Pipeline at a glance:
+
+```
+Submission → IntakeProcessor → RegistryAgent → EvaluationAgent → VerificationAgent → Human Review
+```
+
+---
+
+## Architecture Map
+
+### Backend (`backend/`)
+
+```
+backend/
+├── main.py                         # FastAPI app factory, CORS, router mounts, /health
+├── entrypoint.sh                   # Container startup: migrations → fetch → seed → uvicorn
+├── Dockerfile                      # Python 3.11-slim, venv at /opt/venv
+├── alembic.ini                     # Alembic config (script_location = alembic)
+├── alembic/
+│   ├── env.py                      # Async migration runner, reads DATABASE_URL from env
+│   ├── script.py.mako              # Migration file template
+│   └── versions/                   # Three migrations (see references/workflows.md)
+├── sync_db.py                      # Quick create_all for manual table sync (no Alembic)
+└── app/
+    ├── agents/                     # The four pipeline agents + scoring engine
+    │   ├── pipeline.py             # Orchestrator: runs all 4 stages sequentially
+    │   ├── intake_processor.py     # Stage 0: language detection (lingua) + translation (Gemini)
+    │   ├── registry_agents.py      # Stage 1: BM25/FTS + SQL ilike + Gemini duplicate check
+    │   ├── evaluation_agent.py     # Stage 2: Gemini evidence extraction + deterministic scoring
+    │   ├── scoring_engine.py       # Deterministic scorer (reads data/scoring_criteria.json)
+    │   └── verification_agent.py   # Stage 3: threshold routing, Confidence Card, HITL gate
+    ├── api/
+    │   └── routes/
+    │       └── submissions.py      # All REST endpoints (POST, GET, PATCH, photos, stats, audit)
+    ├── core/
+    │   └── config.py               # Pydantic Settings — env vars, DB URL fallback logic
+    ├── db/
+    │   └── session.py              # Async engine + AsyncSessionLocal factory, re-exports Base
+    └── models/
+        ├── dossier.py              # Pydantic domain models + ORM model (UnescoSite) + Base
+        ├── submission.py           # SQLAlchemy ORM: Submission table (imports Base from db.session)
+        └── threat.py               # HeritageRisk ORM model (imports from app.db.base — stub)
+```
+
+### Frontend (`frontend/`)
+
+Next.js 14 + Tailwind CSS + TypeScript. App Router layout:
+
+```
+frontend/src/
+├── app/
+│   ├── layout.tsx                  # Root layout with Header component
+│   ├── page.tsx                    # Landing / home page
+│   ├── globals.css                 # Tailwind directives
+│   ├── submit/page.tsx             # Community submission form (multipart with photos)
+│   ├── dashboard/
+│   │   ├── page.tsx                # Admin dashboard (stats, submission list)
+│   │   └── track/                  # Submission tracking
+│   ├── review/
+│   │   ├── page.tsx                # Reviewer queue
+│   │   └── [id]/                   # Individual review page
+│   └── committee/
+│       ├── page.tsx                # Committee decision page
+│       └── review/                 # Committee review sub-route
+├── components/
+│   └── Header.tsx                  # Shared navigation header
+├── lib/
+│   └── api.ts                     # API base URL: NEXT_PUBLIC_API_URL || localhost:8000
+└── types/
+    └── css.d.ts                   # CSS module type declaration
+```
+
+### Data (`data/`)
+
+```
+data/
+├── scoring_criteria.json           # UNESCO-aligned rubric (8 categories, tiered signals)
+├── processed/
+│   └── unesco_sites_clean.json     # ~1200 sites, generated by fetch_unesco_data.py
+├── raw/                            # Original UNESCO dataset (if any)
+└── uploads/                        # Photo uploads stored per submission_id
+```
+
+### Scripts (`scripts/`)
+
+- `fetch_unesco_data.py` — Downloads UNESCO XML feed, parses it, writes
+  `data/processed/unesco_sites_clean.json`. Stdlib only (no requests/httpx).
+- `seed_database.py` — Reads the clean JSON and upserts into `unesco_sites`
+  table. Supports `--reset` flag to truncate first.
+
+### Tests (`tests/`)
+
+```
+tests/
+├── fixtures/
+│   └── sample_dossier.json         # Reference CanonicalDossier JSON
+├── test_config.py                  # Settings fallback/validation tests
+├── test_api_routes.py              # Submission endpoint tests
+├── test_evaluation_agent.py        # EvaluationAgent + ScoringEngine tests
+├── test_pipeline_and_intake.py     # Pipeline orchestration + IntakeProcessor tests
+├── test_registry_agent.py          # RegistryAgent duplicate detection tests
+└── test_phase2_workflows.py        # End-to-end workflow tests
+```
+
+---
+
+## The Golden Path
+
+### 1. Start the full stack
+
+```bash
+cp .env.example .env          # fill in GEMINI_API_KEY
+docker compose up              # starts postgres, backend, frontend
+```
+
+- **PostgreSQL** on `localhost:5432` (health-checked before backend starts)
+- **Backend** on `localhost:8000` (FastAPI + Uvicorn)
+- **Frontend** on `localhost:3000` (Next.js dev server)
+
+`entrypoint.sh` runs automatically on backend startup:
+1. `alembic upgrade head` — applies all pending migrations
+2. `python /scripts/fetch_unesco_data.py` — fetches UNESCO XML (graceful fail)
+3. `python /scripts/seed_database.py` — upserts UNESCO sites
+4. `exec uvicorn main:app --host 0.0.0.0 --port 8000`
+
+### 2. Run migrations
+
+Migrations run inside the backend container. The working directory is `/app`
+(which is `backend/`).
+
+```bash
+# Apply all pending migrations (this happens at startup automatically)
+docker compose exec backend alembic upgrade head
+
+# Create a new migration after changing ORM models
+docker compose exec backend alembic revision --autogenerate -m "description"
+
+# Downgrade one step
+docker compose exec backend alembic downgrade -1
+```
+
+Alembic reads `DATABASE_URL` from the environment (set by docker-compose.yml).
+The `env.py` uses `create_async_engine` and runs migrations via `asyncio.run()`.
+
+### 3. Seed data
+
+```bash
+# Re-fetch UNESCO XML + re-seed (runs at container startup)
+docker compose exec backend python /scripts/fetch_unesco_data.py
+docker compose exec backend python /scripts/seed_database.py
+
+# Reset mode: truncate then re-insert
+docker compose exec backend python /scripts/seed_database.py --reset
+```
+
+### 4. Run tests
+
+Tests use **SQLite in-memory** — no Postgres required. Config auto-falls back
+when `DATABASE_URL` and Postgres env vars are absent.
+
+```bash
+# From repo root (local, outside Docker)
+pytest                              # uses root pytest.ini
+
+# Inside Docker container
+docker compose exec backend pytest /tests
+```
+
+Root `pytest.ini`:
+```ini
+[pytest]
+asyncio_mode = auto
+testpaths = tests
+pythonpath = backend
+```
+
+Root `conftest.py` adds `backend/` to `sys.path` so `app.*` imports resolve.
+
+### 5. Hit the API
+
+```bash
+# Health check
+curl http://localhost:8000/health
+
+# Create submission (triggers pipeline in background)
+curl -X POST http://localhost:8000/submissions \
+  -H 'Content-Type: application/json' \
+  -d '{"location_name":"Test Site","country":"India","description":"Ancient temple..."}'
+
+# Create submission with photos (multipart)
+curl -X POST http://localhost:8000/submissions/with-photos \
+  -F 'location_name=Test Site' -F 'country=India' \
+  -F 'description=Ancient temple...' -F 'files=@photo.jpg'
+
+# List all submissions
+curl http://localhost:8000/submissions
+
+# Get submission detail
+curl http://localhost:8000/submissions/SUB-2026-06-ABCD1234
+
+# Dashboard stats
+curl http://localhost:8000/submissions/stats
+
+# Reviewer decision
+curl -X PATCH http://localhost:8000/submissions/SUB-ID/review \
+  -H 'Content-Type: application/json' \
+  -d '{"decision":"committee_review","notes":"Looks promising"}'
+
+# Committee finalize
+curl -X PATCH http://localhost:8000/submissions/SUB-ID/finalize \
+  -H 'Content-Type: application/json' \
+  -d '{"decision":"approved","comments":"Meets criteria"}'
+```
+
+---
+
+## Conventions
+
+### Adding a new agent stage
+
+1. Create `backend/app/agents/your_agent.py` with an `async def run_*()` or
+   `def run_*()` function.
+2. Import and call it in `pipeline.py`'s `run_pipeline()` at the correct
+   position. Follow the existing pattern: try/except wrapping, log at INFO,
+   persist dossier after each stage via `_persist()`.
+3. If the agent needs new data on the dossier, add a Pydantic model field
+   to `CanonicalDossier` in `models/dossier.py`.
+
+### Model layer: Pydantic vs SQLAlchemy
+
+- **Pydantic models** (`models/dossier.py`): Domain data types for the pipeline.
+  `CanonicalDossier` is the pipeline's working object. All agent logic operates
+  on these models.
+- **SQLAlchemy ORM** (`models/submission.py`): `Submission` table stores the
+  full dossier as JSONB. The `dossier` column is serialized via
+  `dossier.model_dump(mode="json")` and deserialized via
+  `CanonicalDossier.model_validate(submission.dossier)`.
+- **ORM Base**: Defined in `models/dossier.py` as `class Base(DeclarativeBase)`.
+  Re-exported from `db/session.py`. Both `Submission` and `UnescoSite` use this
+  Base. The `threat.py` model imports from `app.db.base` which is a stub —
+  that model is not yet active.
+
+### Scoring rules vs code
+
+- **Scoring criteria** live in `data/scoring_criteria.json` — tiered keyword
+  signals for 8 categories, each with min/max score ranges.
+- **Scoring logic** lives in `agents/scoring_engine.py` — reads the JSON,
+  applies `_score_field()` per category. To change what signals matter or
+  adjust weights, edit the JSON. To change how scoring works (algorithm),
+  edit `scoring_engine.py`.
+
+### Config / Settings
+
+`app/core/config.py` uses `pydantic_settings.BaseSettings`:
+- Reads from `.env` file and environment variables
+- `ENV=development` + no Postgres creds → falls back to `sqlite+aiosqlite:///:memory:`
+- `ENV=production` or `staging` → requires `GEMINI_API_KEY` and DB creds
+- Missing `GEMINI_API_KEY` in dev → silently uses a dummy key (agents will
+  fail on real Gemini calls, but imports and tests work)
+
+### Frontend conventions
+
+- API base URL from `NEXT_PUBLIC_API_URL` env var, defaults to `http://localhost:8000`
+- Uses Tailwind CSS 3 for styling
+- App Router (Next.js 14) — pages are `page.tsx` files under `src/app/`
+- `@/` path alias maps to `src/` (configured in `tsconfig.json`)
+
+---
+
+## Critical Constraints
+
+### Gemini never assigns scores
+
+The EvaluationAgent calls Gemini to **extract evidence text only**. The actual
+numeric scores come from `scoring_engine.py` using deterministic keyword
+matching against `data/scoring_criteria.json`. This is an intentional
+architecture decision — identical inputs must always produce identical scores.
+Do not add scoring logic to Gemini prompts.
+
+### SQLite compatibility for tests
+
+Tests run on SQLite in-memory. The codebase has custom dialect handling:
+- `SafeTSVector` (`models/dossier.py`): resolves to TSVECTOR on Postgres, TEXT
+  on SQLite.
+- `@compiles(Computed, "sqlite")`: provides a SQLite-compatible fallback for
+  the computed `search_vector` column.
+- `registry_agents.py`: checks `dialect.name == "sqlite"` and uses a Python
+  word-overlap fallback instead of `ts_rank`/`@@` FTS operators.
+
+When adding ORM models or queries that use Postgres-specific features, always
+add an SQLite fallback or guard.
+
+### Human-in-the-loop gate
+
+The VerificationAgent only auto-rejects:
+- Confirmed UNESCO duplicates (from RegistryAgent)
+- Submissions scoring below 25/100 (junk/spam)
+
+Everything else routes to `reviewer_review` status for human archaeologist
+review. The reviewer can escalate to `committee_review`, and the committee
+makes the final `approved`/`rejected` decision. Never bypass this HITL flow.
+
+### Submission ID format
+
+IDs follow the pattern `SUB-YYYY-MM-XXXXXXXX` (8 hex chars from uuid4).
+Generated in `submissions.py:_make_submission_id()`.
+
+### Photo uploads
+
+Saved to `/data/uploads/{submission_id}/` inside Docker. Outside Docker, falls
+back to `data/uploads/` relative to the working directory. Allowed extensions:
+`.jpg`, `.jpeg`, `.png`, `.gif`, `.webp`.
+
+### Docker volume mounts
+
+`docker-compose.yml` mounts these host directories into the backend container:
+- `./backend` → `/app` (code)
+- `./data` → `/data` (dataset + uploads)
+- `./scripts` → `/scripts` (seed/fetch scripts)
+- `./tests` → `/tests` (test files)
+- `./pytest.ini` → `/app/pytest.ini` (read-only)
+- `./conftest.py` → `/app/conftest.py` (read-only)
+
+### Environment variables
+
+Required in `.env` (see `.env.example`):
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `POSTGRES_USER` | DB username | `heritage_user` |
+| `POSTGRES_PASSWORD` | DB password | `heritage_pass` |
+| `POSTGRES_DB` | DB name | `heritage_db` |
+| `GEMINI_API_KEY` | Google AI API key | (none — required for real agent calls) |
+| `ENV` | Environment mode | `development` |
+| `UPLOADS_DIR` | Photo storage path | `/data/uploads` |
+
+---
+
+## Deeper References
+
+For detail beyond what's covered above, two companion files are available
+in the `references/` subdirectory of this skill:
+
+- **`references/architecture.md`** — Full agent-by-agent breakdown, pipeline
+  data flow, dossier schema field map, Gemini prompt design, and FTS/BM25
+  details. Useful when you need to understand how a specific agent works
+  internally or how data flows between pipeline stages.
+
+- **`references/workflows.md`** — Less-common operations: adding a new
+  migration, adding a new agent stage, running a single test file, resetting
+  seed data, and troubleshooting startup failures (verified from
+  entrypoint.sh error handling). Useful for dev tasks beyond the golden path
+  described above.
