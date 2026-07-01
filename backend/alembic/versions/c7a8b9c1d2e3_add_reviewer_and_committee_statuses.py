@@ -21,9 +21,10 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     # PostgreSQL-specific: ALTER TYPE ... ADD VALUE cannot run inside a transaction.
     # We use autocommit_block() to run outside of the main transaction block.
+    # IF NOT EXISTS prevents errors when re-running the migration (e.g. after a rollback).
     with op.get_context().autocommit_block():
-        op.execute("ALTER TYPE submissionstatus ADD VALUE 'reviewer_review'")
-        op.execute("ALTER TYPE submissionstatus ADD VALUE 'committee_review'")
+        op.execute("ALTER TYPE submissionstatus ADD VALUE IF NOT EXISTS 'reviewer_review'")
+        op.execute("ALTER TYPE submissionstatus ADD VALUE IF NOT EXISTS 'committee_review'")
 
 
 def downgrade() -> None:

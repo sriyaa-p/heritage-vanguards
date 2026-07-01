@@ -49,11 +49,13 @@ export default function CommitteeDashboard() {
       try {
         // Fetch stats
         const statsRes = await fetch(`${API}/submissions/stats`);
+        if (!statsRes.ok) throw new Error(`Stats fetch failed: ${statsRes.status}`);
         const statsData = await statsRes.json();
         setStats(statsData);
 
         // Fetch pending items (committee_review)
         const pendingRes = await fetch(`${API}/submissions?status=committee_review`);
+        if (!pendingRes.ok) throw new Error(`Pending fetch failed: ${pendingRes.status}`);
         const pendingData = await pendingRes.json();
         setPendingItems(pendingData.map((row: any) => ({
           submission_id: row.submission_id,
@@ -66,6 +68,7 @@ export default function CommitteeDashboard() {
 
         // Fetch audit log items
         const auditRes = await fetch(`${API}/submissions/audit-log`);
+        if (!auditRes.ok) throw new Error(`Audit log fetch failed: ${auditRes.status}`);
         const auditData = await auditRes.json();
         setAuditItems(auditData);
       } catch (err) {

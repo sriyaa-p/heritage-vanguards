@@ -91,9 +91,12 @@ export default function ConfidenceCardPage() {
     }
     setDeciding(true);
     try {
-      await fetch(`${API}/submissions/${id}/review?decision=${decision}&notes=${encodeURIComponent(notes)}`, {
+      const res = await fetch(`${API}/submissions/${id}/review`, {
         method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ decision, notes, reviewer_id: "reviewer" }),
       });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       setFinalDecision(decision);
     } catch {
       alert("Failed to submit decision. Please try again.");

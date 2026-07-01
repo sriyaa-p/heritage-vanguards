@@ -59,9 +59,12 @@ export default function CommitteeReviewPage() {
   async function handleFinalize(decision: "approved" | "rejected") {
     setDeciding(true);
     try {
-      await fetch(`${API}/submissions/${id}/finalize?decision=${decision}&comments=${encodeURIComponent(comments)}`, {
+      const res = await fetch(`${API}/submissions/${id}/finalize`, {
         method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ decision, comments, committee_id: "committee" }),
       });
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
       setFinalDecision(decision);
     } catch {
       alert("Failed to record committee decision. Please try again.");

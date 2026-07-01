@@ -47,6 +47,7 @@ function ReviewQueueContent() {
       const url = filter === "all" ? `${API}/submissions` : `${API}/submissions?status=${filter}`;
       try {
         const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
         setItems(data.map((row: any) => ({
           submission_id: row.submission_id,
@@ -81,11 +82,11 @@ function ReviewQueueContent() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2">
-        {["verification", "all", "approved", "rejected"].map((f) => (
-          <button key={f} onClick={() => setFilter(f)} 
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === f ? "bg-blue-600 text-white shadow-md" : "bg-white border text-slate-600 hover:border-blue-300"}`}>
-            {STATUS_LABEL[f] || "All Submissions"}
+      <div className="flex gap-2 flex-wrap">
+        {FILTERS.map((f) => (
+          <button key={f.value} onClick={() => setFilter(f.value)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${filter === f.value ? "bg-blue-600 text-white shadow-md" : "bg-white border text-slate-600 hover:border-blue-300"}`}>
+            {f.label}
           </button>
         ))}
       </div>
@@ -121,7 +122,7 @@ function ReviewQueueContent() {
                     ) : <span className="text-slate-300 italic">Pending</span>}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${STATUS_STYLES[item.status] || ""}`}>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${STATUS_COLOR[item.status] || "bg-gray-100 text-gray-500"}`}>
                       {STATUS_LABEL[item.status] || item.status}
                     </span>
                   </td>

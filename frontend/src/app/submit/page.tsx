@@ -31,7 +31,7 @@ function PipelineTracker({ submissionId, onReset }: { submissionId: string; onRe
 
         if (s === "rejected") {
           const reason = data.dossier?.review?.reviewer_notes ?? null;
-          setRejectionReason(reason);
+            setRejectionReason(reason);
           clearInterval(intervalRef.current!);
         } else if (s === "reviewer_review") {
           clearInterval(intervalRef.current!);
@@ -45,7 +45,7 @@ function PipelineTracker({ submissionId, onReset }: { submissionId: string; onRe
 
   const currentIdx = PIPELINE_STAGES.findIndex((s) => s.status === status);
 
-  if (rejectionReason !== null) {
+  if (rejectionReason != null) {
     const isDuplicate = rejectionReason.toLowerCase().includes("already exists in the unesco");
     return (
       <div className="bg-white rounded-xl shadow p-8 max-w-md w-full text-center">
@@ -158,8 +158,7 @@ export default function SubmitPage() {
       setSubmissionId(result.submission_id);
       setSubmitted(true);
     } catch {
-      setSubmissionId("SUB-DEMO-00000000");
-      setSubmitted(true);
+      alert("Submission failed. Please check your connection and try again.");
     }
   }
 
