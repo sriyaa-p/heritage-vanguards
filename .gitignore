@@ -65,3 +65,11 @@ frontend/.next/
 frontend/node_modules/
 frontend/next-env.d.ts
 frontend/yarn.lock
+
+# Certificates & Keys
+nginx/certs/*.crt
+nginx/certs/*.key
+nginx/certs/*.pem
+nginx/certs/*.txt
+!nginx/certs/README.md
+

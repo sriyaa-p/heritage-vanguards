@@ -21,8 +21,7 @@ services:
       context: .
       dockerfile: backend/Dockerfile
     env_file: .env
-    ports:
-      - "8000:8000"
+    # Removed ports: - "8000:8000" (Nginx will route to this internally)
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       GEMINI_API_KEY: ${GEMINI_API_KEY}
@@ -30,39 +29,32 @@ services:
     volumes:
       - ./backend:/app
       - ./data:/data
-      - ./scripts:/scripts
-      - ./tests:/tests
-      - ./pytest.ini:/app/pytest.ini:ro
-      - ./conftest.py:/app/conftest.py:ro
+      - ./tests:/app/tests
     depends_on:
       postgres:
         condition: service_healthy
-    develop:
-      watch:
-        - action: rebuild
-          path: backend/Dockerfile
-        - action: rebuild
-          path: backend/entrypoint.sh
-        - action: sync
-          path: ./backend
-          target: /app
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
+    # Removed ports: - "3000:3000" (Nginx will route to this internally)
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8000
-      # Enable polling-based file watching so Next.js hot-reload works on
-      # Windows Docker volumes (inotify events don't propagate into containers).
-      WATCHPACK_POLLING: "true"
-      CHOKIDAR_USEPOLLING: "true"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      NODE_ENV: production
     depends_on:
+      - backend
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+    depends_on:
+      - frontend
       - backend
 
 volumes:
