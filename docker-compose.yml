@@ -28,24 +28,11 @@ services:
       GEMINI_API_KEY: ${GEMINI_API_KEY}
       ENV: ${ENV:-development}
     volumes:
-      - ./backend:/app
-      - ./data:/data
-      - ./scripts:/scripts
-      - ./tests:/tests
-      - ./pytest.ini:/app/pytest.ini:ro
-      - ./conftest.py:/app/conftest.py:ro
+      # Map current root directory to /app
+      - .:/app
     depends_on:
       postgres:
         condition: service_healthy
-    develop:
-      watch:
-        - action: rebuild
-          path: backend/Dockerfile
-        - action: rebuild
-          path: backend/entrypoint.sh
-        - action: sync
-          path: ./backend
-          target: /app
 
   frontend:
     build:
@@ -55,10 +42,9 @@ services:
       - "3000:3000"
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8000
-      # Enable polling-based file watching so Next.js hot-reload works on
-      # Windows Docker volumes (inotify events don't propagate into containers).
-      WATCHPACK_POLLING: "true"
-      CHOKIDAR_USEPOLLING: "true"
+      NODE_ENV: production
+    # Optional: Keep the volume for dev convenience, 
+    # but realize the CMD ["npm", "start"] will serve the built files.
     volumes:
       - ./frontend:/app
       - /app/node_modules
