@@ -14,6 +14,9 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 COPY backend/ .
 
+# Copy scripts (fetch_unesco_data.py, seed_database.py) into the container
+COPY scripts/ /scripts/
+
 # Copy and configure the startup entrypoint script
 COPY backend/entrypoint.sh /entrypoint.sh
 RUN sed -i 's/\r$//' /entrypoint.sh && chmod +x /entrypoint.sh

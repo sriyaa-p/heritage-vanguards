@@ -3,7 +3,7 @@ import shutil
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Body, Depends, File, Form, HTTPException, UploadFile
 from sqlalchemy import select, update, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
@@ -274,12 +274,12 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
 
 @router.get("/audit-log")
 async def get_audit_log(db: AsyncSession = Depends(get_db)):
+    """Return finalized decisions only (approved or rejected). Excludes in-progress committee_review."""
     result = await db.execute(
         select(Submission)
         .where(Submission.status.in_([
             SubmissionStatus.approved,
             SubmissionStatus.rejected,
-            SubmissionStatus.committee_review
         ]))
         .order_by(Submission.updated_at.desc())
     )
@@ -348,10 +348,10 @@ async def get_submission(submission_id: str, db: AsyncSession = Depends(get_db))
 @router.patch("/{submission_id}/review")
 async def review_submission(
     submission_id: str,
-    decision: str,
-    notes: str = "",
-    reviewer_id: str = "reviewer",
     db: AsyncSession = Depends(get_db),
+    decision: str = Body(..., embed=True),
+    notes: str = Body("", embed=True),
+    reviewer_id: str = Body("reviewer", embed=True),
 ):
     if decision not in ("committee_review", "rejected"):
         raise HTTPException(status_code=400, detail="decision must be 'committee_review' or 'rejected'")
@@ -387,10 +387,10 @@ async def review_submission(
 @router.patch("/{submission_id}/finalize")
 async def finalize_submission(
     submission_id: str,
-    decision: str,
-    comments: str = "",
-    committee_id: str = "committee",
     db: AsyncSession = Depends(get_db),
+    decision: str = Body(..., embed=True),
+    comments: str = Body("", embed=True),
+    committee_id: str = Body("committee", embed=True),
 ):
     if decision not in ("approved", "rejected"):
         raise HTTPException(status_code=400, detail="decision must be 'approved' or 'rejected'")

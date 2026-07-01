@@ -68,7 +68,7 @@ def run_verification(dossier: CanonicalDossier) -> tuple[CanonicalDossier, Submi
     # No scoring available (evaluation failed) → send to human review
     if scoring is None:
         log.warning(
-            "VerificationAgent: %s has no scoring — routing to verification for manual review",
+            "VerificationAgent: %s has no scoring — routing to reviewer_review for manual review",
             meta.submission_id,
         )
         dossier.review = ReviewDecision(
@@ -119,6 +119,7 @@ def _low_scoring_categories(scoring) -> str:
         ("Authenticity", scoring.authenticity, 15),
         ("Geographic Context", scoring.geographic_context, 10),
         ("Documentation", scoring.documentation, 10),
+        ("Management & Protection", scoring.management_protection, 5),
         ("Supporting Evidence", scoring.supporting_evidence, 15),
     ]
     weak = [name for name, score, max_score in categories if score < (max_score * 0.3)]
