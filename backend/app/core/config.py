@@ -13,6 +13,16 @@ class Settings(BaseSettings):
     # File storage
     UPLOADS_DIR: str = "/data/uploads"
 
+    # Rate limits
+    RATE_LIMIT_SUBMISSION_PER_MIN: int = 10
+    RATE_LIMIT_UPLOAD_PER_MIN: int = 20
+    RATE_LIMIT_HEALTH_PER_MIN: int = 60
+
+    # Input limits
+    MAX_DESCRIPTION_LENGTH: int = 10000
+    MAX_PHOTO_SIZE_MB: int = 10
+    MAX_PHOTOS_PER_SUBMISSION: int = 5
+
     # Database connection
     DATABASE_URL: Optional[str] = None
     POSTGRES_USER: Optional[str] = None

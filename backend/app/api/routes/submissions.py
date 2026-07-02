@@ -1,10 +1,14 @@
+import asyncio
 import os
 import shutil
 import uuid
 from datetime import datetime, timezone
+from typing import Optional
 
-from fastapi import APIRouter, BackgroundTasks, Body, Depends, File, Form, HTTPException, UploadFile
-from sqlalchemy import select, update, func
+from fastapi import APIRouter, BackgroundTasks, Body, Depends, File, Form, HTTPException, Query, Request, UploadFile
+from slowapi.util import get_remote_address
+from slowapi import Limiter
+from sqlalchemy import select, update, func, and_
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
@@ -22,6 +26,7 @@ from app.models.dossier import (
 )
 
 router = APIRouter(prefix="/submissions", tags=["submissions"])
+limiter = Limiter(key_func=get_remote_address)
 
 _UPLOADS_DIR = settings.UPLOADS_DIR
 try:
@@ -35,12 +40,23 @@ except OSError:
 _ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
 
-def _save_photos(
+def _write_file_sync(dest: str, content: bytes) -> None:
+    """Synchronous helper for file writes — runs in asyncio thread pool."""
+    with open(dest, "wb") as f:
+        f.write(content)
+
+
+async def _save_photos(
     submission_id: str, files: list[UploadFile]
 ) -> list[str]:
-    """Save uploaded photo files to disk and return their URL paths."""
+    """Save uploaded photo files to disk asynchronously and return their URL paths.
+
+    File I/O is offloaded to asyncio.to_thread() so the event loop remains
+    unblocked. This allows the backend to handle concurrent uploads without
+    freezing other requests.
+    """
     upload_dir = os.path.join(_UPLOADS_DIR, submission_id)
-    os.makedirs(upload_dir, exist_ok=True)
+    await asyncio.to_thread(os.makedirs, upload_dir, exist_ok=True)
 
     saved_urls: list[str] = []
     for file in files:
@@ -52,8 +68,10 @@ def _save_photos(
             )
         filename = f"{uuid.uuid4().hex}{ext}"
         dest = os.path.join(upload_dir, filename)
-        with open(dest, "wb") as f:
-            shutil.copyfileobj(file.file, f)
+
+        # FastAPI UploadFile.read() is async; writes are offloaded to thread pool
+        content = await file.read()
+        await asyncio.to_thread(_write_file_sync, dest, content)
         saved_urls.append(f"/uploads/{submission_id}/{filename}")
     return saved_urls
 
@@ -70,12 +88,40 @@ def _make_submission_id() -> str:
     return f"SUB-{datetime.now(timezone.utc).strftime('%Y-%m')}-{uuid.uuid4().hex[:8].upper()}"
 
 
+def _validate_description(description: str) -> None:
+    """Validate description length. Raises HTTPException if too long."""
+    if len(description) > settings.MAX_DESCRIPTION_LENGTH:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Description exceeds maximum length of {settings.MAX_DESCRIPTION_LENGTH} characters.",
+        )
+
+
+def _validate_photos(files: list[UploadFile]) -> None:
+    """Validate photo count and size. Raises HTTPException if limits exceeded."""
+    if len(files) > settings.MAX_PHOTOS_PER_SUBMISSION:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Maximum {settings.MAX_PHOTOS_PER_SUBMISSION} photos allowed per submission.",
+        )
+    for file in files:
+        # Check content length if available
+        if file.size and file.size > settings.MAX_PHOTO_SIZE_MB * 1024 * 1024:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Photo '{file.filename}' exceeds {settings.MAX_PHOTO_SIZE_MB}MB size limit.",
+            )
+
+
 @router.post("", status_code=201)
+@limiter.limit(f"{settings.RATE_LIMIT_SUBMISSION_PER_MIN}/minute")
 async def create_submission(
+    request: Request,
     body: SubmitRequest,
     background_tasks: BackgroundTasks,
     db: AsyncSession = Depends(get_db),
 ):
+    _validate_description(body.description)
     submission_id = _make_submission_id()
 
     dossier = CanonicalDossier(
@@ -114,7 +160,9 @@ async def create_submission(
 
 
 @router.post("/with-photos", status_code=201)
+@limiter.limit(f"{settings.RATE_LIMIT_SUBMISSION_PER_MIN}/minute")
 async def create_submission_with_photos(
+    request: Request,
     background_tasks: BackgroundTasks,
     location_name: str = Form(...),
     country: str = Form(...),
@@ -128,12 +176,15 @@ async def create_submission_with_photos(
     multipart/form-data request. This eliminates the race condition where the
     background pipeline could overwrite photo URLs uploaded via a second request.
     """
+    _validate_description(description)
+
     submission_id = _make_submission_id()
 
     # Save photos to disk BEFORE creating the dossier
     photo_urls: list[str] = []
     if files and files[0].filename:  # FastAPI sends [UploadFile("")] when no files
-        photo_urls = _save_photos(submission_id, files)
+        _validate_photos(files)
+        photo_urls = await _save_photos(submission_id, files)
 
     dossier = CanonicalDossier(
         metadata=Metadata(
@@ -172,7 +223,9 @@ async def create_submission_with_photos(
 
 
 @router.post("/{submission_id}/photos", status_code=200)
+@limiter.limit(f"{settings.RATE_LIMIT_UPLOAD_PER_MIN}/minute")
 async def upload_photos(
+    request: Request,
     submission_id: str,
     files: list[UploadFile] = File(...),
     db: AsyncSession = Depends(get_db),
@@ -188,7 +241,8 @@ async def upload_photos(
     if not submission:
         raise HTTPException(status_code=404, detail="Submission not found")
 
-    saved_urls = _save_photos(submission_id, files)
+    _validate_photos(files)
+    saved_urls = await _save_photos(submission_id, files)
 
     dossier = submission.dossier or {}
     raw = dossier.setdefault("raw_evidence", {})
@@ -206,20 +260,79 @@ async def upload_photos(
 
 
 @router.get("")
+@limiter.limit("120/minute")
 async def list_submissions(
-    status: str | None = None, db: AsyncSession = Depends(get_db)
+    request: Request,
+    status: Optional[str] = None,
+    search: Optional[str] = None,
+    min_score: Optional[int] = None,
+    max_score: Optional[int] = None,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None,
+    limit: int = Query(50, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: AsyncSession = Depends(get_db),
 ):
+    """List submissions with pagination, filtering, and search.
+
+    Query parameters:
+    - status: filter by submission status
+    - search: text search in location_name, country, and description
+    - min_score / max_score: filter by Heritage Score range
+    - date_from / date_to: ISO 8601 date range for created_at
+    - limit: max items per page (1-100, default 50)
+    - offset: pagination offset (default 0)
+    """
     query = select(Submission).order_by(Submission.created_at.desc())
+    conditions = []
+
     if status:
         try:
-            query = query.where(Submission.status == SubmissionStatus(status))
+            conditions.append(Submission.status == SubmissionStatus(status))
         except ValueError:
             raise HTTPException(status_code=400, detail=f"Invalid status: {status}")
 
+    if search:
+        search_term = f"%{search}%"
+        # PostgreSQL ILIKE for case-insensitive search; SQLite LIKE is case-insensitive by default
+        conditions.append(
+            or_(
+                Submission.dossier["metadata"]["location_name"].astext.ilike(search_term),
+                Submission.dossier["metadata"]["country"].astext.ilike(search_term),
+                Submission.dossier["raw_evidence"]["description"].astext.ilike(search_term),
+            )
+        )
+
+    if date_from:
+        try:
+            from_dt = datetime.fromisoformat(date_from.replace("Z", "+00:00"))
+            conditions.append(Submission.created_at >= from_dt)
+        except ValueError:
+            raise HTTPException(status_code=400, detail=f"Invalid date_from: {date_from}")
+
+    if date_to:
+        try:
+            to_dt = datetime.fromisoformat(date_to.replace("Z", "+00:00"))
+            conditions.append(Submission.created_at <= to_dt)
+        except ValueError:
+            raise HTTPException(status_code=400, detail=f"Invalid date_to: {date_to}")
+
+    if conditions:
+        query = query.where(and_(*conditions))
+
+    # Get total count for pagination metadata
+    count_query = select(func.count()).select_from(Submission)
+    if conditions:
+        count_query = count_query.where(and_(*conditions))
+    count_result = await db.execute(count_query)
+    total = count_result.scalar() or 0
+
+    # Apply pagination
+    query = query.limit(limit).offset(offset)
     result = await db.execute(query)
     rows = result.scalars().all()
 
-    return [
+    items = [
         {
             "submission_id": r.submission_id,
             "status": r.status,
@@ -230,6 +343,23 @@ async def list_submissions(
         }
         for r in rows
     ]
+
+    # Apply score filtering in Python (since score is inside JSONB)
+    if min_score is not None or max_score is not None:
+        items = [
+            item for item in items
+            if item["score"] is not None
+            and (min_score is None or item["score"] >= min_score)
+            and (max_score is None or item["score"] <= max_score)
+        ]
+
+    return {
+        "items": items,
+        "total": total,
+        "limit": limit,
+        "offset": offset,
+        "has_more": (offset + len(items)) < total,
+    }
 
 
 @router.get("/stats")
@@ -262,6 +392,7 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
         "in_review": (
             counts.get(SubmissionStatus.reviewer_review, 0)
             + counts.get(SubmissionStatus.committee_review, 0)
+            # verification is deprecated; include for backward compatibility with old data
             + counts.get(SubmissionStatus.verification, 0)
         ),
         "reviewer_review": counts.get(SubmissionStatus.reviewer_review, 0),
