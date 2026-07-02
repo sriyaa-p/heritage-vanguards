@@ -79,6 +79,9 @@ class SubmissionStatus(str, Enum):
     pending = "pending"
     registry_check = "registry_check"
     evaluation = "evaluation"
+    # DEPRECATED: verification is no longer set by the pipeline.
+    # The VerificationAgent routes directly to reviewer_review or rejected.
+    # Kept for backward compatibility with existing database records.
     verification = "verification"
     reviewer_review = "reviewer_review"
     committee_review = "committee_review"
@@ -143,16 +146,22 @@ class ExtractedEvidence(BaseModel):
 
 
 class ScoringResult(BaseModel):
-    # UNESCO-aligned weights — total must equal 100
+    # UNESCO-aligned weights — category maxes sum to 115, but total is capped at 100
+    # via the Pydantic validator below. This follows the UNESCO scoring rubric where
+    # Supporting Evidence (15 pts) is additive but the overall Heritage Score cannot
+    # exceed 100. The cap enforces this rule at the model level.
     historic_features: int = Field(ge=0, le=25)       # OUV criteria i, iii, iv
     cultural_significance: int = Field(ge=0, le=20)   # OUV criteria ii, v, vi
     integrity: int = Field(ge=0, le=15)               # UNESCO Integrity pillar
     authenticity: int = Field(ge=0, le=15)            # UNESCO Authenticity pillar
     geographic_context: int = Field(ge=0, le=10)      # OUV criteria vii–x
+    # Note: the field is named `documentation` in ScoringResult (model output) but
+    # maps from `documentation_quality` in ExtractedEvidence (input). The scoring engine
+    # bridges this naming difference intentionally.
     documentation: int = Field(ge=0, le=10)           # Documentation quality
     management_protection: int = Field(ge=0, le=5)    # Management & Protection
     supporting_evidence: int = Field(ge=0, le=15)     # Visual evidence
-    total: int = Field(ge=0, le=100)                  # Max is 100 (25+20+15+15+10+10+5 = 100)
+    total: int = Field(ge=0, le=100)                  # Hard cap at 100 (see note above)
     rationale: str
 
 
