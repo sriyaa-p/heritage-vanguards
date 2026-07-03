@@ -57,7 +57,10 @@ export default function CommitteeDashboard() {
         const pendingRes = await fetch(`${API}/submissions?status=committee_review`);
         if (!pendingRes.ok) throw new Error(`Pending fetch failed: ${pendingRes.status}`);
         const pendingData = await pendingRes.json();
-        setPendingItems(pendingData.map((row: any) => ({
+        // Backward-compatible: API may return paginated object {items, total, ...}
+        // or flat array (legacy). Handle both.
+        const rows = Array.isArray(pendingData) ? pendingData : pendingData?.items ?? [];
+        setPendingItems(rows.map((row: any) => ({
           submission_id: row.submission_id,
           location_name: row.location_name ?? "Unknown",
           country: row.country ?? "—",

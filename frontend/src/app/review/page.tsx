@@ -49,7 +49,10 @@ function ReviewQueueContent() {
         const res = await fetch(url);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-        setItems(data.map((row: any) => ({
+        // Backward-compatible: API may return paginated object {items, total, ...}
+        // or flat array (legacy). Handle both.
+        const rows = Array.isArray(data) ? data : data?.items ?? [];
+        setItems(rows.map((row: any) => ({
           submission_id: row.submission_id,
           location_name: row.location_name ?? "Unknown Site",
           country: row.country ?? "—",

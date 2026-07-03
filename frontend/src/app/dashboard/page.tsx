@@ -71,8 +71,10 @@ export default function DashboardPage() {
 
         setStats(statsData);
 
-        // Map first 10 items directly — score is included in the list response
-        const mapped: RecentItem[] = listData.slice(0, 10).map((row: any) => ({
+        // Backward-compatible: API may return paginated object {items, total, ...}
+        // or flat array (legacy). Handle both.
+        const rows = Array.isArray(listData) ? listData : listData?.items ?? [];
+        const mapped: RecentItem[] = rows.slice(0, 10).map((row: any) => ({
           submission_id: row.submission_id,
           location_name: row.location_name ?? "Unknown",
           country: row.country ?? "—",
