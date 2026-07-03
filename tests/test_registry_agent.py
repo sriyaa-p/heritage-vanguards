@@ -75,7 +75,14 @@ async def test_exact_duplicate_detected():
 
 @pytest.mark.asyncio
 async def test_partial_name_match_is_duplicate():
-    result = await _agent.lookup_unesco_registry("Taj", "India")
+    from unittest.mock import MagicMock, patch
+    mock_response = MagicMock()
+    mock_response.text = '{"is_duplicate": true, "confidence": 0.9, "matched_site": "Taj Mahal", "reasoning": "Matches Taj Mahal"}'
+
+    with patch("app.agents.registry_agents._client") as mock_client:
+        mock_client.models.generate_content = MagicMock(return_value=mock_response)
+        result = await _agent.lookup_unesco_registry("Taj", "India")
+
     assert result["is_duplicate"] is True
     assert "Taj" in result["matched_site"]
 
