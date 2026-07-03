@@ -1,6 +1,5 @@
 import asyncio
 import os
-import shutil
 import uuid
 from datetime import datetime, timezone
 from typing import Optional
@@ -8,7 +7,7 @@ from typing import Optional
 from fastapi import APIRouter, BackgroundTasks, Body, Depends, File, Form, HTTPException, Query, Request, UploadFile
 from slowapi.util import get_remote_address
 from slowapi import Limiter
-from sqlalchemy import select, update, func, and_
+from sqlalchemy import select, update, func, and_, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import BaseModel
 
