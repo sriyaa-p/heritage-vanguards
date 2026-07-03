@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { API } from "@/lib/api";
 
 const MIN_DESC_LENGTH = 20;
+const MAX_PHOTOS = 5;
+const MAX_PHOTO_SIZE_MB = 10;
 
 const PIPELINE_STAGES = [
   { status: "pending",        label: "Received",          desc: "Submission saved" },
@@ -106,37 +108,75 @@ export default function SubmitPage() {
   const [submissionId, setSubmissionId] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [photos, setPhotos] = useState<File[]>([]);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    if (e.target.files) setPhotos(Array.from(e.target.files));
+    if (!e.target.files) return;
+    const files = Array.from(e.target.files);
+    const newErrors: Record<string, string> = {};
+
+    // Validate photo count
+    const combined = [...photos, ...files];
+    if (combined.length > MAX_PHOTOS) {
+      newErrors.photos = `Maximum ${MAX_PHOTOS} photos allowed. You selected ${combined.length}.`;
+      setErrors(newErrors);
+      return;
+    }
+
+    // Validate file sizes
+    const oversized = files.filter((f) => f.size > MAX_PHOTO_SIZE_MB * 1024 * 1024);
+    if (oversized.length > 0) {
+      newErrors.photos = `${oversized[0].name} exceeds ${MAX_PHOTO_SIZE_MB}MB limit.`;
+      setErrors(newErrors);
+      return;
+    }
+
+    setPhotos(combined);
+    setErrors((prev) => { const next = { ...prev }; delete next.photos; return next; });
   }
 
   function removePhoto(index: number) {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
+    setErrors((prev) => { const next = { ...prev }; delete next.photos; return next; });
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
     const description = (form.elements.namedItem("description") as HTMLTextAreaElement).value;
+    const locationName = (form.elements.namedItem("location") as HTMLInputElement).value.trim();
+    const country = (form.elements.namedItem("country") as HTMLInputElement).value.trim();
 
-    // Client-Side Validation
+    const newErrors: Record<string, string> = {};
+
+    if (locationName.length < 2) {
+      newErrors.location = "Site name must be at least 2 characters.";
+    }
+    if (country.length < 2) {
+      newErrors.country = "Country must be at least 2 characters.";
+    }
     if (description.trim().length < MIN_DESC_LENGTH) {
-      alert(`Description is too short. Please provide at least ${MIN_DESC_LENGTH} characters.`);
+      newErrors.description = `Description must be at least ${MIN_DESC_LENGTH} characters.`;
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
+    setErrors({});
+    setIsSubmitting(true);
+
     const data = {
-      location_name: (form.elements.namedItem("location") as HTMLInputElement).value,
-      country: (form.elements.namedItem("country") as HTMLInputElement).value,
+      location_name: locationName,
+      country: country,
       description: description,
       submitted_by: "community_user",
     };
 
     try {
-      // Send metadata and photos together in a single request to prevent
-      // the race condition where the pipeline overwrites photo URLs.
       const formData = new FormData();
       formData.append("location_name", data.location_name);
       formData.append("country", data.country);
@@ -149,16 +189,19 @@ export default function SubmitPage() {
         body: formData,
       });
 
-      if (res.status === 422) {
-        alert("Submission rejected: Please ensure your description is detailed enough.");
+      if (!res.ok) {
+        const body = await res.text().catch(() => "");
+        setErrors({ submit: `Submission failed (${res.status}): ${body || res.statusText}` });
+        setIsSubmitting(false);
         return;
       }
 
       const result = await res.json();
       setSubmissionId(result.submission_id);
       setSubmitted(true);
-    } catch {
-      alert("Submission failed. Please check your connection and try again.");
+    } catch (err) {
+      setErrors({ submit: "Network error. Please check your connection and try again." });
+      setIsSubmitting(false);
     }
   }
 
@@ -166,6 +209,8 @@ export default function SubmitPage() {
     setSubmissionId("");
     setSubmitted(false);
     setPhotos([]);
+    setErrors({});
+    setIsSubmitting(false);
   }
 
   if (submitted) {
@@ -182,38 +227,75 @@ export default function SubmitPage() {
         <h1 className="text-2xl font-bold text-gray-900 mb-1">Submit a Heritage Site</h1>
         <p className="text-gray-500 text-sm mb-6">Help us document potential UNESCO candidates in your area.</p>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          {/* Location */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Site Name / Location</label>
             <input name="location" required className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. Hampi Ruins" />
+            {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location}</p>}
           </div>
+
+          {/* Country */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
             <input name="country" required className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g. India" />
+            {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country}</p>}
           </div>
+
+          {/* Description */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea name="description" required rows={4} className="w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Describe the site — its history, cultural significance, and what makes it special." />
+            {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
           </div>
+
+          {/* Photos */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Photos</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Photos <span className="text-gray-400 font-normal">(max {MAX_PHOTOS}, {MAX_PHOTO_SIZE_MB}MB each)</span>
+            </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-5 text-center cursor-pointer hover:border-blue-400 transition" onClick={() => fileInputRef.current?.click()}>
               <input ref={fileInputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFileChange} />
               <p className="text-sm text-gray-400">📸 Click to select photos <span className="text-gray-300">(JPG, PNG, WEBP)</span></p>
             </div>
+            {errors.photos && <p className="text-red-500 text-xs mt-1">{errors.photos}</p>}
             {photos.length > 0 && (
               <ul className="mt-2 space-y-1">
                 {photos.map((file, i) => (
                   <li key={i} className="flex items-center justify-between text-sm bg-gray-50 rounded px-3 py-1">
-                    <span className="text-gray-700 truncate max-w-xs">{file.name}</span>
+                    <span className="text-gray-700 truncate max-w-xs">{file.name} <span className="text-gray-400">({(file.size / 1024 / 1024).toFixed(1)} MB)</span></span>
                     <button type="button" onClick={() => removePhoto(i)} className="text-red-400 hover:text-red-600 ml-2 text-xs">Remove</button>
                   </li>
                 ))}
               </ul>
             )}
           </div>
-          <button type="submit" className="w-full bg-blue-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-blue-700 transition">
-            Submit Site
+
+          {/* Submit error */}
+          {errors.submit && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+              {errors.submit}
+            </div>
+          )}
+
+          {/* Submit button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full rounded-lg py-2 text-sm font-medium transition ${
+              isSubmitting
+                ? "bg-blue-400 text-white cursor-not-allowed"
+                : "bg-blue-600 text-white hover:bg-blue-700"
+            }`}
+          >
+            {isSubmitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Submitting…
+              </span>
+            ) : (
+              "Submit Site"
+            )}
           </button>
         </form>
       </div>

@@ -15,8 +15,6 @@ export default function Header() {
   const handleRoleChange = (newRole: string) => {
     setRole(newRole);
     localStorage.setItem("user-role", newRole);
-    // Dispatch event to notify other components
-    window.dispatchEvent(new Event("user-role-change"));
   };
 
   return (
