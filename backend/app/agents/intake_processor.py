@@ -38,7 +38,7 @@ def _detect_language(text: str) -> str:
         detector = (
             LanguageDetectorBuilder
             .from_all_languages()
-            .with_minimum_relative_distance(0.9)
+            .with_minimum_relative_distance(0.1)
             .build()
         )
         language = detector.detect_language_of(text)
