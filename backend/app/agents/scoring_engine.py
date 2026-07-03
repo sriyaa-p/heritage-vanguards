@@ -7,6 +7,11 @@ scores — no randomness, no model variance.
 
 Architecture (per PROJECT.md):
   Gemini extracts evidence → Pydantic validates → this engine assigns scores
+
+Field name mapping:
+  ExtractedEvidence.documentation_quality → criteria["documentation"] → ScoringResult.documentation
+  This is intentional: the evidence extraction uses descriptive names while
+  the scoring rubric uses shorter keys. The bridge happens in score_evidence().
 """
 
 from __future__ import annotations
@@ -99,6 +104,7 @@ def score_evidence(evidence: ExtractedEvidence, photo_count: int = 0) -> Scoring
     ig  = _score_field(evidence.integrity,             criteria["integrity"])
     au  = _score_field(evidence.authenticity,          criteria["authenticity"])
     gc  = _score_field(evidence.geographic_context,    criteria["geographic_context"])
+    # Intentional name mapping: evidence.documentation_quality → criteria["documentation"]
     doc = _score_field(evidence.documentation_quality, criteria["documentation"])
     mp  = _score_field(evidence.management_protection, criteria["management_protection"])
 

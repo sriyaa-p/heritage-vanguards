@@ -1,3 +1,4 @@
+import asyncio
 import os
 import shutil
 import uuid
@@ -35,12 +36,23 @@ except OSError:
 _ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
 
-def _save_photos(
+def _write_file_sync(dest: str, content: bytes) -> None:
+    """Synchronous helper for file writes — runs in asyncio thread pool."""
+    with open(dest, "wb") as f:
+        f.write(content)
+
+
+async def _save_photos(
     submission_id: str, files: list[UploadFile]
 ) -> list[str]:
-    """Save uploaded photo files to disk and return their URL paths."""
+    """Save uploaded photo files to disk asynchronously and return their URL paths.
+
+    File I/O is offloaded to asyncio.to_thread() so the event loop remains
+    unblocked. This allows the backend to handle concurrent uploads without
+    freezing other requests.
+    """
     upload_dir = os.path.join(_UPLOADS_DIR, submission_id)
-    os.makedirs(upload_dir, exist_ok=True)
+    await asyncio.to_thread(os.makedirs, upload_dir, exist_ok=True)
 
     saved_urls: list[str] = []
     for file in files:
@@ -52,8 +64,10 @@ def _save_photos(
             )
         filename = f"{uuid.uuid4().hex}{ext}"
         dest = os.path.join(upload_dir, filename)
-        with open(dest, "wb") as f:
-            shutil.copyfileobj(file.file, f)
+
+        # FastAPI UploadFile.read() is async; writes are offloaded to thread pool
+        content = await file.read()
+        await asyncio.to_thread(_write_file_sync, dest, content)
         saved_urls.append(f"/uploads/{submission_id}/{filename}")
     return saved_urls
 
@@ -133,7 +147,7 @@ async def create_submission_with_photos(
     # Save photos to disk BEFORE creating the dossier
     photo_urls: list[str] = []
     if files and files[0].filename:  # FastAPI sends [UploadFile("")] when no files
-        photo_urls = _save_photos(submission_id, files)
+        photo_urls = await _save_photos(submission_id, files)
 
     dossier = CanonicalDossier(
         metadata=Metadata(
@@ -188,7 +202,7 @@ async def upload_photos(
     if not submission:
         raise HTTPException(status_code=404, detail="Submission not found")
 
-    saved_urls = _save_photos(submission_id, files)
+    saved_urls = await _save_photos(submission_id, files)
 
     dossier = submission.dossier or {}
     raw = dossier.setdefault("raw_evidence", {})
@@ -262,6 +276,7 @@ async def get_stats(db: AsyncSession = Depends(get_db)):
         "in_review": (
             counts.get(SubmissionStatus.reviewer_review, 0)
             + counts.get(SubmissionStatus.committee_review, 0)
+            # verification is deprecated; include for backward compatibility with old data
             + counts.get(SubmissionStatus.verification, 0)
         ),
         "reviewer_review": counts.get(SubmissionStatus.reviewer_review, 0),
