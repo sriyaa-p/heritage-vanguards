@@ -4,7 +4,8 @@ import Link from "next/link";
 import { API } from "@/lib/api";
 
 const STATUS_COLOR: Record<string, string> = {
-  verification: "bg-blue-100 text-blue-700",
+  reviewer_review: "bg-blue-100 text-blue-700",
+  committee_review: "bg-amber-100 text-amber-700",
   approved: "bg-green-100 text-green-700",
   rejected: "bg-red-100 text-red-700",
   evaluation: "bg-yellow-100 text-yellow-700",
@@ -102,7 +103,7 @@ export default function DashboardPage() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 mb-8">
           <StatCard label="Total Submissions"  value={stats?.total ?? 0}             color="text-gray-900"    loading={loading} href="/review?status=all" />
-          <StatCard label="Awaiting Review"    value={stats?.in_review ?? 0}         color="text-blue-600"   loading={loading} href="/review?status=verification" />
+          <StatCard label="Awaiting Review"    value={stats?.in_review ?? 0}         color="text-blue-600"   loading={loading} href="/review?status=reviewer_review" />
           <StatCard label="In Pipeline"        value={(stats?.pending ?? 0) + (stats?.registry_check ?? 0) + (stats?.evaluation ?? 0)} color="text-yellow-600" loading={loading} />
           <StatCard label="Approved"           value={stats?.approved ?? 0}          color="text-green-600"  loading={loading} href="/review?status=approved" />
           <StatCard label="Rejected"           value={stats?.rejected ?? 0}          color="text-red-500"    loading={loading} href="/review?status=rejected" />
