@@ -11,7 +11,7 @@ All tests run without a real Gemini key — external calls are mocked.
 """
 
 from datetime import datetime, timezone
-from unittest.mock import patch, AsyncMock
+from unittest.mock import patch, AsyncMock, MagicMock
 
 import pytest
 
@@ -85,9 +85,6 @@ class TestTranslateToEnglish:
             result = await _translate_to_english("Texto original", "es")
 
         assert result == "Texto original"
-
-    # Need MagicMock for the sync mock_client.models.generate_content call
-    from unittest.mock import MagicMock
 
 
 # ── End-to-end run_intake tests ────────────────────────────────────────────
