@@ -1,6 +1,8 @@
 from types import SimpleNamespace
+from unittest.mock import MagicMock
 
 import pytest
+from starlette.requests import Request
 
 from app.models.dossier import SubmissionStatus
 
@@ -49,4 +51,14 @@ async def test_stats_counts_only_duplicate_rejections_as_duplicates_blocked():
 async def test_health_endpoint_returns_ok():
     from main import health
 
-    assert await health() == {"status": "ok", "service": "heritage-sentinel-ai"}
+    # PR #56 added @limiter.limit to the health endpoint, which requires a real Request object
+    mock_scope = {
+        "type": "http",
+        "method": "GET",
+        "path": "/health",
+        "headers": [],
+        "query_string": b"",
+        "client": ("127.0.0.1", 50000),
+    }
+    mock_request = Request(mock_scope)
+    assert await health(request=mock_request) == {"status": "ok", "service": "heritage-sentinel-ai"}
