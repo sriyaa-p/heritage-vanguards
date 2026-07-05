@@ -34,7 +34,7 @@ Evaluating duplicate submissions without fast database-level search filters resu
 
 ## Solution: Why Agentic AI
 
-Heritage Sentinel AI is a Level 3 Collaborative Multi-Agent System that assists archaeologists by transforming raw community evidence into structured, validated, and explainable nomination dossiers.
+Heritage Sentinel AI is a Collaborative Multi-Agent System (four specialist agents coordinating sequentially) that assists archaeologists by transforming raw community evidence into structured, validated, and explainable nomination dossiers.
 
 ### Why Traditional Automation Fails
 Rule-based database systems cannot parse unstructured, multilingual reports or identify semantically similar duplicates. Conversely, simple single-prompt LLM architectures are prone to hallucinating scores and cannot enforce safe, human-in-the-loop validation gates.
@@ -163,6 +163,8 @@ Our test suite implements 22 test cases validating every step of the agent pipel
 | Multilingual Ingestion | Manual translation services | Real-time automatic translation | 100% automated |
 | Process Visibility | Fragmented files | Structured audit logs & dashboards | 100% trackable |
 
+> *Estimates based on reported manual processing times from UNESCO evaluation documentation and measured system benchmarks.*
+
 ### ROI Justification:
 * **Resource Optimization:** Archaeologists reclaim 95% of administrative time, focusing on on-site validation.
 * **Accuracy:** Eliminates duplicate nominations before they reach the evaluation board.
@@ -174,7 +176,7 @@ Our test suite implements 22 test cases validating every step of the agent pipel
 
 The project is fully containerized using **Docker Compose** for local and production deployments:
 * **FastAPI Backend:** Runs behind Nginx on port 8000, supporting async task execution.
-* **Next.js Frontend:** Interactive dashboard exposing reporter forms, reviewer review queues, and committee dashboards.
+* **Next.js Frontend:** Interactive dashboard exposing reporter forms, reviewer queues, and committee dashboards.
 * **PostgreSQL Database:** Handled with health checks, automatically running database migrations via **Alembic** and database seeding scripts on container startup.
 
 ---
@@ -205,7 +207,7 @@ By refusing to allow the LLM to score directly, we solved the core reliability i
 
 ## Conclusion: Trusted Sentinel for a Vulnerable Past
 
-Heritage Sentinel AI proves that agentic systems can protect vulnerable cultural assets when built with a reliable, structured architecture. By merging sequential orchestration, deterministic calculations, and human verification, we created a tool that heritage experts can trust. 
+Heritage Sentinel AI proves that agentic systems can protect vulnerable cultural assets when built with a reliable, structured architecture. By merging sequential orchestration, deterministic scoring, and human verification, we created a tool that heritage experts can trust.
 
 ## Project Links
 * **GitHub Repository:** [github.com/sriyaa-p/heritage-vanguards](https://github.com/sriyaa-p/heritage-vanguards)
