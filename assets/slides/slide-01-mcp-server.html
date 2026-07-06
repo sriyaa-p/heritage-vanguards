@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slide 01 — MCP Server</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      width: 1280px;
+      height: 720px;
+      background: #050f1c;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Top label bar ── */
+    .top-label {
+      width: 100%;
+      padding: 22px 60px 0 60px;
+      letter-spacing: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #00e5cc;
+      text-transform: uppercase;
+    }
+
+    /* ── Main two-column body ── */
+    .main {
+      display: flex;
+      flex: 1;
+      padding: 32px 60px 20px 60px;
+      gap: 60px;
+      align-items: center;
+      min-height: 0;
+    }
+
+    /* ── Left: giant text ── */
+    .left {
+      flex-shrink: 0;
+      width: 310px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .left .giant {
+      font-size: 112px;
+      font-weight: 900;
+      line-height: 0.88;
+      color: #00e5cc;
+      letter-spacing: -4px;
+    }
+
+    .left .sub {
+      font-size: 38px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      margin-top: 6px;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 2px;
+      height: 360px;
+      background: linear-gradient(to bottom, transparent, #00e5cc 30%, #0066ff 70%, transparent);
+      flex-shrink: 0;
+      align-self: center;
+    }
+
+    /* ── Right: body text ── */
+    .right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .right p {
+      font-size: 15.5px;
+      color: #d6e8f5;
+      line-height: 1.75;
+      font-weight: 400;
+    }
+
+    .right p + p {
+      color: #b0cfe8;
+      font-size: 14.5px;
+    }
+
+    /* highlight inline code paths */
+    .right code {
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 13.5px;
+      color: #00e5cc;
+      background: rgba(0,229,204,0.08);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+
+    /* ── Bottom accent bar ── */
+    .bottom-bar {
+      height: 5px;
+      width: 100%;
+      background: linear-gradient(to right, #0044cc, #0088ee, #00ccbb, #00e5cc);
+      flex-shrink: 0;
+    }
+
+    /* slide number */
+    .slide-num {
+      position: absolute;
+      top: 22px;
+      right: 60px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: rgba(0,229,204,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide-num">01 / 06</div>
+
+  <div class="top-label">From Pipeline to Protocol</div>
+
+  <div class="main">
+
+    <div class="left">
+      <div class="giant">MCP</div>
+      <div class="sub">Server</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="right">
+      <p>With the core multi-agent pipeline complete, we needed a way for external AI agents to interact with Heritage Sentinel programmatically &mdash; without coupling them to our internal REST API.</p>
+      <p>We built <code>backend/mcp_server.py</code> &mdash; a full Model Context Protocol server that exposes our entire pipeline as <strong style="color:#ffffff">6 callable tools</strong>. Any MCP-compatible AI agent (Gemini via ADK, Claude Desktop, or any future agent) can now list submissions, retrieve dossiers, search the UNESCO registry, fetch scoring criteria, submit new candidate sites, and record human review decisions &mdash; all through a single standardised interface.</p>
+      <p>The server supports two transport modes: <code>stdio</code> for local agent use and Claude Desktop integration, and <code>sse</code> for remote agents connecting over HTTP on port <code>8001</code>.</p>
+    </div>
+
+  </div>
+
+  <div class="bottom-bar"></div>
+
+</body>
+</html>
