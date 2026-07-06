@@ -265,3 +265,40 @@ app = <span class="c-fn">FastMCP</span>(<span class="c-str">"heritage-pipeline"<
   </div>
 </body>
 </html>
+
+
+  <!-- Save as PNG button -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    #save-btn {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
+      background: #00e5cc;
+      color: #020d1f;
+      border: none;
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      border-radius: 4px;
+      cursor: pointer;
+      z-index: 9999;
+      box-shadow: 0 4px 16px rgba(0,229,204,0.4);
+    }
+    #save-btn:hover { background: #00c4ae; }
+  </style>
+  <button id="save-btn" onclick="saveAsPng()">&#11015; Save as PNG</button>
+  <script>
+    function saveAsPng() {
+      var btn = document.getElementById('save-btn');
+      btn.style.display = 'none';
+      html2canvas(document.body, { width: 1280, height: 720, scale: 2, useCORS: true, backgroundColor: '#020d1f' }).then(function(canvas) {
+        var link = document.createElement('a');
+        link.download = 'slide-01-mcp-server.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        btn.style.display = 'block';
+      });
+    }
+  </script>
