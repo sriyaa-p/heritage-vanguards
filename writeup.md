@@ -148,8 +148,8 @@ Our test suite implements 29 test cases validating every step of the agent pipel
 | API Endpoints | 4 | Test route security, pagination, and audit logs | | MCP Server | 7 | Verify all 6 tool routes, HTTP delegation, payload forwarding, and invalid-input rejection |
 
 ### Evaluation Results
-* **Total Tests:** 29
-* **Passed:** 22
+* **Total Tests:** 59
+* **Passed:** 59
 * **Failed:** 0
 * **Accuracy:** 100%
 * **Determinism Rate:** 100% (same inputs generate identical scores across 10+ runs)
