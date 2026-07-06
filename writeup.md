@@ -136,7 +136,7 @@ Heritage Sentinel AI demonstrates 8 core agentic concepts:
 ## Evaluation: Proving Production Readiness
 
 ### Comprehensive Test Suite
-Our test suite implements 22 test cases validating every step of the agent pipeline:
+Our test suite implements 29 test cases validating every step of the agent pipeline:
 
 | Category | Tests | Purpose |
 | --- | --- | --- |
@@ -144,10 +144,10 @@ Our test suite implements 22 test cases validating every step of the agent pipel
 | Duplicate Check | 5 | Verify exact matches and FTS rank thresholds |
 | Evaluation Scorer | 4 | Confirm deterministic scoring matches keyword signal rules |
 | Verification Routing | 5 | Test auto-reject thresholds and human queue insertion |
-| API Endpoints | 4 | Test route security, pagination, and audit logs |
+| API Endpoints | 4 | Test route security, pagination, and audit logs | | MCP Server | 7 | Verify all 6 tool routes, HTTP delegation, payload forwarding, and invalid-input rejection |
 
 ### Evaluation Results
-* **Total Tests:** 22
+* **Total Tests:** 29
 * **Passed:** 22
 * **Failed:** 0
 * **Accuracy:** 100%
