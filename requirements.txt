@@ -2,6 +2,7 @@
 google-adk
 google-generativeai
 google-genai
+httpx
 
 # Web framework
 fastapi
@@ -43,3 +44,6 @@ pytest-mock
 anyio[asyncio]
 aiosqlite
 greenlet
+
+# MCP Server
+mcp[cli]>=1.0.0
