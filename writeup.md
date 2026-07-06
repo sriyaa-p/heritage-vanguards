@@ -137,23 +137,26 @@ Heritage Sentinel AI demonstrates 8 core agentic concepts:
 ## Evaluation: Proving Production Readiness
 
 ### Comprehensive Test Suite
-Our test suite implements 29 test cases validating every step of the agent pipeline:
+Our test suite implements 59 test cases validating every step of the agent pipeline:
 
 | Category | Tests | Purpose |
 | --- | --- | --- |
-| Language Ingestion | 4 | Validate language detection (lingua) and Gemini translation |
-| Duplicate Check | 5 | Verify exact matches and FTS rank thresholds |
-| Evaluation Scorer | 4 | Confirm deterministic scoring matches keyword signal rules |
-| Verification Routing | 5 | Test auto-reject thresholds and human queue insertion |
-| API Endpoints | 4 | Test route security, pagination, and audit logs | | MCP Server | 7 | Verify all 6 tool routes, HTTP delegation, payload forwarding, and invalid-input rejection |
+| Configuration & Settings | 3 | Validate settings fallback, database URL assembly, and environment checks |
+| Language Ingestion & Pipeline | 13 | Validate language detection (lingua), Gemini translation, and pipeline orchestration |
+| Duplicate Registry Check | 7 | Verify exact duplicate detection, FTS rank thresholds, and similarity logic |
+| Evaluation & Scoring | 8 | Confirm deterministic scoring matches keyword signal rules and handles failures |
+| Verification & Routing | 13 | Test confidence level routing, auto-reject thresholds, and human queue logic |
+| API & Workflows | 8 | Test end-to-end workflow states (review, finalize, logs) and health endpoints |
+| MCP Server | 7 | Verify all 6 tool routes, payload forwarding, and invalid-input rejection |
 
 ### Evaluation Results
-* **Total Tests:** 29
-* **Passed:** 22
+* **Total Tests:** 59
+* **Passed:** 59
 * **Failed:** 0
 * **Accuracy:** 100%
 * **Determinism Rate:** 100% (same inputs generate identical scores across 10+ runs)
 * **Average Audit Cost:** ~$0.003 per submission
+
 
 ---
 
