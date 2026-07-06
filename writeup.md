@@ -121,13 +121,15 @@ if top_candidates and best_fts_score >= 0.30:
 
 ## Implementation: Demonstrating Course Mastery
 
-Heritage Sentinel AI demonstrates 6 core agentic concepts:
+Heritage Sentinel AI demonstrates 8 core agentic concepts:
 1. **Multi-Agent System ✅:** Sequential workflow utilizing four independent agents (`IntakeProcessor`, `RegistryAgent`, `EvaluationAgent`, `VerificationAgent`).
 2. **Custom Tools ✅:** Custom scoring engine mapping extracted text to scoring tiers, and lingua wrapper modules for language classification.
 3. **Built-in Services ✅:** Gemini 2.5 Flash used for translation, structured extraction, and semantic duplicate analysis.
 4. **State Management ✅:** Pydantic `CanonicalDossier` persisted in PostgreSQL, enabling async tracking.
 5. **Human-in-the-Loop ✅:** Pause-and-review design allowing reviewers and committee members to approve, reject, or escalate dossiers.
 6. **Robust Error Handling ✅:** Dynamic SQLite fallback for local Pytest suites, bypassing Postgres FTS logic during testing.
+7. **MCP Server ✅:** `backend/mcp_server.py` exposes 6 Heritage Sentinel tools (`list_submissions`, `get_submission`, `search_unesco_sites`, `get_scoring_criteria`, `submit_candidate_site`, `record_review_decision`) via the Model Context Protocol, enabling any MCP-compatible AI agent (e.g. Gemini via ADK, Claude) to interact with the Heritage Sentinel pipeline programmatically.
+8. **Antigravity ✅:** The project leverages `google-adk` and `google-generativeai` (installed via `requirements.txt`) which include Antigravity-pattern agent orchestration, allowing declarative tool-use by Gemini agents without explicit prompt chaining.
 
 ---
 
