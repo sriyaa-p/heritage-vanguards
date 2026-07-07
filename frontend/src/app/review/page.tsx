@@ -110,30 +110,38 @@ function ReviewQueueContent() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {items.map((item) => (
-                <tr key={item.submission_id} className="hover:bg-slate-50/50 transition">
-                  <td className="px-6 py-4 font-semibold text-slate-900">{item.location_name}</td>
-                  <td className="px-6 py-4 text-slate-600">{item.country}</td>
-                  <td className="px-6 py-4">
-                    {item.score !== null ? (
-                      <div className="flex items-center gap-2">
-                        <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                          <div className={`h-full ${item.score >= 80 ? "bg-emerald-500" : "bg-amber-400"}`} style={{ width: `${item.score}%` }} />
-                        </div>
-                        <span className="font-mono font-bold text-slate-700">{item.score}</span>
-                      </div>
-                    ) : <span className="text-slate-300 italic">Pending</span>}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${STATUS_COLOR[item.status] || "bg-gray-100 text-gray-500"}`}>
-                      {STATUS_LABEL[item.status] || item.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <Link href={`/review/${item.submission_id}`} className="text-blue-600 hover:text-blue-800 font-bold">Review →</Link>
+              {items.length === 0 ? (
+                <tr>
+                  <td colSpan={5} className="px-6 py-16 text-center text-slate-400 text-sm">
+                    No submissions found for this filter.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                items.map((item) => (
+                  <tr key={item.submission_id} className="hover:bg-slate-50/50 transition">
+                    <td className="px-6 py-4 font-semibold text-slate-900">{item.location_name}</td>
+                    <td className="px-6 py-4 text-slate-600">{item.country}</td>
+                    <td className="px-6 py-4">
+                      {item.score !== null ? (
+                        <div className="flex items-center gap-2">
+                          <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                            <div className={`h-full ${item.score >= 80 ? "bg-emerald-500" : "bg-amber-400"}`} style={{ width: `${item.score}%` }} />
+                          </div>
+                          <span className="font-mono font-bold text-slate-700">{item.score}</span>
+                        </div>
+                      ) : <span className="text-slate-300 italic">Pending</span>}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${STATUS_COLOR[item.status] || "bg-gray-100 text-gray-500"}`}>
+                        {STATUS_LABEL[item.status] || item.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <Link href={`/review/${item.submission_id}`} className="text-blue-600 hover:text-blue-800 font-bold">Review →</Link>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         )}

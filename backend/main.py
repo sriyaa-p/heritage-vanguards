@@ -19,7 +19,12 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        "http://localhost:3000",   # Direct Next.js dev server
+        "http://localhost",        # Nginx HTTP (before TLS redirect)
+        "https://localhost",       # Nginx TLS — primary access path via docker compose
+        "http://localhost:8000",   # Direct backend access during local dev
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

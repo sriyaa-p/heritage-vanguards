@@ -334,7 +334,7 @@ async def list_submissions(
     items = [
         {
             "submission_id": r.submission_id,
-            "status": r.status,
+            "status": r.status.value,
             "location_name": r.dossier.get("metadata", {}).get("location_name"),
             "country": r.dossier.get("metadata", {}).get("country"),
             "score": r.dossier.get("scoring", {}).get("total") if r.dossier.get("scoring") else None,
@@ -417,7 +417,7 @@ async def get_audit_log(db: AsyncSession = Depends(get_db)):
     return [
         {
             "submission_id": r.submission_id,
-            "status": r.status,
+            "status": r.status.value,
             "location_name": r.dossier.get("metadata", {}).get("location_name"),
             "country": r.dossier.get("metadata", {}).get("country"),
             "score": r.dossier.get("scoring", {}).get("total") if r.dossier.get("scoring") else None,
