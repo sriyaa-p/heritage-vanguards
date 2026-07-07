@@ -49,6 +49,24 @@ services:
     depends_on:
       - backend
 
+  cert-generator:
+    image: alpine/openssl
+    volumes:
+      - certs:/certs
+    command: >
+      sh -c "
+        if [ ! -f /certs/localhost.crt ]; then
+          openssl req -x509 -nodes -days 365 -newkey rsa:2048
+            -keyout /certs/localhost.key
+            -out /certs/localhost.crt
+            -subj '/CN=localhost';
+          echo 'Certificates generated.';
+        else
+          echo 'Certificates already exist, skipping.';
+        fi
+      "
+    restart: "no"
+
   nginx:
     image: nginx:alpine
     ports:
@@ -56,10 +74,15 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./nginx/certs:/etc/nginx/certs:ro
+      - certs:/etc/nginx/certs:ro
     depends_on:
-      - frontend
-      - backend
+      cert-generator:
+        condition: service_completed_successfully
+      frontend:
+        condition: service_started
+      backend:
+        condition: service_started
 
 volumes:
   postgres_data:
+  certs:
