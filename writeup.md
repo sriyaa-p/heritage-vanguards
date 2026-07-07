@@ -219,7 +219,7 @@ Heritage Sentinel AI proves that agentic systems can protect vulnerable cultural
 * **GitHub Repository:** [github.com/sriyaa-p/heritage-vanguards](https://github.com/sriyaa-p/heritage-vanguards)
 * **Kaggle Notebook:** TBD
 * **Web Demo:** TBD
-* **YouTube Demo:** TBD
+* **YouTube Demo: https://www.youtube.com/watch?v=f8xxySYY0uI
 * **Cover Image Note:** A high-quality cover image representing AI-assisted archeology and heritage conservation will be uploaded during the final Kaggle submission.
 
 ---
