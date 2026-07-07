@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -17,14 +18,34 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+# Base origins — always allowed (local dev + Docker Compose)
+_origins = [
+    "http://localhost:3000",   # Direct Next.js dev server
+    "http://localhost",        # Nginx HTTP (before TLS redirect)
+    "https://localhost",       # Nginx TLS — primary access path via docker compose
+    "http://localhost:8000",   # Direct backend access during local dev
+]
+
+# Production / Railway: add any extra origins from env vars
+# Set FRONTEND_URL on the Railway backend service to your frontend's Railway URL
+# e.g. https://heritage-vanguards-frontend.up.railway.app
+for _env_var in ("FRONTEND_URL", "RAILWAY_PUBLIC_DOMAIN"):
+    _val = os.getenv(_env_var)
+    if _val:
+        if not _val.startswith("http"):
+            _val = f"https://{_val}"
+        if _val not in _origins:
+            _origins.append(_val)
+
+# Allow ALL origins in development mode for convenience
+if os.getenv("ENV", "development") == "development":
+    _allow_origins = ["*"]
+else:
+    _allow_origins = _origins
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",   # Direct Next.js dev server
-        "http://localhost",        # Nginx HTTP (before TLS redirect)
-        "https://localhost",       # Nginx TLS — primary access path via docker compose
-        "http://localhost:8000",   # Direct backend access during local dev
-    ],
+    allow_origins=_allow_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
